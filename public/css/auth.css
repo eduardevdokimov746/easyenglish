@@ -1,0 +1,394 @@
+html,
+body {
+    margin: 0;
+    font-size: 100%;
+    background: #fff;
+    font-family: 'Lato', sans-serif;
+}
+
+body a {
+    text-decoration: none;
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+}
+
+body img {
+    max-width: 100%;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    letter-spacing: .5px;
+}
+
+p {
+    margin: 0;
+	font-size: 15px;
+    line-height: 2em;
+    letter-spacing: 1px;
+    color: #666;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+/*-- header --*/
+
+header {
+    position: absolute;
+    width: 100%;
+    padding: 15px 0;
+	z-index: 9;
+}
+/*-- header --*/
+
+
+/* Giving a background-color to the nav container. */
+nav { 
+	margin:0;
+	padding: 0;
+}
+#logo img {
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    width: 50px;
+}
+
+#logo a {
+	float: left;
+    font-size: .75em;
+    font-weight: 600;
+    display: initial;
+    margin: 0;
+    letter-spacing: 1px;
+    color: #fff;
+    padding: 0px 0;
+    border: none;
+    text-transform: capitalize;
+}
+#logo a span.fa {
+    color: #ff4f81;
+}
+
+
+/* Removing padding, margin and "list-style" from the "ul",
+ * and adding "position:reltive" */
+nav ul {
+	float: right;
+	padding:0;
+	margin:0;
+	list-style: none;
+	position: relative;
+}
+
+/* Positioning the navigation items inline */
+nav ul li {
+	margin: 0px;
+	display:inline-block;
+	float: left;
+}
+
+/* Styling the links */
+nav a {
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-left: 0;
+    padding-right: 0;
+	padding: 10px 13px;
+    font-weight: 400;
+    font-size: 15px;
+    vertical-align: middle;
+}
+nav ul li ul li:hover { background: #f8f9fa; }
+
+/* Background color change on Hover */
+nav a:hover { 
+	color: white;
+}
+
+.drpdown .check-selected-language{
+    float: right;
+}
+
+.drpdown li a{
+    color: black;
+}
+
+
+/* Hide Dropdowns by Default
+ * and giving it a position of absolute */
+nav ul ul {
+	display: none;
+	position: absolute; 
+	top: 30px; 
+    background: #fff;
+    padding: 10px;
+    right: 10px;
+}
+	
+/* Display Dropdowns on Hover */
+nav ul li:hover > ul {
+	display:inherit;
+}
+	
+/* Fisrt Tier Dropdown */
+nav ul ul li {
+	width:170px;
+	float:none;
+	display:list-item;
+	position: relative;
+}
+nav ul ul li a {
+    color: #333;
+    padding: 5px 10px;
+    display: block;
+}
+
+.form-div{
+    width: 40%;
+    margin-left: 1.6%;
+}
+
+/* Media Queries
+--------------------------------------------- */
+@media all and (max-width : 1200px) {
+    .banner-text{
+        display: none;
+    }
+
+    .form-div{
+        width: 100%;
+    }
+}
+
+@media all and (max-width : 991px) {
+   .form-div{
+        width: 100%;
+        margin-top: 22%;
+    } 
+}
+
+@media all and (max-width : 330px) {
+
+	nav ul li {
+		display:block;
+		width: 94%;
+	}
+
+}
+.user span.fa {
+    font-size: 25px;
+    color: #fff;
+}
+
+.banner {
+    background: url(../1.jpg)no-repeat center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+    background-size: cover;
+}
+.layer {
+    background: rgba(0, 0, 0, 0.5);
+    height: 100vh;
+}
+.banner_txt p {
+    color: #eee;
+    font-size: 15px;
+}
+.banner-text {
+    padding: 14vw 0 11vw;
+    box-sizing: border-box;
+}
+.banner-form-w3 {
+    padding: 12vw 0 0vw;
+    box-sizing: border-box;
+}
+
+h3.b-txt span {
+    color: #fff;
+}
+h3.b-txt {
+    font-size: 3.5em;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 1px 1px 0px #333;
+}
+
+h4.b-txt {
+    font-size: 3em;
+    letter-spacing: 3px;
+    font-weight: 300;
+    color: #fff;
+}
+
+.form-auth h5{
+    text-align: center;
+}
+
+.form-style input, select {
+    outline: none;
+    font-size: 14px;
+    border: none;
+    color: #666;
+    background: #f1f1f1;
+    letter-spacing: 0.5px;
+    padding: 14px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+.form-style button.btn {
+    color: #fff;
+    background: #3369e7;
+    border: none;
+    padding: 14px 0;
+    outline: none;
+	border-radius: 0;
+    width: 100%;
+    font-size: 15px;
+    cursor: not-allowed;
+    letter-spacing: 1px;
+    -webkit-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    transition: 0.5s all;
+}
+.form-style .btn-submit:hover:enabled {
+    background: #1153eb;
+}
+
+.form-style .password-field{
+    position: relative;
+}
+
+.form-style .div-error-auth{
+    height: 32px
+}
+
+.form-style .div-error-auth span{
+    color: red;
+}
+
+.eye-password{
+    position: absolute;
+    right: 20px; 
+    top: 15px; 
+    cursor: pointer;
+}
+
+.form-style .social-btn{
+    text-align: center;
+
+}
+
+.form-style .social-btn ul{
+    display: block;list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+.form-style .social-btn ul li{
+    display: inline-block;
+}
+
+
+.form-style .social-btn ul li .icon{
+    color: #fff;
+    border-radius: 50%;
+    margin: 4px;
+    width: 35px;
+    height: 35px;
+    line-height: 1.8em;
+}
+
+.form-style .social-btn ul li .icon i{
+    font-style: normal;
+    font-weight: 500;
+}
+
+.form-style .social-btn ul li .mail-btn{
+    border: 2px solid #3b5998;
+    background: #3b5998;
+}
+
+.form-style .social-btn ul li .mail-btn:hover{
+    transition: 0.5s ease;
+    color: #3b5998;
+    background: white;
+}
+
+.form-style .social-btn ul li .vk-btn{
+    border: 2px solid #4a76a8;
+    background: #4a76a8;
+}
+
+.form-style .social-btn ul li .vk-btn:hover{
+    transition: 0.5s ease;
+    color: #4a76a8;
+    background: white;
+}
+
+.ext-action-form{
+    text-align: center;
+}
+
+.ext-action-form span a:hover{
+    transition: 0.5s ease;
+    color: #0056b3;
+}
+
+.padding {
+    padding: 2.5em;
+	background: #fff;
+}
+.form-style span {
+    font-size: 13px;
+    color: #666;
+}
+.form-style span a {
+    color: #3369e7;
+}
+
+.a-active{
+    background-image: linear-gradient(red, red);
+    background-position: 0% 100%;
+    background-repeat: no-repeat;
+    background-size: 100% 2px;
+}
+
+.a-hover:not(.a-active){
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0% 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    transition: background-size .3s;
+}
+
+.a-hover:not(.a-active):hover, .a-hover:not(.a-active):focus {
+    background-size: 100% 2px;
+}
