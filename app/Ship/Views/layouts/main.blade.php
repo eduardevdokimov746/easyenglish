@@ -4,9 +4,13 @@
     <title>{{ config('app.name') }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type='text/css' href="{{ asset('bootstrap/css/bootstrap.css') }}">
+    <link href="{{ asset('css/layout.css') }}" rel='stylesheet' type='text/css' />
     <link href="{{ asset('css/style.css') }}" rel='stylesheet' type='text/css' />
     <link href="{{ asset('css/css_slider.css') }}" type="text/css" rel="stylesheet" media="all">
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ asset('js/jquery.js') }}"></script>
+    <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+    <script src="{{ asset('ckeditor/adapters/jquery.js') }}"></script>
 </head>
 <body class="body-background">
 
@@ -15,20 +19,23 @@
         <nav>
             <div id="logo">
                 <h1>
-                    <a href="index.html" style="font-size: .50em">
+                    <a href="{{ route('web_material_index') }}" style="font-size: .50em">
                         <img src="{{ asset('images/s2.png') }}" style="width: 35px;" alt=""> Easy English
                     </a>
                 </h1>
             </div>
             <ul class="menu ml-auto mt-1">
                 <li>
-                    <a class='a-hover' href="index.html">Задания</a>
+                    <a class='a-hover' href="{{ route('web_teacher_courses_index') }}">Преподавателю</a>
+                </li>
+                <li>
+                    <a class='a-hover' href="{{ route('web_course_index') }}">Курсы</a>
                 </li>
                 <li class='active-nav'>
                     <a class='a-hover a-active' href="{{ route('web_material_index') }}">Материалы</a>
                 </li>
                 <li>
-                    <a class="a-hover" href="#about">Упражнения</a>
+                    <a class="a-hover" href="{{ route('web_practice_index') }}">Упражнения</a>
                 </li>
                 <li>
                     <a class='a-hover' href="{{ route('web_dictionary_index') }}">Словарь</a>
@@ -87,6 +94,10 @@
 </div>
 
 @include('scripts.main')
+<script>
+    CKEDITOR.replace('editor1');
+    CKEDITOR.replace('main_info_section');
+</script>
 
 </body>
 </html>

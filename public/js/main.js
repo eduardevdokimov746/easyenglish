@@ -4,6 +4,12 @@ $(document).ready(function(){
 		return false;
 	});
 
+    $(document).ready(function($) {
+        $(".table-row").click(function() {
+            window.document.location = $(this).data("href");
+        });
+    });
+
 
 	$('body').css('min-height', $(window).height());
 	$('.other_services').css('min-height', ($(window).height() - $('.copyright').height()));

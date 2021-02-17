@@ -132,7 +132,9 @@ abstract class GeneratorCommand extends Command
             // the user skipped this step
             return;
         }
+
         $this->userData = $this->sanitizeUserData($this->userData);
+
 
         // get the actual path of the output file as well as the correct filename
         $this->parsedFileName = $this->parseFileStructure($this->nameStructure, $this->userData['file-parameters']);
@@ -349,5 +351,4 @@ abstract class GeneratorCommand extends Command
 
         return $str;
     }
-
 }

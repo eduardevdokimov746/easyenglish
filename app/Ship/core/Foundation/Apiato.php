@@ -48,10 +48,28 @@ class Apiato
         $containersNames = [];
 
         foreach ($this->getContainersPaths() as $containersPath) {
-            $containersNames[] = basename($containersPath);
+            $containersNames[] = $this->getContainerName($containersPath);
         }
 
         return $containersNames;
+    }
+
+    public function getContainerName(string $containerPath): string
+    {
+
+        if(str_contains($containerPath, 'Section')){
+            $sectionName = collect(explode('/', dirname($containerPath)))->last();
+            $nameContainer = $sectionName . '/' . basename($containerPath);
+        }else{
+            $nameContainer = basename($containerPath);
+        }
+
+        return $nameContainer;
+    }
+
+    public function getContainerNamespace(string $containerPath): string
+    {
+        return str_replace('/', '\\', $this->getContainerName($containerPath));
     }
 
     /**
@@ -77,7 +95,19 @@ class Apiato
      */
     public function getContainersPaths()
     {
-        return File::directories(app_path('Containers'));
+        $containersPath = File::directories(app_path('Containers'));
+
+        foreach ($containersPath as $key => $containerPath) {
+
+            if(str_contains($containerPath, 'Section')){
+                foreach(File::directories($containerPath) as $cont){
+                    $containersPath[] = $cont;
+                }
+                unset($containersPath[$key]);
+            }
+        }
+
+        return $containersPath;
     }
 
     /**

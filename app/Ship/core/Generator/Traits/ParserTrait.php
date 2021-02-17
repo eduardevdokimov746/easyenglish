@@ -50,6 +50,7 @@ trait ParserTrait
     public function parseStubContent($stub, $data)
     {
         $stub = str_replace(array_map([$this, 'maskStubVariables'], array_keys($data)), array_values($data), $stub);
+
         return $stub;
     }
 

@@ -32,7 +32,6 @@ use Vinkla\Hashids\HashidsServiceProvider;
  */
 class ApiatoProvider extends AbstractMainProvider
 {
-
     use FactoriesLoaderTrait;
     use AutoLoaderTrait;
     use ValidationTrait;

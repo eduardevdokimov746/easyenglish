@@ -42,7 +42,7 @@ trait RoutesLoaderTrait
         // build the container api routes path
         $apiRoutesPath = $containerPath . '/UI/API/Routes';
         // build the namespace from the path
-        $controllerNamespace = $containersNamespace . '\\Containers\\' . basename($containerPath) . '\\UI\API\Controllers';
+        $controllerNamespace = $containersNamespace . '\\Containers\\' . Apiato::getContainerNamespace($containerPath) . '\\UI\API\Controllers';
 
         if (File::isDirectory($apiRoutesPath)) {
             $files = File::allFiles($apiRoutesPath);
@@ -66,7 +66,7 @@ trait RoutesLoaderTrait
         // build the container web routes path
         $webRoutesPath = $containerPath . '/UI/WEB/Routes';
         // build the namespace from the path
-        $controllerNamespace = $containersNamespace . '\\Containers\\' . basename($containerPath) . '\\UI\WEB\Controllers';
+        $controllerNamespace = $containersNamespace . '\\Containers\\' . Apiato::getContainerNamespace($containerPath) . '\\UI\WEB\Controllers';
 
         if (File::isDirectory($webRoutesPath)) {
             $files = File::allFiles($webRoutesPath);
