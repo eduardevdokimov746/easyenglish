@@ -8,9 +8,6 @@
     <link href="{{ asset('css/style.css') }}" rel='stylesheet' type='text/css' />
     <link href="{{ asset('css/css_slider.css') }}" type="text/css" rel="stylesheet" media="all">
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
-    <script type="text/javascript" src="{{ asset('js/jquery.js') }}"></script>
-    <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
-    <script src="{{ asset('ckeditor/adapters/jquery.js') }}"></script>
 </head>
 <body class="body-background">
 
@@ -29,7 +26,7 @@
                     <a class='a-hover' href="{{ route('web_teacher_courses_index') }}">Преподавателю</a>
                 </li>
                 <li>
-                    <a class='a-hover' href="{{ route('web_course_index') }}">Курсы</a>
+                    <a class='a-hover' href="{{ route('web_student_courses_index') }}">Курсы</a>
                 </li>
                 <li class='active-nav'>
                     <a class='a-hover a-active' href="{{ route('web_material_index') }}">Материалы</a>
@@ -94,10 +91,6 @@
 </div>
 
 @include('scripts.main')
-<script>
-    CKEDITOR.replace('editor1');
-    CKEDITOR.replace('main_info_section');
-</script>
 
 </body>
 </html>

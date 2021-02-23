@@ -299,6 +299,11 @@
 
 /*------------------------------------PREPOD------------------------------------------*/
 
+.form-relative{
+    position: relative;
+}
+
+
 .btn-change-title-course{
     display: inline;
     background: #3369e7;
@@ -322,9 +327,6 @@
     justify-content: space-between;
 }
 
-.div-btns-control-section-course{
-
-}
 
 .list-btns-control-section-course{
     display: flex;
@@ -354,8 +356,15 @@
     color: silver;
 }
 
-.btn-delete-link:hover{
+.btn-delete-link:hover, .btn-delete-link-section:hover{
     color: black;
+}
+
+.btn-delete-link-section{
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    color: silver;
 }
 
 .div-link-change-section label{
@@ -366,14 +375,15 @@
     width: 80%;
 }
 
-.table-list-files i{
+.table-list-files i, .table-list-zadanie i{
     color: silver;
     cursor: pointer;
 }
 
-.table-list-files i:hover{
+.table-list-files i:hover, .table-list-zadanie i:hover{
     color: black
 }
+
 
 
 
@@ -503,7 +513,7 @@
     color: red;
 }
 
-.form-create-course label{
+.form-create-course label:not([class=no-width]){
     width: 100%;
 }
 
@@ -511,6 +521,25 @@
     display: flex;
     justify-content: space-between;
 }
+
+.nav-create-test p{
+    cursor: pointer;
+}
+
+.nav-create-test p:hover{
+    background: #4a97ea;
+    color: white;
+}
+
+.input-number-ball{
+    width: 70px;
+    display: inline
+}
+
+#comp-words tr{
+    vertical-align: initial;
+}
+
 
 /*----------------------------------------COURSE--------------------------------------*/
 
@@ -1815,4 +1844,39 @@
     color: #28c38a;
 }
 
+
 /*------------------------------------ТЕКСТЫ-----------------------------------*/
+
+/*----------------------------------ФОРМЫ СТУДЕНТОВ---------------------------*/
+.number-comp-words{
+    width: 45px;
+}
+
+.label-for-test-form{
+    margin: 0;
+}
+
+.li-item-response-test-form{
+    padding: 5px 0 5px 19px;
+}
+
+.li-result-true-response{
+    background: #adff9e;
+}
+
+.li-result-false-response{
+    background: #ff7272;
+}
+
+/*----------------------------------ФОРМЫ СТУДЕНТОВ---------------------------*/
+.no-width{
+    width: auto;
+}
+
+.width-max{
+    width: 100%;
+}
+
+.no-margin{
+    margin: auto;
+}
