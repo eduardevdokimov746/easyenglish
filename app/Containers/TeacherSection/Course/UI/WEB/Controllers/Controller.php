@@ -11,6 +11,7 @@ use App\Containers\Course\UI\WEB\Requests\StoreCourseRequest;
 use App\Containers\Course\UI\WEB\Requests\EditCourseRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
+use App\Ship\Parents\Exceptions\Exception;
 
 /**
  * Class Controller
@@ -68,7 +69,7 @@ class Controller extends WebController
      */
     public function edit()
     {
-        //return view('teacher::courses/teacher_courses_section_edit');
+        return view('teachersection/course::edit');
     }
 
     /**

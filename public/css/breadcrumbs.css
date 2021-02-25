@@ -1,0 +1,172 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700");
+:root {
+    --main-color-bread: #b6ceff;
+    --hover-color-bread: #527cff;
+    --icon: "";
+    --border-color-bread: #ddd;
+}
+
+.wrapper > .header-bread *{
+    box-sizing: border-box;
+}
+
+.wrapper > .header-bread {
+    font-family: "Roboto", sans-serif;
+    margin: 20px auto;
+}
+
+.wrapper > .header-bread .breadcrumb1 > a, .breadcrumb1 > a:visited {
+    text-decoration: none;
+    color: var(--main-color-bread);
+    transition: color ease-in-out 0.3s, background ease-in-out 0.2s;
+}
+
+.wrapper > .header-bread .header-bread {
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.wrapper > .header-bread .body {
+    padding-top: 20px;
+}
+
+.wrapper > .header-bread .logo-and-nav-wrap {
+    display: flex;
+    align-items: center;
+}
+
+.wrapper > .header-bread .site-nav-wrap {
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--main-color-bread);
+    overflow: hidden;
+    width: fit-content;
+}
+
+.wrapper > .header-bread .logo-wrap {
+    padding: 0 20px;
+    width: var(--sidebar-width);
+}
+
+.wrapper > .header-bread .nav {
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.wrapper > .header-bread .breadcrumb-wrap:before {
+    content: "";
+    background-image: linear-gradient(-33deg, #ff0d64 0, #9c3483 100%);
+    width: 100%;
+    height: 100px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -1;
+    transition: transform ease-in-out 0.5s;
+    transform: scalex(0);
+    transform-origin: left top;
+    display: none;
+}
+
+.wrapper > .header-bread .breadcrumb-wrap:hover:before {
+    transform: scalex(1);
+}
+
+.wrapper > .header-bread .breadcrumb-wrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 0 auto;
+    flex-shrink: 1000;
+    display: inline-block;
+    color: var(--main-color-bread);
+    position: relative;
+    transition: transform ease-in-out 0.3s;
+}
+.wrapper > .header-bread .breadcrumb-wrap:hover {
+    opacity: 1;
+    color: var(--hover-color-bread);
+    transition: none;
+    opacity: 1;
+    transition: transform ease-in-out 0.4s;
+}
+.wrapper > .header-bread .breadcrumb-wrap:hover a {
+    color: var(--hover-color-bread);
+}
+.wrapper > .header-bread .breadcrumb-wrap:hover .sep i {
+    transform: translatex(8px);
+    color: var(--hover-color-bread);
+    transition: transform ease-in-out 0.3s;
+}
+.wrapper > .header-bread .breadcrumb-wrap:hover ~ .single-breadcrumb-wrap {
+    transition: transform ease-in-out 0.4s;
+}
+.wrapper > .header-bread .breadcrumb-wrap:first-child {
+    flex: 0 0 auto;
+    flex-shrink: 0.5;
+    font-weight: normal;
+    color: var(--hover-color-bread);
+    opacity: 1;
+}
+.wrapper > .header-bread .breadcrumb-wrap:first-child:after {
+    left: 0;
+}
+.wrapper > .header-bread .breadcrumb-wrap:first-child .sep {
+    display: none;
+}
+.wrapper > .header-bread .breadcrumb-wrap:last-child {
+    flex: 1 0 auto !important;
+    font-weight: normal;
+}
+.wrapper > .header-bread .breadcrumb-wrap:last-child .sp {
+    color: var(--hover-color-bread);
+    font-size: 14px;
+    font-family: "Roboto", sans-serif;
+    padding: 10px 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+}
+.wrapper > .header-bread .breadcrumb-wrap:last-child:hover {
+    transform: translateY(0);
+    flex: 1 0 auto !important;
+}
+.wrapper > .header-bread .breadcrumb-wrap:last-child:hover:after {
+    display: none;
+}
+
+.wrapper > .header-bread .breadcrumb-wrap:after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 28px;
+    top: 29px;
+    width: 100%;
+    height: 1px;
+    background: var(--hover-color-bread);
+    transform: scale3d(0, 1, 1);
+    transform-origin: 0% 50%;
+    transition: transform ease-in-out 0.15s 0.1s, opacity ease-in-out 0.25s;
+    opacity: 0.5;
+}
+
+.wrapper > .header-bread .breadcrumb-wrap:hover:after {
+    transform: scale3d(1, 1, 1);
+    opacity: 1;
+    transition: opacity ease-in-out 0.1s, transform ease-in-out 0.2s;
+}
+
+.wrapper > .header-bread .breadcrumb1 {
+    flex: 0 1 auto;
+}
+
+.wrapper > .header-bread .sep {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.wrapper > .header-bread .sep i.fa:before {
+    content: var(--icon);
+    transition: transform ease-in-out 0.2s;
+}

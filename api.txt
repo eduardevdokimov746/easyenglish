@@ -1,0 +1,83 @@
+//Код получения перевода слова (50 000 запросов в сутки)
+        try{
+            $key = file_get_contents('key.txt');
+        }catch(\Exception){
+            $c = curl_init('https://developers.lingvolive.com/api/v1.1/authenticate');
+            curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($c,CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($c, CURLOPT_HTTPHEADER, ['Authorization:' . ' Basic ZjBlMDUxZjYtY2NiNS00OGIxLTg0MGQtYWEwN2EyNjY5NjkwOjQ2ZGNhYmYwODQ1ZDRmMzBhOTE3NTdlYjYyY2RiNDNi', 'Content-Length: 0']);
+
+            $key = curl_exec($c); //работает сутки
+            file_put_contents('key.txt', $key);
+
+            if ($key === FALSE) {
+                // Тут-то мы о ней и скажем
+                echo 'cURL Error: ' . curl_error($c);
+                return;
+            }
+
+            curl_close($c);
+        }
+
+        $text = 'caption';
+        $url = 'https://developers.lingvolive.com/api/v1/Minicard?text='.$text.'&srcLang=1033&dstLang=1049';
+        $c = curl_init($url);
+        curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($c,CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($c, CURLOPT_HTTPHEADER, ['Authorization:' . ' Bearer ' . $key, 'Content-Length: 0']);
+
+        $resp = curl_exec($c); //работает сутки
+
+        if ($resp === FALSE) {
+            // Тут-то мы о ней и скажем
+            echo 'cURL Error: ' . curl_error($c);
+            return;
+        }
+
+        curl_close($c);
+
+        $translateWors = json_decode($resp, 1)['Translation']['Translation'];
+
+        $result = collect(preg_split('#[;,]#', $translateWors))->filter()->map(function($item){
+            return mb_strtolower(trim($item));
+        })->unique();
+        dd($result);
+        //----------------------------------------------------------------------------
+
+
+
+
+//Код получения картинок (ограничение 50 запросов в час)
+        $key = '9pHpoV5wvVlvBtjUjJwuT1YVxFl2Z3_00cTqkUf5L_E';
+        $text = 'apple';
+
+        $data = json_decode(file_get_contents('https://api.unsplash.com/search/photos?query='. $text .'&client_id='. $key .'&per_page=1'), 1);
+
+        if(!empty($data['results']) && $data['results'][0]['urls']['small']){
+            $url = $data['results'][0]['urls']['small'];
+
+            preg_match('#fm=([a-z]+)&#', $url, $m);
+
+            if(isset($m[1])){
+                $ext = $m[1];
+                $imageData = file_get_contents($url);
+                file_put_contents('image_test.' . $ext, $imageData);
+            }
+        }
+
+        return response($imageData)->header('Content-type', 'image');
+        //----------------------------------------------------------------
+
+
+
+//Код получения аудио из текста (ограничение 350 запросов в день)
+
+        $key = '735c1a61f45f486aa48c2d47938436c3';
+        $content = 'near+far+wereve+you+are';
+        $content = str_replace(' ', '+', $content);
+        $country = 'en-gb';
+        $voice = 'Harry';
+        $format = 'mp3';
+
+        $query = 'http://api.voicerss.org/?key='. $key .'&hl='. $country .'&c='. $format .'&src=' . $content . '&v=' . $voice . '&r=-1&f=48khz_16bit_mono';
+        file_put_contents('6.mp3', file_get_contents($query));

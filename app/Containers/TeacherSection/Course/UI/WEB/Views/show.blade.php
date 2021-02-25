@@ -26,22 +26,22 @@
 
                             <div class="div-btns-control-section-course">
                                 <ul class="list-btns-control-section-course">
-                                    <li title="Редактировать">
+                                    <li title="Редактировать раздел">
                                         <a href="{{ route('web_teacher_sections_edit', 'asd') }}"  class="item-list-btns-control-section-course">
                                             <i class="fa fa-pencil" aria-hidden="true"></i>
                                         </a>
                                     </li>
-                                    <li title="Скрыть" >
+                                    <li title="Скрыть раздел" >
                                         <a href="#" class="item-list-btns-control-section-course">
                                             <i class="fa fa-eye" aria-hidden="true"></i>
                                         </a>
                                     </li>
-                                    <li title="Показать" style="display: none">
+                                    <li title="Показать раздел" style="display: none">
                                         <a href="#" class="item-list-btns-control-section-course">
                                             <i class="fa fa-eye-slash" aria-hidden="true"></i>
                                         </a>
                                     </li>
-                                    <li title="Удалить">
+                                    <li title="Удалить раздел">
                                         <a href="#" class="item-list-btns-control-section-course">
                                             <i class="fa fa-ban" aria-hidden="true"></i>
                                         </a>
@@ -448,14 +448,44 @@
                     <div class="right-div-block">
                         <h4>Общее</h4>
                         <p>
-                            <b>Видимость:</b>
-                            <p>
-                                <a href="#" class="item-list-btns-control-section-course">
-                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                </a>
-                            </p>
+                            <div class="div-btns-control-section-course">
+                            <ul class="list-btns-control-section-course">
+                                <li title="Редактировать курс">
+                                    <a href="{{ route('web_teacher_sections_edit', 'asd') }}"  class="item-list-btns-control-section-course">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                                <li title="Скрыть курс" >
+                                    <a href="#" class="item-list-btns-control-section-course">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                                <li title="Показать курс" style="display: none">
+                                    <a href="#" class="item-list-btns-control-section-course">
+                                        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                                <li title="Удалить курс">
+                                    <a href="#" class="item-list-btns-control-section-course">
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                         </p>
-                        <p><b>Последнее обновление:</b> <p>12.02.2021 12:23</p></p>
+                        <p>
+                            <a href="{{ route('web_teacher_groups_index') }}">
+                                Управление группами
+                            </a>
+                        </p>
+                        <p>
+                            <b>Дата добавления</b>
+                            <p>20.20.2020</p>
+                        </p>
+                        <p>
+                            <b>Дата изменения</b>
+                            <p>20.20.2020</p>
+                        </p>
                     </div>
                 </div>
             </div>

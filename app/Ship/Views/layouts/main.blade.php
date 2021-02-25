@@ -3,11 +3,14 @@
 <head>
     <title>{{ config('app.name') }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
     <link rel="stylesheet" type='text/css' href="{{ asset('bootstrap/css/bootstrap.css') }}">
     <link href="{{ asset('css/layout.css') }}" rel='stylesheet' type='text/css' />
     <link href="{{ asset('css/style.css') }}" rel='stylesheet' type='text/css' />
     <link href="{{ asset('css/css_slider.css') }}" type="text/css" rel="stylesheet" media="all">
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/breadcrumbs.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 <body class="body-background">
 
@@ -38,7 +41,7 @@
                     <a class='a-hover' href="{{ route('web_dictionary_index') }}">Словарь</a>
                 </li>
 
-                <li class="">
+                <li >
                     <a href="#stats">Язык</a>
                     <ul class="drpdown">
                         <li>
@@ -53,7 +56,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class=""><a href="#testi">Профиль</a></li>
+                <li><a href="#testi">Профиль</a></li>
             </ul>
         </nav>
     </div>

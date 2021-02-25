@@ -21,7 +21,7 @@
                         @include('teachersection/responseteacher::forms.edit')
                     </template>
 
-                    <template v-if="activeForm == 's'">
+                    <template v-if="activeForm == 'create'">
                         @include('teachersection/responseteacher::forms.create')
                     </template>
                 </div>

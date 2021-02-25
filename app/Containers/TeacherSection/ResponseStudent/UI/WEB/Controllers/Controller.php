@@ -29,8 +29,8 @@ class Controller extends WebController
      */
     public function show()
     {
-        return view('teachersection/responsestudent::show_testing');
-        //return view('teachersection/responsestudent::show_main');
+        //return view('teachersection/responsestudent::show_testing');
+        return view('teachersection/responsestudent::show_main');
     }
 
     /**
