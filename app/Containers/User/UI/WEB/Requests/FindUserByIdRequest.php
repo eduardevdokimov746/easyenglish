@@ -15,7 +15,7 @@ class FindUserByIdRequest extends Request
      *
      * @var string
      */
-    // protected $transporter = \App\Ship\Transporters\DataTransporter::class;
+    protected $transporter = \App\Containers\User\Data\Transporters\FindUserByIdTransporter::class;
 
     /**
      * Define which Roles and/or Permissions has access to this request.
@@ -23,7 +23,7 @@ class FindUserByIdRequest extends Request
      * @var  array
      */
     protected $access = [
-        'permissions' => 'update-post',
+        'permissions' => '',
         'roles'       => '',
     ];
 
@@ -43,7 +43,7 @@ class FindUserByIdRequest extends Request
      * @var  array
      */
     protected $urlParameters = [
-        'id',
+        // 'id',
     ];
 
     /**
@@ -52,7 +52,7 @@ class FindUserByIdRequest extends Request
     public function rules()
     {
         return [
-            'id' => 'required',
+            // 'id' => 'required',
             // '{user-input}' => 'required|max:255',
         ];
     }
@@ -60,10 +60,10 @@ class FindUserByIdRequest extends Request
     /**
      * @return  bool
      */
-//    public function authorize()
-//    {
-//        return $this->check([
-//            'update-post'
-//        ]);
-//    }
+    public function authorize()
+    {
+        return $this->check([
+            'hasAccess',
+        ]);
+    }
 }

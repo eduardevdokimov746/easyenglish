@@ -1,0 +1,6 @@
+{
+  "name": "apiato/auth",
+  "description": "Auth Container for apiato.",
+  "require": {
+  }
+}

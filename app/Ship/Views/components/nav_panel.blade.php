@@ -16,7 +16,7 @@
             </a>
         </li>
         <li>
-            <a class="item-list-filter" href="#">
+            <a class="item-list-filter" href="{{ route('web_teacher_materials_index') }}">
                 Материалы
             </a>
         </li>

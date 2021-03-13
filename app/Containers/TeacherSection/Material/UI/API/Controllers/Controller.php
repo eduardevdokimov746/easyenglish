@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Containers\Material\UI\API\Controllers;
+namespace App\Containers\TeacherSection\Material\UI\API\Controllers;
 
 use App\Containers\Material\UI\API\Requests\CreateMaterialRequest;
 use App\Containers\Material\UI\API\Requests\DeleteMaterialRequest;

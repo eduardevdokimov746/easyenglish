@@ -2,8 +2,6 @@
 
 namespace App\Containers\User\UI\WEB\Controllers;
 
-use App\Containers\User\Jobs\TestJob;
-use App\Containers\User\Models\User;
 use App\Containers\User\UI\WEB\Requests\CreateUserRequest;
 use App\Containers\User\UI\WEB\Requests\DeleteUserRequest;
 use App\Containers\User\UI\WEB\Requests\GetAllUsersRequest;
@@ -13,7 +11,6 @@ use App\Containers\User\UI\WEB\Requests\StoreUserRequest;
 use App\Containers\User\UI\WEB\Requests\EditUserRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
-
 
 /**
  * Class Controller
@@ -29,11 +26,9 @@ class Controller extends WebController
      */
     public function index(GetAllUsersRequest $request)
     {
-//        Apiato::call('User@GetAllUsersAction');
+        $users = Apiato::call('User@GetAllUsersAction', [$request]);
 
-        //$users = User::get()->toJson();
-
-        return view('user::index');
+        // ..
     }
 
     /**
@@ -41,14 +36,9 @@ class Controller extends WebController
      *
      * @param FindUserByIdRequest $request
      */
-    public function show(\Illuminate\Http\Request $request)
+    public function show()
     {
-//        $client = new Client("ws://127.0.0.1:5555");
-//        $client->text("Hello WebSocket.org!");
-//        $client->close();
-
-        dispatch(new TestJob($request->topic, $request->msg))->onQueue('messages');
-
+        return view('user::show');
     }
 
     /**
@@ -56,9 +46,9 @@ class Controller extends WebController
      *
      * @param CreateUserRequest $request
      */
-    public function create()
+    public function create(CreateUserRequest $request)
     {
-        return view('user::create');
+        // ..
     }
 
     /**
@@ -68,8 +58,9 @@ class Controller extends WebController
      */
     public function store(StoreUserRequest $request)
     {
-       // return $this->validate(request(), ['login' => 'required'])->get('login');
-        return $request->validated();
+        $user = Apiato::call('User@CreateUserAction', [$request]);
+
+        // ..
     }
 
     /**
@@ -79,9 +70,7 @@ class Controller extends WebController
      */
     public function edit(EditUserRequest $request)
     {
-        $user = Apiato::call('User@GetUserByIdAction', [$request]);
-
-        // ..
+        return view('user::edit');
     }
 
     /**

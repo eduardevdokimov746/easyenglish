@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Containers\Material\UI\WEB\Controllers;
+namespace App\Containers\TeacherSection\Material\UI\WEB\Controllers;
 
 use App\Containers\Material\UI\WEB\Requests\CreateMaterialRequest;
 use App\Containers\Material\UI\WEB\Requests\DeleteMaterialRequest;
@@ -24,11 +24,9 @@ class Controller extends WebController
      *
      * @param GetAllMaterialsRequest $request
      */
-    public function index(GetAllMaterialsRequest $request)
+    public function index()
     {
-        $materials = Apiato::call('Material@GetAllMaterialsAction', [$request]);
-
-        // ..
+        return view('teachersection/material::index');
     }
 
     /**
@@ -48,9 +46,9 @@ class Controller extends WebController
      *
      * @param CreateMaterialRequest $request
      */
-    public function create(CreateMaterialRequest $request)
+    public function create()
     {
-        // ..
+        return view('teachersection/material::create');
     }
 
     /**
@@ -70,11 +68,9 @@ class Controller extends WebController
      *
      * @param EditMaterialRequest $request
      */
-    public function edit(EditMaterialRequest $request)
+    public function edit()
     {
-        $material = Apiato::call('Material@GetMaterialByIdAction', [$request]);
-
-        // ..
+        return view('teachersection/material::edit');
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace App\Containers\User\Data\Repositories;
 
-use App\Containers\Post\Models\Post;
 use App\Ship\Parents\Repositories\Repository;
 
 /**
@@ -10,8 +9,13 @@ use App\Ship\Parents\Repositories\Repository;
  */
 class UserRepository extends Repository
 {
-    public function getAll()
-    {
-        return Post::paginate(4);
-    }
+
+    /**
+     * @var array
+     */
+    protected $fieldSearchable = [
+        'id' => '=',
+        // ...
+    ];
+
 }

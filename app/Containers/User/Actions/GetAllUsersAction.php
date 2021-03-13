@@ -8,10 +8,10 @@ use Apiato\Core\Foundation\Facades\Apiato;
 
 class GetAllUsersAction extends Action
 {
-    public function run()
+    public function run(Request $request)
     {
-        $users = Apiato::call('User@GetAllUsersTask');
+        $users = Apiato::call('User@GetAllUsersTask', [], ['addRequestCriteria']);
 
-       return $users;
+        return $users;
     }
 }

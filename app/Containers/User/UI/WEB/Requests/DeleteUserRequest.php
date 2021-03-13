@@ -15,7 +15,7 @@ class DeleteUserRequest extends Request
      *
      * @var string
      */
-    // protected $transporter = \App\Ship\Transporters\DataTransporter::class;
+    protected $transporter = \App\Containers\User\Data\Transporters\DeleteUserTransporter::class;
 
     /**
      * Define which Roles and/or Permissions has access to this request.

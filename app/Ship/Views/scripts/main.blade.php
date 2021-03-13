@@ -8,10 +8,8 @@
 <script src="{{ asset('ckeditor/adapters/jquery.js') }}"></script>
 <!-- main scripts -->
 <!-- scripts for app -->
-<script type="text/javascript" src="{{ asset('js/functions.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/main.js') }}"></script>
 <!-- scripts for app -->
-
 
 <script>
     var mixins = [];

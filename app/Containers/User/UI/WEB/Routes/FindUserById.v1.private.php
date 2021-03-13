@@ -1,4 +1,7 @@
 <?php
 
 /** @var Route $router */
-$router->get('users/{name}', 'Controller@show')->name('users.show');
+$router->get('users/{id}', [
+    'as' => 'web_user_show',
+    'uses'  => 'Controller@show',
+]);

@@ -22,5 +22,4 @@ $(document).ready(function() {
 
     $('body').css('min-height', $(window).height());
     $('.other_services').css('min-height', ($(window).height() - $('.copyright').height()));
-
 });

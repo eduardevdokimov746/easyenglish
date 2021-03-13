@@ -6,12 +6,8 @@ use App\Ship\Parents\Models\Model;
 
 class User extends Model
 {
-
-
     protected $fillable = [
-        'login',
-        'email',
-        'password'
+
     ];
 
     protected $attributes = [

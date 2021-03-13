@@ -1,0 +1,33 @@
+.c-pointer{
+    cursor: pointer;
+}
+
+.div-students-create-group{
+    border: 1px solid silver;
+    border-radius: 5px;
+}
+
+.header-students-create-group{
+    text-align: center;
+    padding: 10px;
+}
+
+.list-students-create-group{
+    list-style: none;
+    margin: 10px 0;
+    padding: 0
+}
+
+.item-list-students-create-group{
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.item-list-students-create-group:hover{
+    background: #447efe7a;
+    border-radius: 5px;
+}

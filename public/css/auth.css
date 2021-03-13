@@ -58,7 +58,7 @@ header {
 
 
 /* Giving a background-color to the nav container. */
-nav { 
+nav {
 	margin:0;
 	padding: 0;
 }
@@ -120,7 +120,7 @@ nav a {
 nav ul li ul li:hover { background: #f8f9fa; }
 
 /* Background color change on Hover */
-nav a:hover { 
+nav a:hover {
 	color: white;
 }
 
@@ -137,18 +137,18 @@ nav a:hover {
  * and giving it a position of absolute */
 nav ul ul {
 	display: none;
-	position: absolute; 
-	top: 30px; 
+	position: absolute;
+	top: 30px;
     background: #fff;
     padding: 10px;
     right: 10px;
 }
-	
+
 /* Display Dropdowns on Hover */
 nav ul li:hover > ul {
 	display:inherit;
 }
-	
+
 /* Fisrt Tier Dropdown */
 nav ul ul li {
 	width:170px;
@@ -164,7 +164,6 @@ nav ul ul li a {
 
 .form-div{
     width: 40%;
-    margin-left: 1.6%;
 }
 
 /* Media Queries
@@ -183,7 +182,7 @@ nav ul ul li a {
    .form-div{
         width: 100%;
         margin-top: 22%;
-    } 
+    }
 }
 
 @media all and (max-width : 330px) {
@@ -200,7 +199,7 @@ nav ul ul li a {
 }
 
 .banner {
-    background: url(../1.jpg)no-repeat center;
+    background: url(../images/1.jpg)no-repeat center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -224,6 +223,10 @@ nav ul ul li a {
     box-sizing: border-box;
 }
 
+.reg-padding{
+    padding: 9vw 0 0vw;
+}
+
 h3.b-txt span {
     color: #fff;
 }
@@ -245,7 +248,11 @@ h4.b-txt {
     text-align: center;
 }
 
-.form-style input, select {
+.form-style .div-input{
+    height: 82px;
+}
+
+.form-style input:not([type=checkbox]), select {
     outline: none;
     font-size: 14px;
     border: none;
@@ -255,8 +262,10 @@ h4.b-txt {
     padding: 14px 20px;
     width: 100%;
     box-sizing: border-box;
-    margin-bottom: 15px;
 }
+
+
+
 
 .form-style button.btn {
     color: #fff;
@@ -293,8 +302,8 @@ h4.b-txt {
 
 .eye-password{
     position: absolute;
-    right: 20px; 
-    top: 15px; 
+    right: 20px;
+    top: 15px;
     cursor: pointer;
 }
 
@@ -362,7 +371,7 @@ h4.b-txt {
 }
 
 .padding {
-    padding: 2.5em;
+    padding: 2em;
 	background: #fff;
 }
 .form-style span {

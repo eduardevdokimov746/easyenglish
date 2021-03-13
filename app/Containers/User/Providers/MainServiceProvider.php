@@ -2,12 +2,7 @@
 
 namespace App\Containers\User\Providers;
 
-use App\Containers\User\Extensions\Cat;
-use App\Containers\User\Extensions\Dog;
-use App\Containers\User\Interfaces\Animal;
-use App\Containers\User\Models\User;
 use App\Ship\Parents\Providers\MainProvider;
-use Illuminate\Support\Facades\Gate;
 
 /**
  * Class MainServiceProvider.
@@ -16,10 +11,6 @@ use Illuminate\Support\Facades\Gate;
  */
 class MainServiceProvider extends MainProvider
 {
-
-    public $singletons = [
-        Animal::class => Cat::class
-    ];
 
     /**
      * Container Service Providers.
@@ -36,16 +27,8 @@ class MainServiceProvider extends MainProvider
      * @var  array
      */
     public $aliases = [
-         'Animal' => \App\Containers\User\Facades\Animal::class,
+        // 'Foo' => Bar::class,
     ];
-
-    public function boot()
-    {
-        Gate::define('update-post', function (User $user) {
-            return false;
-        });
-
-    }
 
     /**
      * Register anything in the container.
@@ -54,7 +37,7 @@ class MainServiceProvider extends MainProvider
     {
         parent::register();
 
-
-
+        // $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        // ...
     }
 }

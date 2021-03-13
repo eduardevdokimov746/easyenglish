@@ -1323,6 +1323,24 @@
     padding: 5px;
     max-height: 300px;
     overflow: hidden;
+    position: relative;
+}
+
+#show-word-modal .head .image-block:hover > .btn-change-word-image{
+    visibility: visible;
+}
+
+.btn-change-word-image{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgb(0 0 0 / 60%);
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    margin: 0;
+    visibility: hidden;
 }
 
 #show-word-modal .body{
@@ -1644,6 +1662,11 @@
     cursor: pointer;
 }
 
+.untranslate-word{
+    background: #fd00438c;
+    cursor: pointer;
+}
+
 #text-body{
     white-space: pre-line;
 }
@@ -1844,6 +1867,36 @@
     color: #28c38a;
 }
 
+/*----------------------------------PREPOD SECTION-----------------------------*/
+
+.notice-autowrite-material{
+    width: 250px;
+    font-size: .8em;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid silver;
+    background: white;
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 200px;
+}
+
+.notice-autowrite-material > p{
+    line-height: normal;
+}
+
+#btn-notice-material{
+    cursor: pointer;
+}
+
+.btn-active-notice-material{
+    color: #3369e7;
+}
+/*----------------------------------PREPOD SECTION-----------------------------*/
+
+
+
 
 /*------------------------------------ТЕКСТЫ-----------------------------------*/
 
@@ -1869,6 +1922,86 @@
 }
 
 /*----------------------------------ФОРМЫ СТУДЕНТОВ---------------------------*/
+
+/*----------------------------------INDEX PAGE-------------------------------*/
+.index-body-div{
+    min-height: 100vh;
+    background-image: url(http://custom/images/23.jpg);
+    background-position: center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.index-header{
+    box-shadow: 0px 17px 34px -10px rgb(0 0 0 / 61%);
+}
+
+.index-content{
+    padding-top: 10%
+}
+
+.index-text{
+    text-align: center;
+    font-family: Roboto;
+    font-weight: 100;
+    text-shadow: -1px 0px 9px rgb(150 150 150 / 87%);
+    color: white
+}
+
+.index-btns-block{
+    display: flex;
+    justify-content: center
+}
+
+.index-btn{
+    margin-right: 20px;
+    display: block;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, .4);
+    border-radius: 5px;
+    color: white;
+    transition: .2s ease;
+}
+
+.index-btn:hover{
+    color: white;
+    background: rgba(0, 0, 0, .8);
+}
+
+.index-btn:last-child{
+    margin-right: 0;
+}
+
+/*----------------------------------INDEX PAGE-------------------------------*/
+
+/*----------------------------------PROFILE---------------------------------*/
+
+.block-content-profile{
+    padding: 15px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid silver;
+}
+
+.btn-change-info-profile{
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+    background: #3369e7;
+    padding: 3px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.btn-change-info-profile:hover{
+    background: #0044e2;
+    color: white;
+}
+
+/*----------------------------------PROFILE---------------------------------*/
+
 .no-width{
     width: auto;
 }

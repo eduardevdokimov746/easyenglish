@@ -85,12 +85,22 @@ trait RoutesLoaderTrait
      */
     private function loadWebRoute($file, $controllerNamespace)
     {
-        Route::group([
-            'namespace'  => $controllerNamespace,
-            'middleware' => ['web'],
-        ], function ($router) use ($file) {
-            require $file->getPathname();
-        });
+        if(str_contains($controllerNamespace, 'AdminSection')){
+            Route::group([
+                'namespace'  => $controllerNamespace,
+                'middleware' => ['web'],
+                'prefix' => 'admin'
+            ], function ($router) use ($file) {
+                require $file->getPathname();
+            });
+        }else{
+            Route::group([
+                'namespace'  => $controllerNamespace,
+                'middleware' => ['web']
+            ], function ($router) use ($file) {
+                require $file->getPathname();
+            });
+        }
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace App\Containers\User\UI\WEB\Requests;
 
 use App\Ship\Parents\Requests\Request;
-use Illuminate\Support\Facades\Lang;
 
 /**
  * Class StoreUserRequest.
@@ -16,7 +15,7 @@ class StoreUserRequest extends Request
      *
      * @var string
      */
-    // protected $transporter = \App\Ship\Transporters\DataTransporter::class;
+    protected $transporter = \App\Containers\User\Data\Transporters\CreateUserTransporter::class;
 
     /**
      * Define which Roles and/or Permissions has access to this request.
@@ -34,7 +33,7 @@ class StoreUserRequest extends Request
      * @var  array
      */
     protected $decode = [
-        //'login',
+        // 'id',
     ];
 
     /**
@@ -44,7 +43,7 @@ class StoreUserRequest extends Request
      * @var  array
      */
     protected $urlParameters = [
-
+        // 'id',
     ];
 
     /**
@@ -53,9 +52,8 @@ class StoreUserRequest extends Request
     public function rules()
     {
         return [
-            'login' => 'required|unique:users,login',
-            'email' => 'required|email',
-            'password' => 'min:3|confirmed'
+            // 'id' => 'required',
+            // '{user-input}' => 'required|max:255',
         ];
     }
 
@@ -64,6 +62,8 @@ class StoreUserRequest extends Request
      */
     public function authorize()
     {
-        return true;
+        return $this->check([
+            'hasAccess',
+        ]);
     }
 }
