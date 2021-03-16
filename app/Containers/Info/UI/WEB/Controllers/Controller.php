@@ -28,4 +28,12 @@ class Controller extends WebController
     {
         return view('info::faq');
     }
+
+    public function show($slug)
+    {
+        //страницу определяем по slug названия статьи
+
+
+        return view('info::show');
+    }
 }

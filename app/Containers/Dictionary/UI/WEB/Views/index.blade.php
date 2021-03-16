@@ -196,7 +196,12 @@
                     <div class="head">
                         <div class="image-block">
                             <img src="{{ asset('images/banner.jpg') }}" alt="">
+                            <label for="change-image-word" class="btn-change-word-image">
+                                Изменить фото
+                            </label>
+                            <input type="file" id="change-image-word" style="display: none">
                         </div>
+
                     </div>
                     <div class="mt-2 body">
                         <div class="content content-eng">
