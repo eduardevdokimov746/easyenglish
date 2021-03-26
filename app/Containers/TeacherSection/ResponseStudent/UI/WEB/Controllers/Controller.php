@@ -12,42 +12,22 @@ use Apiato\Core\Foundation\Facades\Apiato;
  */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllResponseStudentsRequest $request
-     */
     public function index()
     {
         return view('teachersection/responsestudent::index');
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindResponseStudentByIdRequest $request
-     */
     public function show()
     {
-        //return view('teachersection/responsestudent::show_testing');
+        return view('teachersection/responsestudent::show_testing');
         return view('teachersection/responsestudent::show_main');
     }
 
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateResponseStudentRequest $request
-     */
     public function create(CreateResponseStudentRequest $request)
     {
         // ..
     }
 
-    /**
-     * Add a new entity
-     *
-     * @param StoreResponseStudentRequest $request
-     */
     public function store(StoreResponseStudentRequest $request)
     {
         $responsestudent = Apiato::call('ResponseStudent@CreateResponseStudentAction', [$request]);
@@ -55,11 +35,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditResponseStudentRequest $request
-     */
     public function edit(EditResponseStudentRequest $request)
     {
         $responsestudent = Apiato::call('ResponseStudent@GetResponseStudentByIdAction', [$request]);
@@ -67,11 +42,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Update a given entity
-     *
-     * @param UpdateResponseStudentRequest $request
-     */
     public function update(UpdateResponseStudentRequest $request)
     {
         $responsestudent = Apiato::call('ResponseStudent@UpdateResponseStudentAction', [$request]);
@@ -79,11 +49,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteResponseStudentRequest $request
-     */
     public function delete(DeleteResponseStudentRequest $request)
     {
          $result = Apiato::call('ResponseStudent@DeleteResponseStudentAction', [$request]);
