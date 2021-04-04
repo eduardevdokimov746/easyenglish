@@ -16,7 +16,6 @@ use Symfony\Component\Finder\SplFileInfo;
  */
 trait RoutesLoaderTrait
 {
-
     /**
      * Register all the containers routes files in the framework
      */

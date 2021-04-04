@@ -4,18 +4,28 @@ namespace App\Containers\User\Actions;
 
 use App\Ship\Parents\Actions\Action;
 use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class CreateUserAction extends Action
 {
     public function run(Request $request)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
+        try{
+            $userData = $request->sanitizeInput([
+                'login',
+                'password',
+            ]);
 
-        $user = Apiato::call('User@CreateUserTask', [$data]);
+            $emailData = $request->sanitizeInput([
+                'email'
+            ]);
 
-        return $user;
+            $user = \Apiato::call('User@CreateUserTask', [$userData]);
+            $email = \Apiato::call('User@MakeEmailUserTask', [$emailData]);
+            $user = \Apiato::call('User@SetEmailUserTask', [$user, $email]);
+
+            return $user;
+        }catch(\Exception $e){
+            return null;
+        }
     }
 }

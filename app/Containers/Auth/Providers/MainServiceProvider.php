@@ -3,6 +3,8 @@
 namespace App\Containers\Auth\Providers;
 
 use App\Ship\Parents\Providers\MainProvider;
+use App\Containers\Auth\Guards\CustomGuard;
+use App\Containers\Auth\AuthProviders\CustomMysqlProvider;
 
 /**
  * Class MainServiceProvider.
@@ -11,14 +13,14 @@ use App\Ship\Parents\Providers\MainProvider;
  */
 class MainServiceProvider extends MainProvider
 {
-
     /**
      * Container Service Providers.
      *
      * @var array
      */
     public $serviceProviders = [
-        // InternalServiceProviderExample::class,
+        AuthServiceProvider::class,
+        EventServiceProvider::class
     ];
 
     /**
@@ -27,8 +29,13 @@ class MainServiceProvider extends MainProvider
      * @var  array
      */
     public $aliases = [
-        // 'Foo' => Bar::class,
+
     ];
+
+    public function boot()
+    {
+        parent::boot();
+    }
 
     /**
      * Register anything in the container.
@@ -36,8 +43,5 @@ class MainServiceProvider extends MainProvider
     public function register()
     {
         parent::register();
-
-        // $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-        // ...
     }
 }

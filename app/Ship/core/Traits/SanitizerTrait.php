@@ -30,6 +30,7 @@ trait SanitizerTrait
 
         $search = [];
         foreach ($fields as $field) {
+
             // create a multidimensional array based on $fields
             // which was submitted as DOT notation (e.g., data.name)
             Arr::set($search, $field, true);

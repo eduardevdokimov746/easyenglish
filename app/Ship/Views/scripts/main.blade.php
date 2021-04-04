@@ -4,8 +4,8 @@
 <script type="text/javascript" src="{{ asset('js/axios.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/vue.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/underscorejs.js') }}"></script>
-<script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
-<script src="{{ asset('ckeditor/adapters/jquery.js') }}"></script>
+<script type="text/javascript" src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+<script type="text/javascript" src="{{ asset('ckeditor/adapters/jquery.js') }}"></script>
 <!-- main scripts -->
 <!-- scripts for app -->
 <script type="text/javascript" src="{{ asset('js/main.js') }}"></script>

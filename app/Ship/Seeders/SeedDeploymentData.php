@@ -23,6 +23,11 @@ class SeedDeploymentData extends Seeder
 
         //\App\Containers\Post\Models\Post::factory()->count(10)->create();
         //\App\Containers\Comment\Models\Comment::factory()->count(20)->create();
+
+
+        $this->call([
+            \App\Containers\User\Data\Seeders\UserSeeder::class
+        ]);
     }
 
 }

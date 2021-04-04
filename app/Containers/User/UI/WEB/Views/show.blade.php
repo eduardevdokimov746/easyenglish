@@ -46,19 +46,19 @@
                     </div>
                 </div>
 
-                <div class="block-content-profile">
-                    <div>
-                        <h4>Электронная почта не подтверждена</h4>
+                @if(!session()->has('success-notice') && !auth()->user()->email->is_confirmation)
+                    <div class="block-content-profile">
+                        <div>
+                            <h4>Электронная почта не подтверждена</h4>
+                        </div>
+
+                        <h5 class="mt-3">На Вашу почту было отправленно письмо. Перейдите на почту для подтверждения адреса электройнной почты</h5>
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <a href="{{ route('web_send_dublicate_confirm_email_code') }}" class="btn btn-info">Отправить заново</a>
+                        </div>
                     </div>
-
-                    <h5 class="mt-3">На Вашу почту было отправленно письмо. Перейдите на почту для подтверждения адреса электройнной почты</h5>
-
-                    <div class="d-flex justify-content-end mt-3">
-                        <button class="btn btn-info">Отправить заново</button>
-                    </div>
-                </div>
-
-
+                @endif
 
                 <div class="block-content-profile">
                     <div>
@@ -78,10 +78,9 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-light">Выход</button>
+                    <a href="{{ route('web_logout') }}" class="btn btn-light">Выход</a>
                 </div>
             </div>
-
         </div>
     </div>
 @endsection

@@ -14,6 +14,8 @@
 </head>
 <body>
 
+@include('components.noscript')
+
 <div class="index-body-div">
     <header class="index-header">
         <div class="container">

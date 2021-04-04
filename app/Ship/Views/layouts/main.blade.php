@@ -14,6 +14,8 @@
 </head>
 <body class="body-background">
 
+@include('components.noscript')
+
 <header>
     <div class="container">
         <nav>
@@ -66,6 +68,10 @@
 
 <div style="min-height: 100vh">
     <div id="app" style="display: none" v-show="start">
+        <div class="container">
+            @include('components.notices')
+        </div>
+
         @yield('content')
     </div>
 </div>

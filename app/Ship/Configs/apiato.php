@@ -46,7 +46,7 @@ return [
         | API Prefix
         |--------------------------------------------------------------------------
         */
-        'enable_version_prefix'   => true,
+        'enable_version_prefix'   => false,
 
 
         /*

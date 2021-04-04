@@ -9,7 +9,7 @@
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
 </head>
 <body>
-
+@include('components.noscript')
 <header>
     <div class="container">
         <nav class="py-3 d-lg-flex">
@@ -92,6 +92,10 @@
         </div>
     </div>
 </div>
+
+@if(session()->has('notice-auth'))
+    @include('auth::components.modal_notice', ['msg' => session('notice-auth')])
+@endif
 
 @include('scripts.auth')
 

@@ -11,5 +11,5 @@ use Apiato\Core\Abstracts\Seeders\Seeder as AbstractSeeder;
  */
 abstract class Seeder extends AbstractSeeder
 {
-
+    public const LOAD_SHIP = 0;
 }

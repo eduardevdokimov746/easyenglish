@@ -80,8 +80,7 @@ class HttpKernel extends LaravelHttpKernel
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // 'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        // 'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'test' => \App\Containers\User\Middlewares\TestMiddleware::class
+        'guest' => \App\Ship\Middlewares\Http\RedirectIfAuthenticated::class,
     ];
 
     /**

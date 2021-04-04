@@ -12,7 +12,6 @@ use File;
  */
 trait LocalizationLoaderTrait
 {
-
     /**
      * @param $containerName
      */
@@ -29,7 +28,8 @@ trait LocalizationLoaderTrait
      */
     public function loadLocalsFromShip()
     {
-        // ..
+        $shipPathLocale = config('localization.ship_locale_path');
+        $this->loadLocals($shipPathLocale, 'ship');
     }
 
     /**
@@ -39,10 +39,7 @@ trait LocalizationLoaderTrait
     private function loadLocals($directory, $containerName)
     {
         if (File::isDirectory($directory)) {
-
             $this->loadTranslationsFrom($directory, strtolower($containerName));
-
         }
     }
-
 }

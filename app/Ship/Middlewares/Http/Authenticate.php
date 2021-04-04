@@ -6,11 +6,6 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate as LaravelAuthenticate;
 
-/**
- * Class Authenticate
- *
- * @author  Mahmoud Zalt  <mahmoud@zalt.me>
- */
 class Authenticate extends LaravelAuthenticate
 {
     public function authenticate($request, array $guards)
@@ -19,7 +14,14 @@ class Authenticate extends LaravelAuthenticate
             return parent::authenticate($request, $guards);
         }
         catch (Exception $exception) {
-            throw new AuthenticationException();
+            throw new AuthenticationException('Unauthenticated.', $guards, $this->redirectTo($request));
+        }
+    }
+
+    protected function redirectTo($request)
+    {
+        if (! $request->expectsJson()) {
+            return route('web_show_login_form');
         }
     }
 }

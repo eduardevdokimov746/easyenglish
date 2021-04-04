@@ -35,6 +35,11 @@ return [
     */
 
     'channels' => [
+        'register_users' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/register_users.log'),
+            'level' => 'info'
+        ],
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

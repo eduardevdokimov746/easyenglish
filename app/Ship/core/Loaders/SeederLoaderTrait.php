@@ -43,13 +43,12 @@ trait SeederLoaderTrait
         $containersDirectories = [];
 
         foreach (Apiato::getContainersNames() as $containerName) {
-
             $containersDirectories[] = base_path('app/Containers/' . $containerName . $this->seedersPath);
-
         }
 
         $seedersClasses = $this->findSeedersClasses($containersDirectories, $seedersClasses);
-        $orderedSeederClasses = $this->sortSeeders($seedersClasses);
+        $filterSeedersClasses = $this->filterSeeders($seedersClasses);
+        $orderedSeederClasses = $this->sortSeeders($filterSeedersClasses);
 
         $this->loadSeeders($orderedSeederClasses);
     }
@@ -104,6 +103,13 @@ trait SeederLoaderTrait
         }
 
         return $seedersClasses;
+    }
+
+    private function filterSeeders($seedersClasses)
+    {
+        return $seedersClasses->filter(function($item){
+            return $item::LOAD_SHIP == 0;
+        });
     }
 
     /**

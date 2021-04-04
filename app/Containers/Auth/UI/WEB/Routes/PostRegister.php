@@ -4,4 +4,5 @@
 $router->post('register', [
     'as' => 'web_register',
     'uses'  => 'RegisterController@register',
+    'middleware' => 'guest'
 ]);

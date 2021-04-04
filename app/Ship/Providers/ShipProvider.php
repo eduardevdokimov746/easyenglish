@@ -23,8 +23,9 @@ class ShipProvider extends MainProvider
      *
      * @var  array
      */
-    protected $aliases = [];
-
+    protected $aliases = [
+        'ShipLocalization' => \App\Ship\Facades\ShipLocalizationFacade::class
+    ];
 
     public function __construct()
     {

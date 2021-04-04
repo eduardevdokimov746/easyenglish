@@ -21,7 +21,6 @@ class Controller extends WebController
 {
     public function index()
     {
-
         return view('index::index');
     }
 }

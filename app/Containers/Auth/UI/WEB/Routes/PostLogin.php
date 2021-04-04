@@ -4,4 +4,5 @@
 $router->post('login', [
     'as' => 'web_login',
     'uses'  => 'LoginController@login',
+    'middleware' => 'guest'
 ]);

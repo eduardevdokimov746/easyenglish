@@ -3,9 +3,15 @@
 namespace App\Containers\User\Models;
 
 use App\Ship\Parents\Models\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserInfo extends Model
 {
+    use HasFactory;
+
+    protected $table = 'users_info';
+    public $timestamps = false;
+
     protected $fillable = [
 
     ];
@@ -22,13 +28,13 @@ class UserInfo extends Model
 
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id', 'users');
+    }
 
-    /**
-     * A resource key to be used by the the JSON API Serializer responses.
-     */
-    protected $resourceKey = 'userinfos';
+    protected static function newFactory()
+    {
+        return \App\Containers\User\Data\Factories\UserInfoFactory::new();
+    }
 }
