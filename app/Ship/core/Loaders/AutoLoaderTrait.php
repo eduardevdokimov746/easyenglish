@@ -42,6 +42,7 @@ trait AutoLoaderTrait
             $this->loadViewsFromContainers($containerName);
         }
 
+
         $this->loadFactoriesFromContainers();
     }
 

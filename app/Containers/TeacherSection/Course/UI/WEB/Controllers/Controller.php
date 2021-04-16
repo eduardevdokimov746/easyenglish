@@ -2,81 +2,114 @@
 
 namespace App\Containers\TeacherSection\Course\UI\WEB\Controllers;
 
-use App\Containers\Course\UI\WEB\Requests\CreateCourseRequest;
-use App\Containers\Course\UI\WEB\Requests\DeleteCourseRequest;
-use App\Containers\Course\UI\WEB\Requests\GetAllCoursesRequest;
-use App\Containers\Course\UI\WEB\Requests\FindCourseByIdRequest;
-use App\Containers\Course\UI\WEB\Requests\UpdateCourseRequest;
-use App\Containers\Course\UI\WEB\Requests\StoreCourseRequest;
-use App\Containers\Course\UI\WEB\Requests\EditCourseRequest;
+use App\Containers\TeacherSection\Course\UI\WEB\Requests\StoreCourseRequest;
+use App\Containers\TeacherSection\Section\UI\WEB\Requests\StoreSectionRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
-use App\Ship\Parents\Exceptions\Exception;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Teacher\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllTeachersRequest $request
-     */
     public function index()
     {
-        return view('teachersection/course::index');
+        return 'asd';
+
+        if ($this->isNotTeacher()) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $breadcrumb = new \App\Ship\Services\Breadcrumbs\CourseList();
+
+        return view('teachersection/course::index', compact('breadcrumb'));
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindTeacherByIdRequest $request
-     */
     public function show()
     {
-        return view('teachersection/course::show');
+        if ($this->isNotTeacher()) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $title = 'Основы организации хозяйственной деятельности + КР';
+        $url = route('web_teacher_courses_show', 'asd');
+
+        $breadcrumb = new \App\Ship\Services\Breadcrumbs\CourseSingle(compact('title', 'url'));
+
+        return view('teachersection/course::show', compact('breadcrumb'));
     }
 
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateTeacherRequest $request
-     */
     public function create()
     {
-        return view('teachersection/course::create');
+        if ($this->isNotTeacher()) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $icons = json_encode(\FileStorage::getIcons());
+
+        return view('teachersection/course::create', compact('icons'));
     }
 
-    /**
-     * Add a new entity
-     *
-     * @param StoreTeacherRequest $request
-     */
-    public function store(StoreTeacherRequest $request)
+    public function store(StoreCourseRequest $request)
     {
-        $teacher = Apiato::call('Teacher@CreateTeacherAction', [$request]);
+        if ($this->isNotTeacher()) {
+            return abort(403, __('ship::http_errors.403'));
+        }
 
-        // ..
+        if ($request->filled('sections')) {
+            $sectionsData = json_decode($request->get('sections'), 1);
+
+            foreach ($sectionsData as $section) {
+                if (empty($section['title'])) {
+                    return json_encode(['status' => 'error']);
+                }
+
+                if (!empty($section['links'])) {
+                    foreach ($section['links'] as $link) {
+                        if (empty($link['url'])) {
+                            return json_encode(['status' => 'error']);
+                        }
+                    }
+                }
+            }
+        }
+
+        $course = Apiato::call('TeacherSection\Course@CreateCourseAction', [$request]);
+
+        if ($course === false) {
+            return back()->withErrors([__('ship::validation.error-server')]);
+        }
+
+        if ($request->filled('sections')) {
+            $sectionsData = json_decode($request->get('sections'), 1);
+
+            foreach ($sectionsData as $sectionIndex => $section) {
+
+                $data = collect($section)->only(['title', 'description', 'is_visible'])->toArray();
+                $sectionModel = Apiato::call('TeacherSection\Section@CreateSectionAction', [$course->id, $data]);
+
+                $fileKey = 'file.section_' . $sectionIndex . '_';
+
+                collect($_FILES)->keys()->filter(function ($item) use ($fileKey) {
+                    return preg_match('#'.$fileKey.'#', $item);
+                })->each(function ($item) use ($sectionModel) {
+                    Apiato::call('TeacherSection\Section@CreateFileAction', [$sectionModel->id, $_FILES[$item]]);
+                });
+
+
+                if ($sectionModel !== false && !empty($section['links'])) {
+                    foreach ($section['links'] as $link) {
+                        Apiato::call('TeacherSection\Section@CreateLinkAction', [$sectionModel->id, $link]);
+                    }
+                }
+            }
+        }
+
+        return json_encode(['status' => 'success']);
     }
 
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditTeacherRequest $request
-     */
     public function edit()
     {
         return view('teachersection/course::edit');
     }
 
-    /**
-     * Update a given entity
-     *
-     * @param UpdateTeacherRequest $request
-     */
     public function update(UpdateTeacherRequest $request)
     {
         $teacher = Apiato::call('Teacher@UpdateTeacherAction', [$request]);
@@ -84,11 +117,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteTeacherRequest $request
-     */
     public function delete(DeleteTeacherRequest $request)
     {
         $result = Apiato::call('Teacher@DeleteTeacherAction', [$request]);

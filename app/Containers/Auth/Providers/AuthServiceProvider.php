@@ -2,18 +2,13 @@
 
 namespace App\Containers\Auth\Providers;
 
+use App\Containers\User\Models\User;
 use App\Ship\Parents\Providers\AuthProvider;
 use App\Containers\Auth\Guards\CustomGuard;
 use App\Containers\Auth\AuthProviders\CustomMysqlProvider;
 
-/**
- * Class MainServiceProvider.
- *
- * The Main Service Provider of this container, it will be automatically registered in the framework.
- */
 class AuthServiceProvider extends AuthProvider
 {
-
     public function boot()
     {
         parent::boot();
@@ -25,11 +20,20 @@ class AuthServiceProvider extends AuthProvider
         \Auth::provider('custom_provider', function ($app, array $config) {
             return new CustomMysqlProvider;
         });
+
+        \Gate::define('my-account', function(User $auth, User $user){
+            return $auth->id === $user->id;
+        });
+
+        \Gate::define('teacher', function(User $auth){
+            return $auth->role === 'teacher';
+        });
+
+        \Gate::define('student', function(User $auth){
+            return $auth->role === 'student';
+        });
     }
 
-    /**
-     * Register anything in the container.
-     */
     public function register()
     {
         parent::register();

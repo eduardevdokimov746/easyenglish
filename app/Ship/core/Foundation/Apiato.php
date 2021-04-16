@@ -293,7 +293,7 @@ class Apiato
      */
     public function verifyContainerExist($containerName)
     {
-        if (!is_dir(app_path('Containers/' . $containerName))) {
+        if (!is_dir(app_path('Containers/' . str_replace('\\', '/', $containerName)))) {
             throw new MissingContainerException("Container ($containerName) is not installed.");
         }
     }

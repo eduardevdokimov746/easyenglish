@@ -30,4 +30,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'vkontakte' => [
+        'client_id' => env('VKONTAKTE_KEY'),
+        'client_secret' => env('VKONTAKTE_SECRET'),
+        'redirect' => env('VKONTAKTE_REDIRECT_URI')
+    ],
+    'mailru' => [
+        'client_id' => env('MAILRU_KEY'),
+        'client_secret' => env('MAILRU_SECRET'),
+        'redirect' => env('MAILRU_REDIRECT_URI')
+    ],
 ];

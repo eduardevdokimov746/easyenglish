@@ -15,9 +15,6 @@ class CreateUsersInfoTables extends Migration
             $table->string('city')->nullable();
             $table->string('country')->nullable();
             $table->string('number_phone')->nullable();
-            $table->tinyInteger('is_first_login')->default(1);
-            $table->dateTime('datetime_first_login')->nullable();
-            $table->dateTime('datetime_last_login')->nullable();
             $table->text('description')->nullable();
 
             $table->foreign('user_id')

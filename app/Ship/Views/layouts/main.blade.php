@@ -3,7 +3,7 @@
 <head>
     <title>{{ config('app.name') }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" type='text/css' href="{{ asset('bootstrap/css/bootstrap.css') }}">
     <link href="{{ asset('css/layout.css') }}" rel='stylesheet' type='text/css' />
     <link href="{{ asset('css/style.css') }}" rel='stylesheet' type='text/css' />
@@ -27,20 +27,34 @@
                 </h1>
             </div>
             <ul class="menu ml-auto mt-1">
-                <li>
-                    <a class='a-hover' href="{{ route('web_teacher_courses_index') }}">Преподавателю</a>
+                @can('teacher')
+                    <li class="{{ $active_element_main_menu == 'prepod' ? 'active-nav' : '' }}">
+                        <a
+                            class='a-hover {{ $active_element_main_menu == 'prepod' ? 'a-active' : '' }}'
+                            href="{{ route('web_teacher_courses_index') }}">Преподавателю</a>
+                    </li>
+                @endcan
+                @can('student')
+                <li class="{{ $active_element_main_menu == 'course' ? 'active-nav' : '' }}">
+                    <a
+                        class='a-hover {{ $active_element_main_menu == 'course' ? 'a-active' : '' }}'
+                        href="{{ route('web_student_courses_index') }}">Курсы</a>
                 </li>
-                <li>
-                    <a class='a-hover' href="{{ route('web_student_courses_index') }}">Курсы</a>
+                @endcan
+                <li class="{{ $active_element_main_menu == 'material' ? 'active-nav' : '' }}">
+                    <a
+                        class='a-hover {{ $active_element_main_menu == 'material' ? 'a-active' : '' }}'
+                        href="{{ route('web_material_index') }}">Материалы</a>
                 </li>
-                <li class='active-nav'>
-                    <a class='a-hover a-active' href="{{ route('web_material_index') }}">Материалы</a>
+                <li class="{{ $active_element_main_menu == 'practice' ? 'active-nav' : '' }}">
+                    <a
+                        class="a-hover {{ $active_element_main_menu == 'practice' ? 'a-active' : '' }}"
+                        href="{{ route('web_practice_index') }}">Упражнения</a>
                 </li>
-                <li>
-                    <a class="a-hover" href="{{ route('web_practice_index') }}">Упражнения</a>
-                </li>
-                <li>
-                    <a class='a-hover' href="{{ route('web_dictionary_index') }}">Словарь</a>
+                <li class="{{ $active_element_main_menu == 'dictionary' ? 'active-nav' : '' }}">
+                    <a
+                        class='a-hover {{ $active_element_main_menu == 'dictionary' ? 'a-active' : '' }}'
+                        href="{{ route('web_dictionary_index') }}">Словарь</a>
                 </li>
 
                 <li >
@@ -58,8 +72,11 @@
                         </li>
                     </ul>
                 </li>
-                <li>
-                    <a class="a-hover" href="{{ route('web_user_show', 'asd') }}">Профиль</a>
+
+                <li {{ $active_element_main_menu == 'profile' ? 'active-nav' : '' }}>
+                    <a
+                        class="a-hover {{ $active_element_main_menu == 'profile' ? 'a-active' : '' }}"
+                        href="{{ route('web_user_show', auth()->user()->login) }}">Профиль</a>
                 </li>
             </ul>
         </nav>

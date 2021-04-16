@@ -2,68 +2,78 @@
 
 namespace App\Containers\User\UI\WEB\Requests;
 
+use App\Containers\User\Models\Email;
+use App\Containers\User\Models\User;
 use App\Ship\Parents\Requests\Request;
 
-/**
- * Class UpdateUserRequest.
- */
 class UpdateUserRequest extends Request
 {
-
-    /**
-     * The assigned Transporter for this Request
-     *
-     * @var string
-     */
-    protected $transporter = \App\Containers\User\Data\Transporters\UpdateUserTransporter::class;
-
-    /**
-     * Define which Roles and/or Permissions has access to this request.
-     *
-     * @var  array
-     */
-    protected $access = [
-        'permissions' => '',
-        'roles'       => '',
-    ];
-
-    /**
-     * Id's that needs decoding before applying the validation rules.
-     *
-     * @var  array
-     */
-    protected $decode = [
-        // 'id',
-    ];
-
-    /**
-     * Defining the URL parameters (e.g, `/user/{id}`) allows applying
-     * validation rules on them and allows accessing them like request data.
-     *
-     * @var  array
-     */
-    protected $urlParameters = [
-        // 'id',
-    ];
-
-    /**
-     * @return  array
-     */
     public function rules()
     {
         return [
-            // 'id' => 'required',
-            // '{user-input}' => 'required|max:255',
+            'users.login' => [
+                'required',
+                function($attribute, $value, $fail) {
+                    if (\Auth::user()->login != $value) {
+                        if (!is_null(User::where('login', $value)->first())) {
+                            $fail(__('auth::validation.register-login-already-exist'));
+                        }
+                    }
+                },
+                'min:3'
+            ],
+            'email_users.email' => [
+                'required',
+                'email',
+                function($attribute, $value, $fail) {
+                    if (\Auth::user()->email->email != $value) {
+                        if (!is_null(Email::where('email', $value)->first())) {
+                            $fail(__('auth::validation.register-email-already-exist'));
+                        }
+                    }
+                },
+            ],
+            'password' =>  [
+                'nullable',
+                'min:6',
+                function ($attribute, $value, $fail) {
+                    $testString = str_split($value);
+
+                    foreach ($testString  as $currentChar) {
+                        if (!is_numeric($currentChar) && $currentChar === strtoupper($currentChar)) {
+                            return;
+                        }
+                    }
+                    $fail(__('auth::validation.register-password-not-valid'));
+                },
+                function ($attribute, $value, $fail) {
+                    $testString = str_split($value);
+
+                    foreach ($testString  as $currentChar) {
+                        if (is_numeric($currentChar)) {
+                            return;
+                        }
+                    }
+                    $fail(__('auth::validation.register-password-not-valid'));
+                },
+                'confirmed'
+            ],
+            'avatar' => 'mimes:jpeg,jpg,png'
         ];
     }
 
-    /**
-     * @return  bool
-     */
+    public function messages()
+    {
+        return \ShipLocalization::getShipValidation();
+    }
+
+    public function attributes()
+    {
+        return \ShipLocalization::includeFile('attributes');
+    }
+
     public function authorize()
     {
-        return $this->check([
-            'hasAccess',
-        ]);
+        return true;
     }
 }

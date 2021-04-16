@@ -22,6 +22,7 @@ class CustomGuard implements StatefulGuard
     protected function init()
     {
         if ($user = $this->provider->getUserFromSession()) {
+            $this->isRemember = $this->provider->hasRememberToken();
             $this->setUser($user);
         } elseif ($user = $this->getUserByToken()) {
             $this->provider->putSession($user);
@@ -163,5 +164,10 @@ class CustomGuard implements StatefulGuard
         if ($this->auth) {
             $this->provider->updateDataUser($this->user);
         }
+    }
+
+    public function checkPassword(string $password): bool
+    {
+        return \Hash::check($password, $this->user->password);
     }
 }

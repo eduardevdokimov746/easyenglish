@@ -28,14 +28,18 @@
                     </h1>
                 </div>
                 <ul class="menu ml-auto mt-1">
+                    @can('teacher')
+                        <li>
+                            <a class='a-hover' href="{{ route('web_teacher_courses_index') }}">Преподавателю</a>
+                        </li>
+                    @endcan
+                    @can('student')
+                        <li>
+                            <a class='a-hover' href="{{ route('web_student_courses_index') }}">Курсы</a>
+                        </li>
+                    @endcan
                     <li>
-                        <a class='a-hover' href="{{ route('web_teacher_courses_index') }}">Преподавателю</a>
-                    </li>
-                    <li>
-                        <a class='a-hover' href="{{ route('web_student_courses_index') }}">Курсы</a>
-                    </li>
-                    <li class='active-nav'>
-                        <a class='a-hover a-active' href="{{ route('web_material_index') }}">Материалы</a>
+                        <a class='a-hover' href="{{ route('web_material_index') }}">Материалы</a>
                     </li>
                     <li>
                         <a class="a-hover" href="{{ route('web_practice_index') }}">Упражнения</a>
@@ -43,8 +47,7 @@
                     <li>
                         <a class='a-hover' href="{{ route('web_dictionary_index') }}">Словарь</a>
                     </li>
-
-                    <li >
+                    <li>
                         <a href="#stats">Язык</a>
                         <ul class="drpdown">
                             <li>
@@ -60,7 +63,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a class="a-hover" href="{{ route('web_user_show', 'asd') }}">Профиль</a>
+                        <a class="a-hover" href="{{ route('web_user_show', auth()->user()->login) }}">Профиль</a>
                     </li>
                 </ul>
             </nav>

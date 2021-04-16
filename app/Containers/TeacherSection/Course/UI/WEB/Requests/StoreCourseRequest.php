@@ -1,69 +1,25 @@
 <?php
 
-namespace App\Containers\Course\UI\WEB\Requests;
+namespace App\Containers\TeacherSection\Course\UI\WEB\Requests;
 
 use App\Ship\Parents\Requests\Request;
 
-/**
- * Class StoreCourseRequest.
- */
 class StoreCourseRequest extends Request
 {
-
-    /**
-     * The assigned Transporter for this Request
-     *
-     * @var string
-     */
-    protected $transporter = \App\Containers\Course\Data\Transporters\CreateCourseTransporter::class;
-
-    /**
-     * Define which Roles and/or Permissions has access to this request.
-     *
-     * @var  array
-     */
-    protected $access = [
-        'permissions' => '',
-        'roles'       => '',
-    ];
-
-    /**
-     * Id's that needs decoding before applying the validation rules.
-     *
-     * @var  array
-     */
-    protected $decode = [
-        // 'id',
-    ];
-
-    /**
-     * Defining the URL parameters (e.g, `/user/{id}`) allows applying
-     * validation rules on them and allows accessing them like request data.
-     *
-     * @var  array
-     */
-    protected $urlParameters = [
-        // 'id',
-    ];
-
-    /**
-     * @return  array
-     */
     public function rules()
     {
         return [
-            // 'id' => 'required',
-            // '{user-input}' => 'required|max:255',
+            'title' => 'required'
         ];
     }
 
-    /**
-     * @return  bool
-     */
-    public function authorize()
+    public function messages()
     {
-        return $this->check([
-            'hasAccess',
-        ]);
+        return \ShipLocalization::getShipValidation();
+    }
+
+    public function attributes()
+    {
+        return \ShipLocalization::includeFile('attributes');
     }
 }

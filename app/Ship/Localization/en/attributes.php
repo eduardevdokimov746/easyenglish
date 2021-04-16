@@ -5,5 +5,6 @@ return [
     'email' => 'email',
     'password' => 'password',
     'forgot-code' => 'recovery code',
-    'code' => 'code'
+    'code' => 'code',
+    'title' => 'title'
 ];

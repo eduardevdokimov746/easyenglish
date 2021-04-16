@@ -1,75 +1,47 @@
 <?php
 
-namespace App\Containers\Course\UI\API\Controllers;
+namespace App\Containers\TeacherSection\Course\UI\API\Controllers;
 
-use App\Containers\Course\UI\API\Requests\CreateCourseRequest;
-use App\Containers\Course\UI\API\Requests\DeleteCourseRequest;
-use App\Containers\Course\UI\API\Requests\GetAllCoursesRequest;
-use App\Containers\Course\UI\API\Requests\FindCourseByIdRequest;
-use App\Containers\Course\UI\API\Requests\UpdateCourseRequest;
-use App\Containers\Course\UI\API\Transformers\CourseTransformer;
 use App\Ship\Parents\Controllers\ApiController;
-use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Course\UI\API\Controllers
- */
 class Controller extends ApiController
 {
-    /**
-     * @param CreateCourseRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function createCourse(CreateCourseRequest $request)
+    public function uploadFile()
     {
-        $course = Apiato::call('Course@CreateCourseAction', [$request]);
+        if (!empty($_FILES) && !empty($_FILES['file'])) {
+            $ext = \FileStorage::getExtension($_FILES['file']['name']);
 
-        return $this->created($this->transform($course, CourseTransformer::class));
+            $icon = \FileStorage::getIconExtension($ext);
+
+            $tmp = \FileStorage::add($_FILES['file']['tmp_name'], $ext);
+
+            $fileSize = \FileStorage::getSize($_FILES['file']['size']);
+            
+            if ($tmp) {
+                return $this->json([
+                    'icon' => $icon,
+                    'name' => $_FILES['file']['name'],
+                    'size' => $fileSize,
+                    'tmp' => $tmp
+                ]);
+            }
+        }
+
+        return abort(500);
     }
 
-    /**
-     * @param FindCourseByIdRequest $request
-     * @return array
-     */
-    public function findCourseById(FindCourseByIdRequest $request)
+    public function deleteFile()
     {
-        $course = Apiato::call('Course@FindCourseByIdAction', [$request]);
+        $filePath = request()->get('file', null);
 
-        return $this->transform($course, CourseTransformer::class);
-    }
+        if (!is_null($filePath) && \FileStorage::has($filePath)) {
+            if (\FileStorage::delete($filePath)) {
+                return $this->json([
+                    'status' => 'success'
+                ]);
+            }
+        }
 
-    /**
-     * @param GetAllCoursesRequest $request
-     * @return array
-     */
-    public function getAllCourses(GetAllCoursesRequest $request)
-    {
-        $courses = Apiato::call('Course@GetAllCoursesAction', [$request]);
-
-        return $this->transform($courses, CourseTransformer::class);
-    }
-
-    /**
-     * @param UpdateCourseRequest $request
-     * @return array
-     */
-    public function updateCourse(UpdateCourseRequest $request)
-    {
-        $course = Apiato::call('Course@UpdateCourseAction', [$request]);
-
-        return $this->transform($course, CourseTransformer::class);
-    }
-
-    /**
-     * @param DeleteCourseRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function deleteCourse(DeleteCourseRequest $request)
-    {
-        Apiato::call('Course@DeleteCourseAction', [$request]);
-
-        return $this->noContent();
+        return abort(500);
     }
 }

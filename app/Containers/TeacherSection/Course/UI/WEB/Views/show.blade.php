@@ -8,7 +8,6 @@
                     Основы организации хозяйственной деятельности + КР
                     <p class="btn-change-title-course" title="Редактировать заголовок"><i class="fa fa-pencil" aria-hidden="true"></i></p>
                 </h1>
-
                 <div class="input-group mb-3" style="display: none">
                     <input type="text" value="Основы организации хозяйственной деятельности + КР" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
                     <div class="input-group-append">
@@ -17,6 +16,8 @@
                     </div>
                 </div>
             </div>
+
+            @include('components.breadcrumbs', [$breadcrumb])
 
             <div class="row">
                 <div class="col">

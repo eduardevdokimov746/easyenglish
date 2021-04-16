@@ -24,8 +24,6 @@ class RegisterController extends WebController
 
         \Auth::login($user, false);
 
-        event(new UserRegisteredEvent($user));
-
         $this->registered($user);
 
         return $request->wantsJson()
@@ -45,5 +43,11 @@ class RegisterController extends WebController
             'login' => $user->login,
             'email' => $user->email->email,
         ]);
+
+        if (\SocialAuthSession::hasSession()) {
+            \SocialAuthSession::deleteUser();
+        } else {
+            event(new UserRegisteredEvent($user));
+        }
     }
 }

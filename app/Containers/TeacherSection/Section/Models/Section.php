@@ -1,13 +1,18 @@
 <?php
 
-namespace App\Containers\Section\Models;
+namespace App\Containers\TeacherSection\Section\Models;
 
 use App\Ship\Parents\Models\Model;
 
 class Section extends Model
 {
-    protected $fillable = [
+    protected $table = 'sections';
 
+    protected $fillable = [
+        'course_id',
+        'title',
+        'description',
+        'is_visible'
     ];
 
     protected $attributes = [
@@ -25,10 +30,16 @@ class Section extends Model
     protected $dates = [
         'created_at',
         'updated_at',
+        'deleted_at'
     ];
 
-    /**
-     * A resource key to be used by the the JSON API Serializer responses.
-     */
-    protected $resourceKey = 'sections';
+    public function links()
+    {
+        return $this->hasMany(Link::class, 'section_id', 'id');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'section_id', 'id');
+    }
 }

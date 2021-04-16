@@ -24,7 +24,10 @@ class ShipProvider extends MainProvider
      * @var  array
      */
     protected $aliases = [
-        'ShipLocalization' => \App\Ship\Facades\ShipLocalizationFacade::class
+        'ShipLocalization' => \App\Ship\Facades\ShipLocalizationFacade::class,
+        'PhotoStorage' => \App\Ship\Facades\PhotoStorageFacade::class,
+        'Breadcrumbs' => \App\Ship\Facades\BreadcrumbsFacade::class,
+        'FileStorage' => \App\Ship\Facades\FileStorageFacade::class
     ];
 
     public function __construct()
@@ -49,6 +52,32 @@ class ShipProvider extends MainProvider
         // ...
         parent::boot();
         // ...
+
+        \View::composer('teachersection/*::*', function ($view) {
+            $view->with(['active_element_main_menu' => 'prepod']);
+        });
+
+        \View::composer('studentsection/*::*', function ($view) {
+            $view->with(['active_element_main_menu' => 'course']);
+        });
+
+        \View::composer('material::*', function ($view) {
+            $view->with(['active_element_main_menu' => 'material']);
+        });
+
+        \View::composer('practice::*', function ($view) {
+            $view->with(['active_element_main_menu' => 'practice']);
+        });
+
+        \View::composer('user::*', function ($view) {
+            $view->with(['active_element_main_menu' => 'profile']);
+        });
+
+        \View::composer('dictionary::*', function ($view) {
+            $view->with(['active_element_main_menu' => 'dictionary']);
+        });
+
+        \View::share('active_element_main_menu', '');
     }
 
     /**

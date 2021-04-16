@@ -4,7 +4,5 @@
 $router->post('dictionary/store', [
     'as' => 'web_dictionary_store',
     'uses'  => 'Controller@store',
-    'middleware' => [
-      'auth:web',
-    ],
+    'middleware' => 'auth'
 ]);

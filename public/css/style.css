@@ -2017,3 +2017,75 @@
 .description-faq{
     margin: 10px 0;
 }
+
+.form-control.is-invalid {
+    background-image: none;
+    padding-right: inherit;
+}
+
+.ck-content .text-tiny {
+    font-size: 0.7em;
+}
+
+.ck-content .text-small {
+    font-size: 0.85em;
+}
+
+.ck-content .text-big {
+    font-size: 1.4em;
+}
+
+.ck-content .text-huge {
+    font-size: 1.8em;
+}
+
+/* Блок с уведомлениями */
+.alert-success{
+    color: #fff;
+    background-color: #00a550;
+    border-color: #14c86b;
+    position: fixed;
+    right: 18px;
+    width: 290px;
+    z-index: 9999;
+    top: 40px;
+}
+
+.alert-success a{
+    color: white;
+}
+
+.alert-success button, .alert-danger button, .alert-warning button{
+    -webkit-appearance: none;
+    padding: 0;
+    cursor: pointer;
+    background: 0 0;
+    border: 0;
+    position: absolute;
+    right: 8px;
+    top: 4px;
+}
+
+.alert-danger{
+    color: #fff;
+    background-color: #fd5725;
+    border-color: #ff0000;
+    position: fixed;
+    right: 18px;
+    width: 290px;
+    z-index: 9999;
+    top: 40px;
+}
+
+.alert-warning{
+    color: #fff;
+    background-color: #18a1d6;
+    border-color: #00d2ca;
+    position: fixed;
+    right: 18px;
+    width: 290px;
+    z-index: 9999;
+    top: 40px;
+}
+
+/* Блок с уведомлениями */

@@ -4,4 +4,5 @@
 $router->get('dictionary', [
     'as' => 'web_dictionary_index',
     'uses'  => 'Controller@index',
+    'middleware' => 'auth'
 ]);

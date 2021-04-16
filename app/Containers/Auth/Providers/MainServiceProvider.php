@@ -29,7 +29,7 @@ class MainServiceProvider extends MainProvider
      * @var  array
      */
     public $aliases = [
-
+        'SocialAuthSession' => \App\Containers\Auth\Facades\SocialAuthSessionFacade::class
     ];
 
     public function boot()

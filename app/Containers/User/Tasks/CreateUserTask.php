@@ -13,6 +13,7 @@ class CreateUserTask extends Task
     {
         try {
             $data['password'] = \Hash::make($data['password']);
+
             return User::create($data);
         } catch (Exception $exception) {
             throw new CreateResourceFailedException();

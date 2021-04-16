@@ -105,20 +105,20 @@
                             <button class="btn btn-submit" @click.prevent="registerAction" :disabled="isActiveBtn">Создать аккаунт</button>
                         </div>
 
-                        <div class='social-btn'>
-                            <ul>
-                                <li>
-                                    <a href="#" class="fa icon mail-btn" title="mail.ru">
-                                        <i class="fas fa-at"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="fa icon vk-btn" title="vk.com">
-                                        <i class="fab fa-vk"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                            <div class='social-btn'>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('social-auth', 'mailru') }}" class="fa icon mail-btn" title="mail.ru">
+                                            <i class="fas fa-at"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('social-auth', 'vkontakte') }}" class="fa icon vk-btn" title="vk.com">
+                                            <i class="fab fa-vk"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
 
                         <div class='ext-action-form'>
                             <span><a href="{{ route('web_show_login_form') }}">УЖЕ ЕСТЬ АККАУНТ</a></span>
@@ -156,8 +156,8 @@
         var registerComponent = {
             data: {
                 fields: {
-                    login: '',
-                    email: '',
+                    login: '{{ \SocialAuthSession::getParam('login') }}',
+                    email: '{{ \SocialAuthSession::getParam('email') }}',
                     password: '',
                     password_confirmation: '',
                 },
@@ -225,6 +225,17 @@
                     for (key in this.errorMessages) {
                         this.errorMessages[key] = false;
                     }
+                }
+            },
+            created: function(){
+                if (isNotEmptyString(this.fields.login)) {
+                    this.$v.fields.login.$touch();
+                    this.checkLoginValid();
+                }
+
+                if (isNotEmptyString(this.fields.email)) {
+                    this.$v.fields.email.$touch();
+                    this.checkEmailValid();
                 }
             },
             watch: {

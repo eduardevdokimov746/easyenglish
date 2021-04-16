@@ -38,6 +38,14 @@ class CustomMysqlProvider implements UserProvider
         \Cookie::queue('remember_token', $token, 10080 * 8, '/');
     }
 
+    public function hasRememberToken(): bool
+    {
+        if (\Cookie::get('remember_token') !== false) {
+            return true;
+        }
+        return false;
+    }
+
     public function retrieveByCredentials(array $credentials)
     {
         if (isset($credentials['login'])) {

@@ -1,21 +1,28 @@
 <?php
 
-namespace App\Containers\Course\Actions;
+namespace App\Containers\TeacherSection\Course\Actions;
 
 use App\Ship\Parents\Actions\Action;
 use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class CreateCourseAction extends Action
 {
     public function run(Request $request)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
+        try{
+            $data = $request->sanitizeInput([
+                'title',
+                'characteristic',
+                'little_description',
+                'target',
+                'list_literature',
+            ]);
 
-        $course = Apiato::call('Course@CreateCourseTask', [$data]);
+            $course = \Auth::user()->courses()->create($data);
 
-        return $course;
+            return $course;
+        }catch (\Exception){
+            return false;
+        }
     }
 }

@@ -23,7 +23,7 @@ class EditUserRequest extends Request
      * @var  array
      */
     protected $access = [
-        'permissions' => '',
+        'permissions' => 'my-account',
         'roles'       => '',
     ];
 
@@ -52,8 +52,7 @@ class EditUserRequest extends Request
     public function rules()
     {
         return [
-            // 'id' => 'required',
-            // '{user-input}' => 'required|max:255',
+
         ];
     }
 
@@ -62,8 +61,6 @@ class EditUserRequest extends Request
      */
     public function authorize()
     {
-        return $this->check([
-            'hasAccess',
-        ]);
+        return true;
     }
 }

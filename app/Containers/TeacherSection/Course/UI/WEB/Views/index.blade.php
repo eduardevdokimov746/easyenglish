@@ -3,19 +3,14 @@
 @section('content')
 <section class="other_services pt-5" style="padding-top: 100px" id="why">
     <div class="container">
-
-
         <div class="head-content mb-4 row">
-
-
-
             @include('components/nav_panel')
             <div>
                 <a href="{{ route('web_teacher_courses_create') }}" class="hover-button head-btn">Добавить курс</a>
             </div>
         </div>
 
-        @include('components.breadcrumbs')
+        @include('components.breadcrumbs', [$breadcrumb])
 
         <div class="row">
             <div style="background: white; width: 100%">

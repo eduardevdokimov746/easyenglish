@@ -6,47 +6,127 @@
             <div class="col-3">
                 <div class="block-content-profile">
                     <div>
-                        <img src="{{ asset('images/no_image_user.png') }}" alt="">
+                        <img src="{{ asset('storage/users/profile_avatars/' . $user->avatar) }}" alt="">
                     </div>
+                    @can('my-account', [$user])
                     <div>
-                        <a href="{{ route('web_user_edit', 'asd') }}" class="btn-change-info-profile">Редактировать</a>
+                        <a href="{{ route('web_user_edit', $user->login) }}" class="btn-change-info-profile">Редактировать</a>
                     </div>
+                    @endcan
                 </div>
-
             </div>
 
             <div class="col-9">
                 <div class="block-content-profile">
                     <h4>Информация о пользователе</h4>
 
-                    <div class="mt-2">
-                        <p>
-                            <b>ФИО:</b>
-                            Евдокимов Эдуард Игоревич
-                        </p>
-                    </div>
-                    <div class="mt-2">
-                        <p>
-                            <b>Email:</b>
-                            eduard@mail.com
-                        </p>
-                    </div>
+                    @if($user->fio)
+                        <div class="mt-2">
+                            <p>
+                                <b>ФИО:</b>
+                                {{ $user->fio }}
+                            </p>
+                        </div>
+                    @else
+                        <div class="mt-2">
+                            <p>
+                                <b>ФИО:</b>
+                                Информация отсутствует
+                            </p>
+                        </div>
+                    @endif
 
+                    @if($user->email->is_visible)
+                    <div class="mt-2">
+                        <p>
+                            <b>Эл. почта:</b>
+                            {{ $user->email->email }}
+                        </p>
+                    </div>
+                    @else
+                        <div class="mt-2">
+                            <p>
+                                <b>Эл. почта:</b>
+                                Информация отсутствует
+                            </p>
+                        </div>
+                    @endif
+
+                    @if($user->userInfo?->number_phone)
                     <div class="mt-2">
                         <p>
                             <b>Телефон:</b>
-                            8 800 555 35 35
+                            {{ $user->userInfo->number_phone }}
                         </p>
                     </div>
+                    @else
+                        <div class="mt-2">
+                            <p>
+                                <b>Телефон:</b>
+                                Информация отсутствует
+                            </p>
+                        </div>
+                    @endif
+
+                    @if($user->userInfo?->dbirth)
                     <div class="mt-2">
                         <p>
                             <b>Дата рождения:</b>
-                            16.11.1999
+                            {{ $user->userInfo->dbirth }}
                         </p>
                     </div>
+                    @else
+                        <div class="mt-2">
+                            <p>
+                                <b>Дата рождения:</b>
+                                Информация отсутствует
+                            </p>
+                        </div>
+                    @endif
+
+                    @if($user->userInfo?->city)
+                        <div class="mt-2">
+                            <p>
+                                <b>Город:</b>
+                                {{ $user->userInfo->city }}
+                            </p>
+                        </div>
+                    @else
+                        <div class="mt-2">
+                            <p>
+                                <b>Город:</b>
+                                Информация отсутствует
+                            </p>
+                        </div>
+                    @endif
+
+                    @if($user->userInfo?->country)
+                        <div class="mt-2">
+                            <p>
+                                <b>Страна:</b>
+                                {{ $user->userInfo->country }}
+                            </p>
+                        </div>
+                    @else
+                        <div class="mt-2">
+                            <p>
+                                <b>Страна:</b>
+                                Информация отсутствует
+                            </p>
+                        </div>
+                    @endif
+
+                    @if($user->userInfo?->description)
+                        <div class="mt-2">
+                            <p>
+                                {!! $user->userInfo->description !!}
+                            </p>
+                        </div>
+                    @endif
                 </div>
 
-                @if(!session()->has('success-notice') && !auth()->user()->email->is_confirmation)
+                @can('my-account', [$user])
+                @if(!session()->has('success-notice') && !$user->email->is_confirmation)
                     <div class="block-content-profile">
                         <div>
                             <h4>Электронная почта не подтверждена</h4>
@@ -59,27 +139,13 @@
                         </div>
                     </div>
                 @endif
+                @endcan
 
-                <div class="block-content-profile">
-                    <div>
-                        <h4>Входы в систему</h4>
-                    </div>
-                    <div class="mt-2">
-                        <p>
-                            <b>Первый вход:</b>
-                            Четверг, 24 сентября 2020, 15:46  (166 дн. 23 час.)
-                        </p>
-                    </div>
-                    <div class="mt-2">
-                        <p>
-                            <b>Последний вход:</b>
-                            Четверг, 24 сентября 2020, 15:46  (166 дн. 23 час.)
-                        </p>
-                    </div>
-                </div>
+                @can('my-account', [$user])
                 <div class="d-flex justify-content-end">
                     <a href="{{ route('web_logout') }}" class="btn btn-light">Выход</a>
                 </div>
+                @endcan
             </div>
         </div>
     </div>

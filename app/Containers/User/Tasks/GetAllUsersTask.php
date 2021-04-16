@@ -7,7 +7,6 @@ use App\Ship\Parents\Tasks\Task;
 
 class GetAllUsersTask extends Task
 {
-
     protected $repository;
 
     public function __construct(UserRepository $repository)

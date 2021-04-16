@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <title>{{ config('app.name') }}</title>
+    <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link href="{{ asset('bootstrap/css/bootstrap.css') }}" rel='stylesheet' type='text/css'/>
     <link href="{{ asset('css/auth.css') }}" rel='stylesheet' type='text/css'/>

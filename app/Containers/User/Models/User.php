@@ -36,6 +36,10 @@ class User extends Authenticatable
 
     ];
 
+    protected $appends = [
+        'fio'
+    ];
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -57,6 +61,11 @@ class User extends Authenticatable
         return $this->hasOne(UserInfo::class, 'user_id', 'id');
     }
 
+    public function courses()
+    {
+        return $this->hasMany(\App\Containers\TeacherSection\Course\Models\Course::class, 'user_id', 'id');
+    }
+
     public function setRememberToken($value)
     {
         $this->attributes[$this->getRememberTokenName()] = $value;
@@ -75,5 +84,14 @@ class User extends Authenticatable
         } else {
             return 'remember_token';
         }
+    }
+
+    public function getFioAttribute($value)
+    {
+        $fio = isset($this->attributes['last_name']) ? $this->attributes['last_name'] : '';
+        $fio .= isset($this->attributes['first_name']) ? ' ' . $this->attributes['first_name'] : '';
+        $fio .= isset($this->attributes['otchestvo']) ? ' ' . $this->attributes['otchestvo'] : '';
+
+        return $fio;
     }
 }

@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Containers\Section\Actions;
+namespace App\Containers\TeacherSection\Section\Actions;
 
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
+use App\Containers\TeacherSection\Course\Models\Course;
 
 class CreateSectionAction extends Action
 {
-    public function run(Request $request)
+    public function run($course_id, $data)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
+        try{
+            $section = Course::where('id', $course_id)->first()->sections()->create($data);
 
-        $section = Apiato::call('Section@CreateSectionTask', [$data]);
-
-        return $section;
+            return $section;
+        }catch (\Exception $e){
+            return false;
+        }
     }
 }

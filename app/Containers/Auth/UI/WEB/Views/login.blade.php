@@ -57,22 +57,7 @@
                             <button class="btn btn-submit" :disabled="isActiveBtn">Войти</button>
                         </div>
 
-                        <div class='social-btn'>
-                            <ul>
-                                <li>
-                                    <a href="#" class="fa icon mail-btn" title="mail.ru">
-                                        <i class="fas fa-at"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="fa icon vk-btn" title="vk.com">
-                                        <i class="fab fa-vk"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class='ext-action-form' style="padding: 5px 0">
+                        <div class='ext-action-form mt-3' style="padding: 5px 0">
                             <span>
                                 <a href="{{ route('web_show_forgot_form') }}">ВОССТАНОВИТЬ ПАРОЛЬ</a>
                             </span>

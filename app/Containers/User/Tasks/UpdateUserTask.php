@@ -2,28 +2,17 @@
 
 namespace App\Containers\User\Tasks;
 
-use App\Containers\User\Data\Repositories\UserRepository;
-use App\Ship\Exceptions\UpdateResourceFailedException;
+use App\Containers\User\Models\User;
 use App\Ship\Parents\Tasks\Task;
-use Exception;
 
 class UpdateUserTask extends Task
 {
-
-    protected $repository;
-
-    public function __construct(UserRepository $repository)
+    public function run(int $user_id, array $data)
     {
-        $this->repository = $repository;
-    }
+        if (User::where('id', $user_id)->update($data)) {
+            return true;
+        }
 
-    public function run($id, array $data)
-    {
-        try {
-            return $this->repository->update($data, $id);
-        }
-        catch (Exception $exception) {
-            throw new UpdateResourceFailedException();
-        }
+        return false;
     }
 }
