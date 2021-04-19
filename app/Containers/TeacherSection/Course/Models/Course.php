@@ -15,6 +15,7 @@ class Course extends Model
         'little_description',
         'target',
         'list_literature',
+        'is_visible'
     ];
 
     protected $attributes = [

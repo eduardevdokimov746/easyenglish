@@ -10,7 +10,7 @@ class CreateEmailUsersTable extends Migration
         Schema::create('email_users', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->tinyInteger('is_visible')->default(1);
             $table->tinyInteger('is_confirmation')->default(0);
             $table->string('confirmation_code')->nullable();

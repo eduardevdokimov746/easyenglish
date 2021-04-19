@@ -17,7 +17,7 @@
 
 @include('components.noscript')
 
-    <div class="wrapper">
+    <div id="app" class="wrapper">
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -28,20 +28,19 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown user-menu">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                        <img src="{{ asset('adminlte/dist/img/user2-160x160.jpg') }}" class="user-image img-circle elevation-2" alt="User Image">
-                        <span class="d-none d-md-inline">Евдокимов Эдуард Игоревич</span>
+                        <img src="{{ asset('storage/users/profile_avatars/' . auth()->user()->avatar) }}" class="user-image img-circle elevation-2" alt="User Image">
+                        <span class="d-none d-md-inline">{{ auth()->user()->fio ?: auth()->user()->login }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <li class="user-header bg-primary">
-                            <img src="{{ asset('adminlte/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
+                            <img src="{{ asset('storage/users/profile_avatars/' . auth()->user()->avatar) }}" class="img-circle elevation-2" alt="User Image">
                             <p>
-                                Евдокимов Эдуард Игоревич
-                                <small>Последний вход - 20.12.2020</small>
+                                {{ auth()->user()->fio ?: auth()->user()->login }}
                             </p>
                         </li>
                         <li class="user-footer">
                             <a href="#" class="btn btn-default btn-flat">Профиль</a>
-                            <a href="#" class="btn btn-default btn-flat float-right">Выйти</a>
+                            <a href="{{ route('web_admin_logout') }}" class="btn btn-default btn-flat float-right">Выйти</a>
                         </li>
                     </ul>
                 </li>
@@ -104,13 +103,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('web_admin_users_create', ['role' => 'prepod']) }}" class="nav-link">
+                                    <a href="{{ route('web_admin_users_create', ['role' => 'teacher']) }}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Добавить</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('web_admin_user_index', ['role' => 'prepod']) }}" class="nav-link">
+                                    <a href="{{ route('web_admin_user_index', ['role' => 'teacher']) }}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Список</p>
                                     </a>
@@ -150,13 +149,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('web_admin_users_create', ['role' => 'simple_user']) }}" class="nav-link">
+                                    <a href="{{ route('web_admin_users_create', ['role' => 'simple']) }}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Добавить</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('web_admin_user_index', ['role' => 'simple_user']) }}" class="nav-link">
+                                    <a href="{{ route('web_admin_user_index', ['role' => 'simple']) }}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Список</p>
                                     </a>
@@ -186,7 +185,6 @@
                                 </li>
                             </ul>
                         </li>
-
                     </ul>
                 </nav>
             </div>
@@ -204,8 +202,8 @@
         </footer>
     </div>
 
-    <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+@include('scripts.main')
     <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
     <script src="{{ asset('adminlte/dist/js/demo.js') }}"></script>
 </body>

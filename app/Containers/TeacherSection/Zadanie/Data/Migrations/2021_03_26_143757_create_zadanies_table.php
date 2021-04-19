@@ -15,6 +15,7 @@ class CreateZadaniesTable extends Migration
             $table->text('desctiption')->nullable();
             $table->tinyInteger('is_visible')->default(1);
             $table->dateTime('deadline')->nullable();
+            $table->timestamps();
 
             $table->foreign('section_id')
                 ->on('sections')

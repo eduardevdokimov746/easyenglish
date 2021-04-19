@@ -15,6 +15,7 @@ class CreateCoursesTable extends Migration
             $table->text('little_description')->nullable();
             $table->text('target')->nullable();
             $table->text('list_literature')->nullable();
+            $table->tinyInteger('is_visible')->default(1);
             $table->timestamps();
             $table->softDeletes();
 

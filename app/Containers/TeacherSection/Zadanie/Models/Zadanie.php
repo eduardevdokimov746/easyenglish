@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Containers\Zadanie\Models;
+namespace App\Containers\TeacherSection\Zadanie\Models;
 
 use App\Ship\Parents\Models\Model;
 
 class Zadanie extends Model
 {
+    protected $table = 'zadanies';
+
     protected $fillable = [
 
     ];

@@ -114,7 +114,7 @@
                         </label>
                         <label>
                             (Видимость
-                            <input type="checkbox" name="email_users[is_visible]" {{ $user->email->is_visible ? 'checked' : '' }}>)
+                            <input type="checkbox" name="email_users[is_visible]" {{ $user->email?->is_visible ? 'checked' : '' }}>)
                         </label>
                         <input
                             type="email"
@@ -268,11 +268,11 @@
             data: {
                 userData: {
                     login: '{{ $user->login }}',
-                    email: '{{ $user->email->email }}'
+                    email: '{{ $user->email?->email }}'
                 },
                 fields: {
                     login: '{{ $user->login }}',
-                    email: '{{ $user->email->email }}',
+                    email: '{{ $user->email?->email }}',
                     password: '',
                     password_confirmation: '',
                 },

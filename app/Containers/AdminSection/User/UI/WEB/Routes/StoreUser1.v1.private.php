@@ -1,10 +1,7 @@
 <?php
 
-/** @var Route $router */
-$router->post('user1s/store', [
-    'as' => 'web_user1_store',
+$router->post('users/store', [
+    'as' => 'web_admin_users_store',
     'uses'  => 'Controller@store',
-    'middleware' => [
-      'auth:web',
-    ],
+    'middleware' => 'admin',
 ]);

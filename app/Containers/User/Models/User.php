@@ -36,8 +36,9 @@ class User extends Authenticatable
 
     ];
 
-    protected $appends = [
-        'fio'
+    public $appends = [
+        'fio',
+        'roleLang'
     ];
 
     protected $dates = [
@@ -93,5 +94,16 @@ class User extends Authenticatable
         $fio .= isset($this->attributes['otchestvo']) ? ' ' . $this->attributes['otchestvo'] : '';
 
         return $fio;
+    }
+
+    public function getRoleLangAttribute()
+    {
+        switch ($this->attributes['role']) {
+            case('admin'): return 'Администратор';
+            case('teacher'): return 'Преподаватель';
+            case('student'): return 'Студент';
+            case('simple'): return 'Пользователь';
+
+        }
     }
 }

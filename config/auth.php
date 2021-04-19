@@ -50,6 +50,10 @@ return [
             'driver' => 'custom',
             'provider' => 'custom_provider'
         ],
+        'admin' => [
+            'driver' => 'admin-auth',
+            'provider' => 'admin-provider'
+        ],
     ],
 
     /*
@@ -78,6 +82,10 @@ return [
         'custom_provider' => [
             'driver' => 'custom_provider'
         ],
+
+        'admin-provider' => [
+            'driver' => 'admin-provider'
+        ]
 
         // 'users' => [
         //     'driver' => 'database',

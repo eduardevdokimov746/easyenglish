@@ -1,15 +1,20 @@
 <?php
 
-namespace App\Containers\Course\Actions;
+namespace App\Containers\TeacherSection\Course\Actions;
 
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
+use App\Containers\TeacherSection\Course\Models\Course;
 
 class DeleteCourseAction extends Action
 {
-    public function run(Request $request)
+    public function run(int $course_id)
     {
-        return Apiato::call('Course@DeleteCourseTask', [$request->id]);
+        try{
+            Course::where('id', $course_id)->delete();
+
+            return true;
+        }catch (\Exception){
+            return false;
+        }
     }
 }

@@ -6,5 +6,6 @@ return [
     'password' => 'password',
     'forgot-code' => 'recovery code',
     'code' => 'code',
-    'title' => 'title'
+    'title' => 'title',
+    'users.avatar' => 'avatar'
 ];

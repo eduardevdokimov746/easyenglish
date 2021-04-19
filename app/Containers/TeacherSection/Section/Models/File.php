@@ -33,8 +33,17 @@ class File extends Model
         'updated_at',
     ];
 
+    public $appends = [
+        'icon'
+    ];
+
     /**
      * A resource key to be used by the the JSON API Serializer responses.
      */
     protected $resourceKey = 'sections';
+
+    public function getIconAttribute()
+    {
+        return \FileStorage::getIconExtension($this->attributes['ext']);
+    }
 }

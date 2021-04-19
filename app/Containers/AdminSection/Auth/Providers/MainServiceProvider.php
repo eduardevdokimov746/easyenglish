@@ -18,7 +18,8 @@ class MainServiceProvider extends MainProvider
      * @var array
      */
     public $serviceProviders = [
-        // InternalServiceProviderExample::class,
+        MiddlewareServiceProvider::class,
+        AuthServiceProvider::class
     ];
 
     /**

@@ -36,11 +36,11 @@
                         </div>
                     @endif
 
-                    @if($user->email->is_visible)
+                    @if($user->email?->is_visible)
                     <div class="mt-2">
                         <p>
                             <b>Эл. почта:</b>
-                            {{ $user->email->email }}
+                            {{ $user->email?->email }}
                         </p>
                     </div>
                     @else
@@ -126,7 +126,7 @@
                 </div>
 
                 @can('my-account', [$user])
-                @if(!session()->has('success-notice') && !$user->email->is_confirmation)
+                @if(!session()->has('success-notice') && !$user->email?->is_confirmation)
                     <div class="block-content-profile">
                         <div>
                             <h4>Электронная почта не подтверждена</h4>

@@ -15,8 +15,10 @@ class CreateCourseAction extends Action
                 'characteristic',
                 'little_description',
                 'target',
-                'list_literature',
+                'list_literature'
             ]);
+
+            $data['is_visible'] = (int)$request->filled('is_visible');
 
             $course = \Auth::user()->courses()->create($data);
 

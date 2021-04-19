@@ -6,40 +6,34 @@ use App\Ship\Parents\Controllers\ApiController;
 
 class Controller extends ApiController
 {
-    public function uploadFile()
+    public function show()
     {
-        if (!empty($_FILES) && !empty($_FILES['file'])) {
-            $ext = \FileStorage::getExtension($_FILES['file']['name']);
+        $isSuccess = \Apiato::call( 'TeacherSection\Course@ShowCourseAction', [request()->get('course_id')]);
 
-            $icon = \FileStorage::getIconExtension($ext);
-
-            $tmp = \FileStorage::add($_FILES['file']['tmp_name'], $ext);
-
-            $fileSize = \FileStorage::getSize($_FILES['file']['size']);
-            
-            if ($tmp) {
-                return $this->json([
-                    'icon' => $icon,
-                    'name' => $_FILES['file']['name'],
-                    'size' => $fileSize,
-                    'tmp' => $tmp
-                ]);
-            }
+        if ($isSuccess) {
+            return json_encode(['msg' => __('teachersection/course::action.course-showed')]);
         }
 
         return abort(500);
     }
 
-    public function deleteFile()
+    public function hide()
     {
-        $filePath = request()->get('file', null);
+        $isSuccess = \Apiato::call( 'TeacherSection\Course@HideCourseAction', [request()->get('course_id')]);
 
-        if (!is_null($filePath) && \FileStorage::has($filePath)) {
-            if (\FileStorage::delete($filePath)) {
-                return $this->json([
-                    'status' => 'success'
-                ]);
-            }
+        if ($isSuccess) {
+            return json_encode(['msg' => __('teachersection/course::action.course-hidden')]);
+        }
+
+        return abort(500);
+    }
+
+    public function delete()
+    {
+        $isSuccess = \Apiato::call( 'TeacherSection\Course@DeleteCourseAction', [request()->get('course_id')]);
+
+        if ($isSuccess) {
+            return json_encode(['msg' => __('teachersection/course::action.course-deleted')]);
         }
 
         return abort(500);

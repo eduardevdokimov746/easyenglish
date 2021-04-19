@@ -9,59 +9,75 @@
                 </h1>
             </div>
 
+            @if (!$errors->has('data-auth-not-valid') && $errors->any())
+                <div class="alert alert-danger">
+                    <ul style="list-style: none">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form action="{{ route('web_teacher_courses_store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="row mt-3 mb-3">
                     <div class="col">
                         <div class="form form-create-course">
-                        <h3>Основные параметры</h3>
+                            <h3>Основные параметры</h3>
 
-                        <div class="form-group mt-3">
-                            <label for="title_course">
-                                Заголовок курса <span class="mark-required-field" title="Обязательно для заполнения">*</span>
-                                <input
-                                    id="title_course"
-                                    class="form-control"
-                                    v-model="$v.course.title.$model"
-                                    :class="{'is-invalid' : statusValidation($v.course.title, $v.course.title.required)}"
-                                    type="text"
-                                    name="title"
-                                >
-                                <div class="invalid-feedback">
-                                    {{ __('ship::validation.required', ['attribute' => __('ship::attributes.title')]) }}
-                                </div>
-                            </label>
+                            <div class="form-group mt-3">
+                                <label for="title_course">
+                                    Заголовок курса <span class="mark-required-field" title="Обязательно для заполнения">*</span>
+                                    <input
+                                        id="title_course"
+                                        class="form-control"
+                                        v-model="$v.course.title.$model"
+                                        :class="{'is-invalid' : statusValidation($v.course.title, $v.course.title.required)}"
+                                        type="text"
+                                        name="title"
+                                    >
+                                    <div class="invalid-feedback">
+                                        {{ __('ship::validation.required', ['attribute' => __('ship::attributes.title')]) }}
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="general_info_course">
+                                    Общая характеристика (необязательно)
+                                    <textarea id="general_info_course" name="characteristic" class="form-control ckeditor-textarea"></textarea>
+                                </label>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="description_course">
+                                    Краткое описание (необязательно)
+                                    <textarea id="description_course" name="little_description" class="form-control ckeditor-textarea"></textarea>
+                                </label>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="idea_course">
+                                    Цель (необязательно)
+                                    <textarea id="idea_course" name="target" class="form-control ckeditor-textarea"></textarea>
+                                </label>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="literature_course">
+                                    Список рекомендуемой литературы (необязательно)
+                                    <textarea id="literature_course" name="list_literature" class="form-control ckeditor-textarea"></textarea>
+                                </label>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label>Видимость
+                                    <input type="checkbox" name="is_visible">
+                                </label>
+                            </div>
+
                         </div>
-
-                        <div class="form-group mt-3">
-                            <label for="general_info_course">
-                                Общая характеристика (необязательно)
-                                <textarea id="general_info_course" name="characteristic" class="form-control ckeditor-textarea"></textarea>
-                            </label>
-                        </div>
-
-                        <div class="form-group mt-3">
-                            <label for="description_course">
-                                Краткое описание (необязательно)
-                                <textarea id="description_course" name="little_description" class="form-control ckeditor-textarea"></textarea>
-                            </label>
-                        </div>
-
-                        <div class="form-group mt-3">
-                            <label for="idea_course">
-                                Цель (необязательно)
-                                <textarea id="idea_course" name="target" class="form-control ckeditor-textarea"></textarea>
-                            </label>
-                        </div>
-
-                        <div class="form-group mt-3">
-                            <label for="literature_course">
-                                Список рекомендуемой литературы (необязательно)
-                                <textarea id="literature_course" name="list_literature" class="form-control ckeditor-textarea"></textarea>
-                            </label>
-                        </div>
-
-                    </div>
                     </div>
                 </div>
 
@@ -148,6 +164,13 @@
                                     <label for="exampleFormControlFile1">Добавить файлы</label>
                                     <input type="file" class="form-control-file" @change="uploadFile($event, indexSection)">
                                 </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        Видимость
+                                        <input type="checkbox" name="is_visible" v-model="section.is_visible">
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -159,8 +182,8 @@
                     </div>
 
                     <div>
-                        <button class="btn btn-light" style="margin-right: 10px">Предпросмотр</button>
-                        <button class="btn btn-primary" @click.prevent="submitBtn">Создать</button>
+                        {{--@click.prevent="submitBtn"--}}
+                        <button class="btn btn-primary">Создать</button>
                     </div>
                 </div>
             </form>
@@ -222,15 +245,10 @@
                     this.sections.push(
                         {
                             title: '',
-                            links: [
-                                // {
-                                //     title: 'Тестовая ссылка',
-                                //     url: 'https://google.com'
-                                // }
-                            ],
-                            files: [
-                            ],
-                            filesRequest: []
+                            links: [],
+                            files: [],
+                            filesRequest: [],
+                            is_visible: 0
                         }
                     );
                 },
@@ -257,6 +275,7 @@
                     form.append('little_description', editor_little_description.getData());
                     form.append('target', editor_target.getData());
                     form.append('list_literature', editor_list_literature.getData());
+                    form.append('is_visible', $('input[name=is_visible]').is(':checked'));
 
                     var sections = this.sections;
 
@@ -312,6 +331,7 @@
                             size: size
                         });
 
+                        $(e.target).val('');
                         this.sections[indexSection].filesRequest.push(file);
                     }
                 },

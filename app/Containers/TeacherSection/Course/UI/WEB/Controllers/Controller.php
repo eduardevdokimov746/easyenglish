@@ -11,29 +11,31 @@ class Controller extends WebController
 {
     public function index()
     {
-        return 'asd';
-
         if ($this->isNotTeacher()) {
             return abort(403, __('ship::http_errors.403'));
         }
 
         $breadcrumb = new \App\Ship\Services\Breadcrumbs\CourseList();
 
-        return view('teachersection/course::index', compact('breadcrumb'));
+        $courses = Apiato::call('TeacherSection\Course@GetAllCoursesAction', [\Auth::id()]);
+
+        return view('teachersection/course::index', compact('breadcrumb', 'courses'));
     }
 
     public function show()
     {
-        if ($this->isNotTeacher()) {
+        $course = Apiato::call('TeacherSection\Course@FindCourseByIdAction', [request()->id]);
+
+        if ($this->isNotTeacher() || \Gate::allows('update-course', $course)) {
             return abort(403, __('ship::http_errors.403'));
         }
 
-        $title = 'Основы организации хозяйственной деятельности + КР';
-        $url = route('web_teacher_courses_show', 'asd');
+        $title = $course->title;
+        $url = route('web_teacher_courses_show', $course->id);
 
         $breadcrumb = new \App\Ship\Services\Breadcrumbs\CourseSingle(compact('title', 'url'));
 
-        return view('teachersection/course::show', compact('breadcrumb'));
+        return view('teachersection/course::show', compact('breadcrumb', 'course'));
     }
 
     public function create()
@@ -102,12 +104,22 @@ class Controller extends WebController
             }
         }
 
-        return json_encode(['status' => 'success']);
+        return $request->wantsJson() ?
+            json_encode(['status' => 'success']) :
+            redirect()->route('web_teacher_courses_index')->with(['success-notice' => __('teachersection/course::action.created')]);
     }
 
     public function edit()
     {
-        return view('teachersection/course::edit');
+        $course = Apiato::call('TeacherSection\Course@FindCourseByIdAction', [request()->id]);
+
+        if ($this->isNotTeacher() || \Gate::allows('update-course', $course)) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $icons = json_encode(\FileStorage::getIcons());
+
+        return view('teachersection/course::edit', compact('icons', 'course'));
     }
 
     public function update(UpdateTeacherRequest $request)
@@ -117,10 +129,54 @@ class Controller extends WebController
         // ..
     }
 
-    public function delete(DeleteTeacherRequest $request)
+    public function delete()
     {
-        $result = Apiato::call('Teacher@DeleteTeacherAction', [$request]);
+        $course = Apiato::call('TeacherSection\Course@FindCourseByIdAction', [request()->id]);
 
-        // ..
+        if ($this->isNotTeacher() || \Gate::allows('update-course', $course)) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $isSuccess = \Apiato::call( 'TeacherSection\Course@DeleteCourseAction', [request()->id]);
+
+        if ($isSuccess) {
+            return redirect()->route('web_teacher_courses_index')->with(['success-notice' => __('teachersection/course::action.course-deleted')]);
+        }
+
+        return abort(500);
+    }
+
+    public function visible()
+    {
+        $course = Apiato::call('TeacherSection\Course@FindCourseByIdAction', [request()->id]);
+
+        if ($this->isNotTeacher() || \Gate::allows('update-course', $course)) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $isSuccess = \Apiato::call( 'TeacherSection\Course@ShowCourseAction', [request()->id]);
+
+        if ($isSuccess) {
+            return back()->with(['success-notice' => __('teachersection/course::action.course-showed')]);
+        }
+
+        return abort(500);
+    }
+
+    public function hide()
+    {
+        $course = Apiato::call('TeacherSection\Course@FindCourseByIdAction', [request()->id]);
+
+        if ($this->isNotTeacher() || \Gate::allows('update-course', $course)) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $isSuccess = \Apiato::call( 'TeacherSection\Course@HideCourseAction', [request()->id]);
+
+        if ($isSuccess) {
+            return back()->with(['success-notice' => __('teachersection/course::action.course-hidden')]);
+        }
+
+        return abort(500);
     }
 }

@@ -11,7 +11,7 @@
                 </div>
             </div>
 
-            @include('components.breadcrumbs')
+            {{--@include('components.breadcrumbs')--}}
 
             <div class="row">
                 <div style="background: white; width: 100%">

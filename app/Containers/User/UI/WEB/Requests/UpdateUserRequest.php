@@ -58,7 +58,7 @@ class UpdateUserRequest extends Request
                 },
                 'confirmed'
             ],
-            'avatar' => 'mimes:jpeg,jpg,png'
+            'users.avatar' => 'mimes:jpeg,jpg,png|image'
         ];
     }
 

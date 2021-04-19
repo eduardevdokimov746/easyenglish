@@ -1,21 +1,29 @@
 <?php
 
-namespace App\Containers\Course\Data\Repositories;
+namespace App\Containers\TeacherSection\Course\Data\Repositories;
 
-use App\Ship\Parents\Repositories\Repository;
+use App\Containers\TeacherSection\Course\Models\Course;
 
-/**
- * Class CourseRepository
- */
-class CourseRepository extends Repository
+class CourseRepository
 {
-
-    /**
-     * @var array
-     */
-    protected $fieldSearchable = [
-        'id' => '=',
-        // ...
-    ];
-
+    public function getForShow(int $course_id)
+    {
+        return Course::select([
+            'id',
+            'title',
+            'characteristic',
+            'little_description',
+            'target',
+            'list_literature',
+            'is_visible',
+            'created_at',
+            'updated_at'])
+            ->where('id', $course_id)
+            ->with([
+                'sections:id,course_id,title,description,is_visible',
+                'sections.files',
+                'sections.links',
+                'sections.zadanies'
+            ])->first();
+    }
 }

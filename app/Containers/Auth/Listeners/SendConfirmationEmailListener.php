@@ -13,6 +13,8 @@ class SendConfirmationEmailListener
         $code = $event->user->email->confirmation_code;
         $link = route('web_confirm_email', $code);
 
-        \Mail::to($email)->send(new ConfirmEmailMail($email, $link));
+        try{
+            \Mail::to($email)->send(new ConfirmEmailMail($email, $link));
+        }catch (\Exception){}
     }
 }

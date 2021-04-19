@@ -4,8 +4,8 @@
 <script type="text/javascript" src="{{ asset('js/axios.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/vue.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/underscorejs.js') }}"></script>
-<script src="https://unpkg.com/vuelidate/dist/validators.min.js"></script>
-<script src="https://unpkg.com/vuelidate/dist/vuelidate.min.js"></script>
+<script type="text/javascript" src="{{ asset('js/validation/dist/validators.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/validation/dist/vuelidate.min.js') }}"></script>
 
 <!-- main scripts -->
 

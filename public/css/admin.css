@@ -31,3 +31,29 @@
     background: #447efe7a;
     border-radius: 5px;
 }
+
+.notice-autowrite-material{
+    width: 250px;
+    font-size: .8em;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid silver;
+    background: white;
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 80px;
+}
+
+.notice-autowrite-material > p{
+    line-height: normal;
+    margin-bottom: 0;
+}
+
+#btn-notice-material{
+    cursor: pointer;
+}
+
+.btn-active-notice-material{
+    color: #3369e7;
+}

@@ -18,26 +18,39 @@
 
     <div class="card">
         <div class="card-body login-card-body">
-            <form action="#" method="post">
+            <form action="{{ route('web_admin_login') }}" method="post">
+                @csrf
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Логин">
+                    <input type="text" class="form-control {{  $errors->has('login') ? 'is-invalid': '' }}" placeholder="Логин" name="login">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <i class="fa fa-user" aria-hidden="true"></i>
                         </div>
                     </div>
+                    @if($errors->has('login'))
+                        <div class="invalid-feedback">
+                            <p>{{ $errors->first('login') }}</p>
+                        </div>
+                    @endif
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Пароль">
+                    <input type="password" class="form-control {{  $errors->has('password') ? 'is-invalid': '' }}" placeholder="Пароль" name="password">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
                         </div>
                     </div>
+                    @if($errors->has('password'))
+                        <div class="invalid-feedback">
+                            <p>{{ $errors->first('password') }}</p>
+                        </div>
+                    @endif
                 </div>
-                <div>
-                    <p style="color: red">Проверьте правильность введенных данных</p>
-                </div>
+                @if($errors->has('data-auth-not-valid'))
+                    <div>
+                        <p style="color: red; font-size: .8em">{{ $errors->first('data-auth-not-valid') }}</p>
+                    </div>
+                @endif
                 <div class="row d-flex justify-content-end">
                     <div class="col-4 ">
                         <button type="submit" class="btn btn-primary btn-block">Войти</button>

@@ -5,7 +5,13 @@ $(document).ready(function() {
         return false;
     });
 
-    $(".table-row").click(function () {
+    $(".table-row").click(function (e) {
+        var regex = /.*btn-eye-show-hide/;
+
+        if (regex.test($(e.target).attr('class'))) {
+            return;
+        }
+
         window.document.location = $(this).data("href");
     });
 
@@ -69,39 +75,39 @@ function bindCkeditor(element){
 
 function alertDanger(msg) {
     $('.alert').remove();
-    var alert = "<div class='alert alert-danger'><i class='fa fa-exclamation-circle'></i>&nbsp;" + msg;
+    var alert = "<div class='alert alert-danger-custom'><i class='fa fa-exclamation-circle'></i>&nbsp;" + msg;
     alert += "<button type='button' class='close' data-dismiss='alert'>×</button></div>";
 
     $('body').append(alert);
 
     setTimeout(function () {
-        $('.alert').remove();
+        $('.alert-danger-custom').remove();
     }, 5000);
 }
 
 
 function alertNotice(msg) {
     $('.alert').remove();
-    var alert = "<div class='alert alert-warning'><i class='fa fa-exclamation-circle'></i>&nbsp;" + msg;
+    var alert = "<div class='alert alert-warning-custom'><i class='fa fa-exclamation-circle'></i>&nbsp;" + msg;
     alert += "<button type='button' class='close' data-dismiss='alert'>×</button></div>";
 
     $('body').append(alert);
 
     setTimeout(function () {
-        $('.alert').remove();
+        $('.alert-warning-custom').remove();
     }, 5000);
 }
 
 
 function alertSuccess(msg) {
     $('.alert').remove();
-    var alert = "<div class='alert alert-success'><i class='fa fa-check-circle'></i>&nbsp;" + msg;
+    var alert = "<div class='alert alert-success-custom'><i class='fa fa-check-circle'></i>&nbsp;" + msg;
     alert += "<button type='button' class='close' data-dismiss='alert'>×</button></div>";
 
     $('body').append(alert);
 
     setTimeout(function () {
-        $('.alert').remove();
+        $('.alert-success-custom').remove();
     }, 5000);
 }
 
