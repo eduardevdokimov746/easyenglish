@@ -2,6 +2,7 @@
 
 namespace App\Containers\User\Models;
 
+use App\Containers\TeacherSection\Group\Models\Group;
 use App\Ship\Parents\Models\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -105,5 +106,10 @@ class User extends Authenticatable
             case('simple'): return 'Пользователь';
 
         }
+    }
+
+    public function group()
+    {
+        return $this->belongsToMany(Group::class, 'students_group', 'user_id', 'group_id');
     }
 }

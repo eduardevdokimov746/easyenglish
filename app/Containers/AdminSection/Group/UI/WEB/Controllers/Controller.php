@@ -2,98 +2,64 @@
 
 namespace App\Containers\AdminSection\Group\UI\WEB\Controllers;
 
-use App\Containers\Group\UI\WEB\Requests\CreateGroupRequest;
-use App\Containers\Group\UI\WEB\Requests\DeleteGroupRequest;
-use App\Containers\Group\UI\WEB\Requests\GetAllGroupsRequest;
-use App\Containers\Group\UI\WEB\Requests\FindGroupByIdRequest;
-use App\Containers\Group\UI\WEB\Requests\UpdateGroupRequest;
-use App\Containers\Group\UI\WEB\Requests\StoreGroupRequest;
-use App\Containers\Group\UI\WEB\Requests\EditGroupRequest;
+use App\Containers\AdminSection\Group\UI\WEB\Requests\UpdateGroupRequest;
+use App\Containers\AdminSection\Group\UI\WEB\Requests\StoreGroupRequest;
+use App\Containers\User\Models\User;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Group\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllGroupsRequest $request
-     */
     public function index()
     {
-        return view('adminsection/group::index');
+        $groups = \Apiato::call('AdminSection\Group@GetAllGroupsAction');
+
+        return view('adminsection/group::index', compact('groups'));
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindGroupByIdRequest $request
-     */
-    public function show(FindGroupByIdRequest $request)
-    {
-        $group = Apiato::call('Group@FindGroupByIdAction', [$request]);
-
-        // ..
-    }
-
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateGroupRequest $request
-     */
     public function create()
     {
-        return view('adminsection/group::create');
+        $students = \Apiato::call('AdminSection\User@GetAllStudentsAction');
+
+        return view('adminsection/group::create', compact('students'));
     }
 
-    /**
-     * Add a new entity
-     *
-     * @param StoreGroupRequest $request
-     */
     public function store(StoreGroupRequest $request)
     {
-        $group = Apiato::call('Group@CreateGroupAction', [$request]);
+        try {
+            \Apiato::call('AdminSection\Group@CreateGroupAction', [$request]);
 
-        // ..
+            return json_encode(['msg' => __('ship::action.created-group')]);
+        } catch (\Exception) {
+            return abort(500);
+        }
     }
 
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditGroupRequest $request
-     */
-    public function edit()
+    public function edit($id)
     {
-        return view('adminsection/group::edit');
+        $students = \Apiato::call('AdminSection\User@GetAllStudentsAction');
+        $group = \Apiato::call('AdminSection\Group@FindGroupByIdAction', [$id]);
+
+        return view('adminsection/group::edit', compact('students', 'group'));
     }
 
-    /**
-     * Update a given entity
-     *
-     * @param UpdateGroupRequest $request
-     */
     public function update(UpdateGroupRequest $request)
     {
-        $group = Apiato::call('Group@UpdateGroupAction', [$request]);
-
-        // ..
+        try {
+            \Apiato::call('AdminSection\Group@UpdateGroupAction', [$request]);
+            return json_encode(['msg' => __('ship::action.updated-group')]);
+        } catch (\Exception) {
+            return abort(500);
+        }
     }
 
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteGroupRequest $request
-     */
-    public function delete(DeleteGroupRequest $request)
+    public function delete($id)
     {
-         $result = Apiato::call('Group@DeleteGroupAction', [$request]);
-
-         // ..
+        try {
+            \Apiato::call('AdminSection\Group@DeleteGroupAction', [$id]);
+            return back()->with(['success-notice' => __('ship::action.deleted-group')]);
+        } catch (\Exception) {
+            return back()->with(['danger-notice' => __('ship::validation.error-server')]);
+        }
     }
 }

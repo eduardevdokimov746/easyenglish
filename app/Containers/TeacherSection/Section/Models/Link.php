@@ -26,6 +26,11 @@ class Link extends Model
 
     ];
 
+    protected $appends = [
+        'type',
+        'edit_url'
+    ];
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -35,4 +40,15 @@ class Link extends Model
      * A resource key to be used by the the JSON API Serializer responses.
      */
     protected $resourceKey = 'sections';
+
+    public function getTypeAttribute()
+    {
+        preg_match("#^(?<protocol>https?://)#", $this->attributes['url'], $m);
+        return $m['protocol'];
+    }
+
+    public function getEditUrlAttribute()
+    {
+        return preg_filter("#^(?<protocol>https?://)#", '', $this->attributes['url']);
+    }
 }

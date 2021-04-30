@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Containers\Group\Actions;
+namespace App\Containers\TeacherSection\Group\Actions;
 
+use App\Containers\TeacherSection\Group\Models\Group;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class GetAllGroupsAction extends Action
 {
-    public function run(Request $request)
+    public function run()
     {
-        $groups = Apiato::call('Group@GetAllGroupsTask', [], ['addRequestCriteria']);
+        $groups = Group::get();
 
         return $groups;
     }

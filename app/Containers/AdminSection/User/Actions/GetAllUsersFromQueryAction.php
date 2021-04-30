@@ -11,7 +11,7 @@ class GetAllUsersFromQueryAction extends Action
     {
         $users = User::select('users.*')->where('login', 'like', "%$query%")
             ->join('email_users', 'email_users.user_id', '=', 'users.id')
-            ->orWhereRaw("CONCAT(first_name, last_name, otchestvo) like '%$query%'")
+            ->orWhereRaw("CONCAT(last_name, ' ', first_name, ' ', otchestvo) like '%$query%'")
             ->orWhere('email', 'like', "%$query%")
             ->with('email')
             ->get();

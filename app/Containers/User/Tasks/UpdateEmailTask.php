@@ -11,7 +11,9 @@ class UpdateEmailTask extends Task
     {
         $data['is_visible'] = isset($data['is_visible']) ? 1 : 0;
 
-        if (Email::where('user_id', $user_id)->update($data)) {
+        $userData = ['user_id' => $user_id];
+
+        if (Email::updateOrCreate($userData, $data)) {
             return true;
         }
 

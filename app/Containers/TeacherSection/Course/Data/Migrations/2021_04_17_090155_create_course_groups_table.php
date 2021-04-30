@@ -18,13 +18,13 @@ class CreateCourseGroupsTable extends Migration
                 ->on('courses')
                 ->references('id')
                 ->onUpdate('cascade')
-                ->onDelete('restrict');
+                ->onDelete('cascade');
 
             $table->foreign('group_id')
                 ->on('groups')
                 ->references('id')
                 ->onUpdate('cascade')
-                ->onDelete('restrict');
+                ->onDelete('cascade');
         });
     }
 

@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Containers\Section\Actions;
+namespace App\Containers\TeacherSection\Section\Actions;
 
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
+use App\Containers\TeacherSection\Section\Models\Section;
 
 class DeleteSectionAction extends Action
 {
-    public function run(Request $request)
+    public function run(int $section_id)
     {
-        return Apiato::call('Section@DeleteSectionTask', [$request->id]);
+        Section::where('id', $section_id)->delete();
     }
 }

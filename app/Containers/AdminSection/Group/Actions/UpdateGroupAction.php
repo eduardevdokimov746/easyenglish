@@ -1,21 +1,37 @@
 <?php
 
-namespace App\Containers\Group\Actions;
+namespace App\Containers\AdminSection\Group\Actions;
 
+use App\Containers\AdminSection\Group\Models\StudentGroup;
 use App\Ship\Parents\Actions\Action;
 use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class UpdateGroupAction extends Action
 {
     public function run(Request $request)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
+        $group_id = $request->id;
 
-        $group = Apiato::call('Group@UpdateGroupTask', [$request->id, $data]);
+        \Apiato::call('AdminSection\Group@UpdateGroupTitleTask', [$group_id, $request->get('title')]);
 
-        return $group;
+        if ($request->filled('students')) {
+            $students = collect(json_decode($request->get('students')));
+
+            $addStudents = $students->filter(function($item){
+                return $item->action == 'add';
+            });
+
+            $deleteStudents = $students->filter(function($item){
+                return $item->action == 'delete';
+            });
+
+            foreach ($addStudents as $student) {
+                StudentGroup::create(['group_id' => $group_id, 'user_id' => $student->id]);
+            }
+
+            foreach ($deleteStudents as $student) {
+                StudentGroup::where('group_id', $group_id)->where('user_id', $student->id)->delete();
+            }
+        }
     }
 }

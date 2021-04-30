@@ -10,6 +10,7 @@ class CourseRepository
     {
         return Course::select([
             'id',
+            'user_id',
             'title',
             'characteristic',
             'little_description',

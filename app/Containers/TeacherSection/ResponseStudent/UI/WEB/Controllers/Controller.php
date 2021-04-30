@@ -5,16 +5,16 @@ namespace App\Containers\TeacherSection\ResponseStudent\UI\WEB\Controllers;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\ResponseStudent\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    public function index()
+    public function index($id)
     {
-        return view('teachersection/responsestudent::index');
+        $zadanie = \Apiato::call('TeacherSection\Zadanie@FindZadanieByIdAction', [$id]);
+
+        $responses = \Apiato::call('TeacherSection\ResponseStudent@GetAllResponsesForZadanieAction', [$id]);
+        $groups = \Apiato::call('TeacherSection\Zadanie@GetAllGroupsOnZadanieByCourseAction', [$id]);
+
+        return view('teachersection/responsestudent::index', compact('responses', 'zadanie', 'groups'));
     }
 
     public function show()

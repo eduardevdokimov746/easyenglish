@@ -2,6 +2,9 @@
 
 namespace App\Containers\TeacherSection\Zadanie\Models;
 
+use App\Containers\TeacherSection\Course\Models\Course;
+use App\Containers\TeacherSection\ResponseStudent\Models\ResponseStudent;
+use App\Containers\TeacherSection\Section\Models\Section;
 use App\Ship\Parents\Models\Model;
 
 class Zadanie extends Model
@@ -33,4 +36,19 @@ class Zadanie extends Model
      * A resource key to be used by the the JSON API Serializer responses.
      */
     protected $resourceKey = 'zadanies';
+
+    public function responseStudents()
+    {
+        return $this->hasMany(ResponseStudent::class, 'zadanie_id', 'id');
+    }
+
+    public function getShowTypeAttribute()
+    {
+        return $this->attributes['type'] == 'testing' ? 'Тест' : 'Обычное';
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class, 'section_id', 'id');
+    }
 }

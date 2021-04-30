@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Containers\ResponseTeacher\Models;
+namespace App\Containers\TeacherSection\ResponseTeacher\Models;
 
 use App\Ship\Parents\Models\Model;
 
 class ResponseTeacher extends Model
 {
-    protected $fillable = [
+    protected $table = 'responses_teachers';
 
+    protected $fillable = [
+        'updated_at'
     ];
 
     protected $attributes = [

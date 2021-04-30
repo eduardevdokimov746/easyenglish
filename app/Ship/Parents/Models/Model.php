@@ -17,22 +17,23 @@ abstract class Model extends AbstractModel
     use HashIdTrait;
     use HasResourceKeyTrait;
 
-    protected function dateFormat($date)
+    protected function serializeDate(\DateTimeInterface $date)
     {
-        try{
-            return Carbon::createFromFormat('Y-m-d h:i:s', $date)->format('h:m d.m.Y');
-        }catch (\Exception){
-            return $date;
-        }
+        return $date->format('h:m d.m.Y');
     }
 
-    public function getCreatedAtAttribute($value)
+    public function formatDate($dateTime)
     {
-        return $this->dateFormat($value);
+        return Carbon::createFromFormat('Y-m-d H:i:s', $dateTime)->format('h:m d.m.Y');
     }
 
-    public function getUpdatedAtAttribute($value)
+    public function getShowCreatedAtAttribute()
     {
-        return $this->dateFormat($value);
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at'])->format('h:m d.m.Y');
+    }
+
+    public function getShowUpdatedAtAttribute()
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['updated_at'])->format('h:m d.m.Y');
     }
 }

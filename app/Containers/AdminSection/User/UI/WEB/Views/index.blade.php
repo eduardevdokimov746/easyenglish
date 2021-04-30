@@ -3,10 +3,13 @@
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
+
+            @include('components.notices-admin')
+
             <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-5">
-                        <h1>Главная</h1>
+                <div class="row mb-2 d-flex justify-content-between">
+                    <div>
+                        <h1>Список аккаунтов</h1>
                     </div>
                     <ul class="navbar-nav">
                         <li class="nav-item">
@@ -20,15 +23,26 @@
                         </li>
                     </ul>
 
-                    {{--<div class="col-sm-6">--}}
-                    {{--<ol class="breadcrumb float-sm-right">--}}
-                    {{--<li class="breadcrumb-item"><a href="#">Home</a></li>--}}
-                    {{--<li class="breadcrumb-item active">Language Menu</li>--}}
-                    {{--</ol>--}}
-                    {{--</div>--}}
+                    <div>
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ route('web_admin_index') }}">Главная</a></li>
+                            <li class="breadcrumb-item active">Список аккаунтов</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
         </section>
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul style="list-style: none">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <section class="content">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover text-center">
@@ -50,16 +64,16 @@
                             <td>@{{ user.login }}</td>
                             <td>@{{ user.fio.length ? user.fio : '&mdash;' }}</td>
                             <td>@{{ user.email ? user.email.email : '&mdash;' }}</td>
-                            {{--<td>--}}
-                                {{--<a href="{{ route('web_admin_users_edit', $user->id) }}">--}}
-                                    {{--<i class="fa fa-pencil text-blue" aria-hidden="true"></i>--}}
-                                {{--</a>--}}
-                            {{--</td>--}}
-                            {{--<td>--}}
-                                {{--<a href="{{ route('web_admin_users_delete', $user->id) }}">--}}
-                                    {{--<i class="fa fa-fw fa-close text-danger"></i>--}}
-                                {{--</a>--}}
-                            {{--</td>--}}
+                            <td>
+                                <a :href="url(editUrl, {id: user.id})">
+                                    <i class="fa fa-pencil text-blue" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a :href="url(deleteUrl, {id: user.id})">
+                                    <i class="fa fa-fw fa-close text-danger"></i>
+                                </a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -73,16 +87,24 @@
 
 @push('scripts')
     <script>
+        var domain = '{{ config('app.url') }}';
+        var editUri = '{{ Route::getRoutes()->getByName('web_admin_users_edit')->uri }}';
+        var deleteUri = '{{ Route::getRoutes()->getByName('web_admin_users_delete')->uri }}';
+
         var usersIndexComponent = {
             data: {
                 defaultUsers: [],
                 users: [],
                 searchUsers: [],
-                isSearch: false
+                isSearch: false,
+                editUrl: '',
+                deleteUrl: '',
             },
             created: function(){
                 this.defaultUsers = JSON.parse('{!! $users->toJson() !!}').data;
                 this.users = JSON.parse('{!! $users->toJson() !!}').data;
+                this.editUrl = domain + '/' + editUri;
+                this.deleteUrl = domain + '/' + deleteUri;
             },
             methods: {
                 search: _.debounce(e => {

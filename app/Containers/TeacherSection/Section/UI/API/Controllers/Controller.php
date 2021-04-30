@@ -1,75 +1,41 @@
 <?php
 
-namespace App\Containers\Section\UI\API\Controllers;
+namespace App\Containers\TeacherSection\Section\UI\API\Controllers;
 
-use App\Containers\Section\UI\API\Requests\CreateSectionRequest;
-use App\Containers\Section\UI\API\Requests\DeleteSectionRequest;
-use App\Containers\Section\UI\API\Requests\GetAllSectionsRequest;
-use App\Containers\Section\UI\API\Requests\FindSectionByIdRequest;
-use App\Containers\Section\UI\API\Requests\UpdateSectionRequest;
-use App\Containers\Section\UI\API\Transformers\SectionTransformer;
 use App\Ship\Parents\Controllers\ApiController;
-use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Section\UI\API\Controllers
- */
 class Controller extends ApiController
 {
-    /**
-     * @param CreateSectionRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function createSection(CreateSectionRequest $request)
+    public function show()
     {
-        $section = Apiato::call('Section@CreateSectionAction', [$request]);
+        $isSuccess = \Apiato::call( 'TeacherSection\Section@ShowSectionAction', [request()->get('course_id')]);
 
-        return $this->created($this->transform($section, SectionTransformer::class));
+        if ($isSuccess) {
+            return json_encode(['msg' => __('teachersection/section::action.section-showed')]);
+        }
+
+        return abort(500);
     }
 
-    /**
-     * @param FindSectionByIdRequest $request
-     * @return array
-     */
-    public function findSectionById(FindSectionByIdRequest $request)
+    public function hide()
     {
-        $section = Apiato::call('Section@FindSectionByIdAction', [$request]);
+        $isSuccess = \Apiato::call( 'TeacherSection\Section@HideSectionAction', [request()->get('course_id')]);
 
-        return $this->transform($section, SectionTransformer::class);
+        if ($isSuccess) {
+            return json_encode(['msg' => __('teachersection/section::action.section-hidden')]);
+        }
+
+        return abort(500);
     }
 
-    /**
-     * @param GetAllSectionsRequest $request
-     * @return array
-     */
-    public function getAllSections(GetAllSectionsRequest $request)
+    public function delete()
     {
-        $sections = Apiato::call('Section@GetAllSectionsAction', [$request]);
+        $isSuccess = \Apiato::call( 'TeacherSection\Section@DeleteSectionAction', [request()->get('course_id')]);
 
-        return $this->transform($sections, SectionTransformer::class);
-    }
+        if ($isSuccess) {
+            return json_encode(['msg' => __('teachersection/section::action.section-deleted')]);
+        }
 
-    /**
-     * @param UpdateSectionRequest $request
-     * @return array
-     */
-    public function updateSection(UpdateSectionRequest $request)
-    {
-        $section = Apiato::call('Section@UpdateSectionAction', [$request]);
-
-        return $this->transform($section, SectionTransformer::class);
-    }
-
-    /**
-     * @param DeleteSectionRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function deleteSection(DeleteSectionRequest $request)
-    {
-        Apiato::call('Section@DeleteSectionAction', [$request]);
-
-        return $this->noContent();
+        return abort(500);
     }
 }

@@ -2,19 +2,23 @@
 
 @section('content')
     <section class="other_services pt-5" id="why">
-        <div class="container mb-4">
-            <div class="head-content mb-4">
-                <h1 class="heading col">
-                    Основы организации хозяйственной деятельности + КР
-                    <p class="btn-change-title-course" title="Редактировать заголовок"><i class="fa fa-pencil" aria-hidden="true"></i></p>
+        <div class="container mb-3">
+            <div class="head-content d-flex justify-content-between">
+                <h1 class="heading col" v-if="!isShowChangeTitleForm">
+                    @{{ title }}
                 </h1>
-                <div class="input-group mb-3" style="display: none">
-                    <input type="text" value="Основы организации хозяйственной деятельности + КР" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-success" type="button">Сохранить</button>
-                        <button class="btn btn-outline-danger" type="button">Отмена</button>
+                <div class="input-group mb-3" v-if="isShowChangeTitleForm">
+                    <input type="text"  class="form-control" v-model="$v.title.$model" :class="{'is-invalid' : statusValidation($v.title, $v.title.required)}" placeholder="Название раздела" aria-describedby="basic-addon1">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-outline-success" type="button" @click="updateTitle" :disabled="isActiveBtn">Сохранить</button>
+                        <button class="btn btn-outline-danger" @click="hideChangeTitleForm" type="button">Отмена</button>
+                    </div>
+                    <div class="invalid-tooltip">
+                        {{ __('ship::validation.required', ['attribute' => __('ship::attributes.title')]) }}
                     </div>
                 </div>
+
+                <p class="btn-change-title-course" v-if="!isShowChangeTitleForm" @click="showChangeTitleForm" title="Редактировать заголовок"><i class="fa fa-pencil" aria-hidden="true"></i></p>
             </div>
 
             @include('components.breadcrumbs', [$breadcrumb])
@@ -31,7 +35,7 @@
                             <div class="col">
                                 <h5>Характеристика курса</h5>
                                 <div>
-                                    {{ $course->characteristic }}
+                                    {!! $course->characteristic  !!}
                                 </div>
                             </div>
                         </div>
@@ -42,7 +46,7 @@
                             <div class="col">
                                 <h5>Описание</h5>
                                 <div>
-                                    {{ $course->little_description }}
+                                    {!! $course->little_description  !!}
                                 </div>
                             </div>
                         </div>
@@ -53,7 +57,7 @@
                             <div class="col">
                                 <h5>Цель</h5>
                                 <div>
-                                    {{ $course->target }}
+                                    {!! $course->target  !!}
                                 </div>
                             </div>
                         </div>
@@ -64,7 +68,7 @@
                             <div class="col">
                                 <h5>Список рекомендуемой литературы</h5>
                                 <div>
-                                    {{ $course->list_literature }}
+                                    {!! $course->list_literature  !!}
                                 </div>
                             </div>
                         </div>
@@ -87,7 +91,7 @@
 
                                     @if($section->is_visible)
                                     <li title="Скрыть раздел">
-                                        <a href="#" class="item-list-btns-control-section-course">
+                                        <a href="{{ route('web_teacher_sections_hide', $section->id) }}" class="item-list-btns-control-section-course">
                                             <i class="fa fa-eye" aria-hidden="true"></i>
                                         </a>
                                     </li>
@@ -95,18 +99,17 @@
 
                                     @if(!$section->is_visible)
                                     <li title="Показать раздел">
-                                        <a href="#" class="item-list-btns-control-section-course">
+                                        <a href="{{ route('web_teacher_sections_visible', $section->id) }}" class="item-list-btns-control-section-course">
                                             <i class="fa fa-eye-slash" aria-hidden="true"></i>
                                         </a>
                                     </li>
                                     @endif
 
                                     <li title="Удалить раздел">
-                                        <a href="#" class="item-list-btns-control-section-course">
+                                        <a href="{{ route('web_teacher_sections_delete', $section->id) }}" class="item-list-btns-control-section-course">
                                             <i class="fa fa-ban" aria-hidden="true"></i>
                                         </a>
                                     </li>
-
                                 </ul>
                             </div>
                         </div>
@@ -114,12 +117,12 @@
                         <div class="row">
                             <div class="col">
                                 <p style="white-space: pre-line;">
-                                    {{ $section->description }}
+                                    {!! $section->description  !!}
                                 </p>
                             </div>
                         </div>
 
-                        @if($section->links->isNotEmpty()))
+                        @if($section->links->isNotEmpty())
                         <div class="row mt-4">
                             <div class="col">
                                 <h5>Прикрепленные ссылки</h5>
@@ -149,10 +152,10 @@
                                     </thead>
                                     <tbody>
                                     @foreach($section->files as $fileIndex => $file)
-                                        <tr data-href="#" class="table-row">
+                                        <tr data-href="{{ route('web_section_file_download', $file->hash) }}" class="table-row">
                                             <td>{{ $fileIndex + 1 }}</td>
-                                            <td>
-                                                <img class="table-list-radanie-file-icon" style="width: 30px;" src="{{ asset('file_icons/png/doc.png') }}" alt="">
+                                            <td class="text-left">
+                                                <img class="table-list-radanie-file-icon" style="width: 30px;" src="{{ $file->icon }}" alt="">
                                                 <span>{{ $file->title }}</span>
                                             </td>
                                             <td>{{ $file->size }}</td>
@@ -231,7 +234,7 @@
                         </div>
                         </p>
                         <p>
-                            <a href="{{ route('web_teacher_groups_index') }}">
+                            <a href="{{ route('web_teacher_groups_index', ['course' => $course->id]) }}">
                                 Управление группами
                             </a>
                         </p>
@@ -249,3 +252,55 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+    <script>
+        validation = {
+            title: {
+                required
+            }
+        };
+
+        var errorMsg = '{{ __('ship::validation.error-server') }}';
+
+        var showCourseComponent = {
+            data: {
+                title: '{{ $course->title }}',
+                defaultTitle: '{{ $course->title }}',
+                isShowChangeTitleForm: false
+            },
+            methods: {
+                showChangeTitleForm: function(){
+                    this.isShowChangeTitleForm = true;
+                },
+                hideChangeTitleForm: function(){
+                    this.isShowChangeTitleForm = false;
+                    this.title = this.defaultTitle;
+                },
+                updateTitle: function(){
+                    var title = this.title;
+
+                    axios.post('{{ route('api_teacher_courses_update_title', $course->id) }}', {
+                        data: {
+                            course_id: '{{ $course->id }}',
+                            title: title
+                        }
+                    }).then(function(data){
+                        app.defaultTitle = app.title;
+                        app.isShowChangeTitleForm = false;
+                        alertSuccess(data.data.msg);
+                    }).catch(function(error){
+                        alertDanger(errorMsg);
+                    })
+                }
+            },
+            computed: {
+                isActiveBtn: function(){
+                    return this.statusValidation(this.$v.title, this.$v.title.required) ? 'disabled' : null;
+                }
+            }
+        };
+
+        mixins.push(showCourseComponent);
+    </script>
+@endpush

@@ -23,33 +23,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="table-row" data-href="{{ route('web_teacher_zadanies_index', 'asd') }}">
-                            <td>Название курса 1</td>
-                            <td>2</td>
-                            <td>23:33 20.11.2020</td>
-                            <td>22</td>
+                        @foreach($courses as $course)
+                        <tr class="table-row" data-href="{{ route('web_teacher_zadanies_index', $course->id) }}">
+                            <td>{{ $course->title }}</td>
+                            <td>{{ $course->countNewResponse }}</td>
+                            <td>{!! $course->lastAddResponse?->show_updated_at ?: '&mdash;'  !!}</td>
+                            <td>{{ $course->zadanies_count }}</td>
                             <td>
-                                23:33 20.11.2020
+                                {!! $course->lastAddZadanie?->show_created_at ?: '&mdash;' !!}
                             </td>
                         </tr>
-                        <tr class="table-row" data-href="{{ route('web_teacher_zadanies_index', 'asd') }}">
-                            <td>Название курса 1</td>
-                            <td>2</td>
-                            <td>23:33 20.11.2020</td>
-                            <td>22</td>
-                            <td>
-                                23:33 20.11.2020
-                            </td>
-                        </tr>
-                        <tr class="table-row" data-href="{{ route('web_teacher_zadanies_index', 'asd') }}">
-                            <td>Название курса 1</td>
-                            <td>2</td>
-                            <td>23:33 20.11.2020</td>
-                            <td>22</td>
-                            <td>
-                                23:33 20.11.2020
-                            </td>
-                        </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -57,3 +41,4 @@
         </div>
     </section>
 @endsection
+

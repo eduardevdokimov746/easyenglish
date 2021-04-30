@@ -1,21 +1,24 @@
 <?php
 
-namespace App\Containers\Group\Actions;
+namespace App\Containers\AdminSection\Group\Actions;
 
+use App\Containers\TeacherSection\Group\Models\Group;
 use App\Ship\Parents\Actions\Action;
 use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class CreateGroupAction extends Action
 {
     public function run(Request $request)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
+        $title = $request->get('title');
+        $slug = \Str::slug($title);
+        $group = Group::create(['title' => $title, 'slug' => $slug]);
 
-        $group = Apiato::call('Group@CreateGroupTask', [$data]);
+        if ($request->filled('students')) {
+            foreach (json_decode($request->get('students'), 1) as $student) {
+                $group->students()->create(['user_id' => $student['id']]);
+            }
+        }
 
-        return $group;
     }
 }

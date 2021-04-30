@@ -5,75 +5,39 @@
 
         <div style="width: 95%; margin: 0 auto">
             <div class="head-content mb-4">
-                <h1 class="heading col">Задания курса "Основы организации хозяйственной деятельности + КР"</h1>
+                <h1 class="heading col">Задания курса "{{ $course->title }}"</h1>
             </div>
 
             <div class="row">
                 <div class="py-3 col-md-9">
                     <table class="table-hover table-list-zadanie" border="1">
                         <thead>
-                        <th>№</th>
                         <th>Название</th>
                         <th>Тип</th>
                         <th>Раздел</th>
                         <th>Новых ответов</th>
                         <th>Ответов</th>
                         <th>Срок сдачи</th>
-                        <th>Дата добавления</th>
                         <th>Дата изменения</th>
                         <th>Изменить</th>
                         </thead>
-                        <tr class="table-row" data-href="{{ route('web_teacher_responses_students_index', ['asd', 'asd']) }}">
-                            <td>1</td>
-                            <td>Название задания</td>
-                            <td>Перевод</td>
-                            <td>Название раздела</td>
-                            <td>4</td>
-                            <td>22</td>
-                            <td>20.12.2020</td>
-                            <td>20.12.2020</td>
-                            <td>20.12.2020</td>
-                            <td>
-                                <a href="{{ route('web_teacher_zadanies_edit', 'asd') }}">
-                                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr class="table-row" data-href="{{ route('web_teacher_responses_students_index', ['asd', 'asd']) }}">
-                            <td>1</td>
-                            <td>Название задания</td>
-                            <td>Перевод</td>
-                            <td>Название раздела</td>
-                            <td>4</td>
-                            <td>22</td>
-                            <td>20.12.2020</td>
-                            <td>20.12.2020</td>
-                            <td>20.12.2020</td>
-                            <td>
-                                <a href="{{ route('web_teacher_zadanies_edit', 'asd') }}">
-                                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr class="table-row" data-href="{{ route('web_teacher_responses_students_index', ['asd', 'asd']) }}">
-                            <td>1</td>
-                            <td>Название задания</td>
-                            <td>Перевод</td>
-                            <td>Название раздела</td>
-                            <td>4</td>
-                            <td>22</td>
-                            <td>20.12.2020</td>
-                            <td>20.12.2020</td>
-                            <td>20.12.2020</td>
-                            <td>
-                                <a href="{{ route('web_teacher_zadanies_edit', 'asd') }}">
-                                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                        </tr>
-
+                        @foreach($zadanies as $zadanie)
+                            <tr class="table-row" data-href="{{ route('web_teacher_responses_students_index', $zadanie->id) }}">
+                                <td>{{ $zadanie->title }}</td>
+                                <td>{{ $zadanie->showType }}</td>
+                                <td>{{ $zadanie->section->title }}</td>
+                                <td>{{ $zadanie->new_responses }}</td>
+                                <td>{{ $zadanie->response_students_count }}</td>
+                                <td>{{ $zadanie->formatDate($zadanie->deadline) }}</td>
+                                <td>{{ $zadanie->show_updated_at }}</td>
+                                <td>
+                                    <a href="{{ route('web_teacher_zadanies_edit', 'asd') }}">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </table>
-
                 </div>
 
                 <div class="py-3 col-md-3 main-right-div">
@@ -81,10 +45,11 @@
                         <h4>Раздел</h4>
                         <ul>
                             <li>
-                                <select class="form-control">
-                                    <option>Все</option>
-                                    <option>Раздел 1</option>
-                                    <option>Раздел 1</option>
+                                <select v-model="currentSection" @change="changeSection" class="form-control">
+                                    <option value="all">Все</option>
+                                    @foreach($sections as $section)
+                                        <option value="{{ $section->id }}">{{ $section->title }}</option>
+                                    @endforeach
                                 </select>
                             </li>
                         </ul>
@@ -94,7 +59,7 @@
                         <h4>Поиск</h4>
                         <ul>
                             <li>
-                                <input class="form-control" type="text" placeholder="Название задания">
+                                <input class="form-control" v-model="searchQuery" @keyup="search" type="text" placeholder="Название задания">
                             </li>
                         </ul>
                     </div>
@@ -103,40 +68,112 @@
                         <h4>Сортировка</h4>
                         <ul>
                             <li>
-                                <label class="radio-li-item">Ответам
-                                    <input name="radio-1" type="radio" checked>
+                                <label class="radio-li-item">Новых ответов
+                                    <input name="radio-1" @click="sort('response')" {{ request()->get('sort', 'response') == 'response' ? 'checked' : '' }} type="radio">
                                     <span class="checkmark"></span>
                                 </label>
                             </li>
                             <li>
-                                <label class="radio-li-item">Задание
-                                    <input name="radio-1" type="radio">
+                                <label class="radio-li-item">Название задания
+                                    <input name="radio-1" {{ request()->get('sort') == 'zadanie' ? 'checked' : '' }} @click="sort('zadanie')" type="radio">
                                     <span class="checkmark"></span>
-                                </label>
-                            </li>
-                            <li>
-                                <label class="radio-li-item">Раздел
-                                    <input name="radio-1" type="radio">
-                                    <span class="checkmark"></span>
-                                </label>
-                            </li>
-                            <li>
-                                <label class="radio-li-item">Дата ответа
-                                    <input name="radio-1"  type="radio">
-                                    <span name="radio-1" class="checkmark"></span>
-                                </label>
-                            </li>
-                            <li>
-                                <label class="radio-li-item">Изменению
-                                    <input name="radio-1"  type="radio">
-                                    <span name="radio-1" class="checkmark"></span>
                                 </label>
                             </li>
                         </ul>
                     </div>
-
                 </div>
             </div>
         </div>
     </section>
 @endsection
+
+@push('scripts')
+    <script>
+        var courseZadanies = {
+            data: {
+                currentSection: '{{ request()->get('section', 'all') }}',
+                domain: '{{ config('app.url') }}',
+                searchQuery: '{{ request()->get('search') }}'
+            },
+            methods: {
+                changeSection: function(){
+                    var path = window.location.pathname;
+                    var query = window.location.search;
+
+                    if (query.length > 0) {
+                        var params = query.replace('?', '').split('&');
+
+                        var index = _.findIndex(params, function(item){
+                            return item.search(/section/) != -1;
+                        });
+
+                        if(index !== -1) {
+                            params[index] = 'section=' + this.currentSection;
+                        }else{
+                            params.push('section=' + this.currentSection);
+                        }
+
+                        query = '?' + params.join('&');
+                    }else{
+                        query = '?section=' + this.currentSection;
+                    }
+
+                    window.location.href = this.domain + path + query;
+                },
+                search: _.debounce(function(e){
+                    if(e.target.keyCode == 13)
+                        return;
+
+                    var path = window.location.pathname;
+                    var query = window.location.search;
+
+                    if (query.length > 0) {
+                        var params = query.replace('?', '').split('&');
+
+                        var index = _.findIndex(params, function(item){
+                            return item.search(/search/) != -1;
+                        });
+
+                        if(index !== -1) {
+                            params[index] = 'search=' + app.searchQuery;
+                        }else{
+                            params.push('search=' + app.searchQuery);
+                        }
+
+                        query = '?' + params.join('&');
+                    }else{
+                        query = '?search=' + this.searchQuery;
+                    }
+
+                    window.location.href = this.domain + path + query;
+                }, 500),
+                sort: function(type){
+                    var path = window.location.pathname;
+                    var query = window.location.search;
+
+                    if (query.length > 0) {
+                        var params = query.replace('?', '').split('&');
+
+                        var index = _.findIndex(params, function(item){
+                            return item.search(/sort/) != -1;
+                        });
+
+                        if(index !== -1) {
+                            params[index] = 'sort=' + type;
+                        }else{
+                            params.push('sort=' + type);
+                        }
+
+                        query = '?' + params.join('&');
+                    }else{
+                        query = '?sort=' + type;
+                    }
+
+                    window.location.href = this.domain + path + query;
+                }
+            }
+        };
+
+        mixins.push(courseZadanies);
+    </script>
+@endpush

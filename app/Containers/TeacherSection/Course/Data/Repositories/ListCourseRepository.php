@@ -11,7 +11,7 @@ class ListCourseRepository
     {
         return Course::select(['id', 'title', 'created_at', 'updated_at', 'is_visible'])
             ->where('user_id', $user_id)
-            ->withCount(['sections'])
+            ->withCount(['sections', 'groups'])
             ->get();
     }
 }

@@ -1,21 +1,16 @@
 <?php
 
-namespace App\Containers\Course\Actions;
+namespace App\Containers\TeacherSection\Course\Actions;
 
+use App\Containers\TeacherSection\Course\Models\Course;
 use App\Ship\Parents\Actions\Action;
 use App\Ship\Parents\Requests\Request;
 use Apiato\Core\Foundation\Facades\Apiato;
 
 class UpdateCourseAction extends Action
 {
-    public function run(Request $request)
+    public function run($course_id, $data)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
-
-        $course = Apiato::call('Course@UpdateCourseTask', [$request->id, $data]);
-
-        return $course;
+        Course::where('id', $course_id)->update($data);
     }
 }

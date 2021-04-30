@@ -2,13 +2,8 @@
 
 namespace App\Containers\AdminSection\User\UI\WEB\Controllers;
 
-use App\Containers\User1\UI\WEB\Requests\CreateUser1Request;
-use App\Containers\User1\UI\WEB\Requests\DeleteUser1Request;
-use App\Containers\User1\UI\WEB\Requests\GetAllUser1sRequest;
-use App\Containers\User1\UI\WEB\Requests\FindUser1ByIdRequest;
-use App\Containers\User1\UI\WEB\Requests\UpdateUser1Request;
+use App\Containers\AdminSection\User\UI\WEB\Requests\UpdateUserRequest;
 use App\Containers\AdminSection\User\UI\WEB\Requests\StoreUserRequest;
-use App\Containers\User1\UI\WEB\Requests\EditUser1Request;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 
@@ -21,39 +16,51 @@ class Controller extends WebController
         return view('adminsection/user::index', compact('users'));
     }
 
-    public function show(FindUser1ByIdRequest $request)
-    {
-        $user1 = Apiato::call('User1@FindUser1ByIdAction', [$request]);
-
-        // ..
-    }
-
     public function create()
     {
-        return view('adminsection/user::create');
+        $groups = \Apiato::call('TeacherSection\Group@GetAllGroupsAction');
+
+        return view('adminsection/user::create', compact('groups'));
     }
 
-    public function store()
+    public function store(StoreUserRequest $request)
     {
-        dd(request()->all());
+        try{
+            $user = \Apiato::call('AdminSection\User@CreateUserAction', [$request]);
+
+            return redirect()->route('web_admin_users_edit', [$user->id])->with(['success-notice' => __('adminsection/user::action.create-user')]);
+        }catch (\Exception){
+            return abort('500')->with(['danger-notice' => __('ship::validation.error-server')]);
+        }
     }
 
-    public function edit()
+    public function edit($id)
     {
-        return view('adminsection/user::edit');
+        $user = \Apiato::call('User@FindUserByIdAction', [$id]);
+        $groups = \Apiato::call('TeacherSection\Group@GetAllGroupsAction');
+
+        return view('adminsection/user::edit', compact('user', 'groups'));
     }
 
-    public function update(UpdateUser1Request $request)
+    public function update(UpdateUserRequest $request)
     {
-        $user1 = Apiato::call('User1@UpdateUser1Action', [$request]);
+        try{
+            \Apiato::call('AdminSection\User@UpdateUserAction', [$request->get('id'), $request]);
 
-        // ..
+            return redirect()->route('web_admin_users_edit', [$request->get('id')])->with(['success-notice' => __('ship::action.data-success-updated')]);
+        }catch (\Exception){
+            return abort('500')->with(['danger-notice' => __('ship::validation.error-server')]);
+        }
     }
 
-    public function delete(DeleteUser1Request $request)
+    public function delete()
     {
-         $result = Apiato::call('User1@DeleteUser1Action', [$request]);
+        $isSuccess = \Apiato::call('AdminSection\User@DeleteUserAction', [request()->id]);
 
-         // ..
+        if ($isSuccess) {
+            return back()->with(['success-notice' => __('adminsection/user::action.delete-user')]);
+        }
+
+        return back()->with(['danger-notice' => __('ship::validation.error-server')]);
     }
 }

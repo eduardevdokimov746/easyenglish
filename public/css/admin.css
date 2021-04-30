@@ -57,3 +57,58 @@
 .btn-active-notice-material{
     color: #3369e7;
 }
+
+.width-max{
+    width: 100%;
+}
+
+/* Блок с уведомлениями */
+.alert-success-custom{
+    color: #fff;
+    background-color: #00a550;
+    border-color: #14c86b;
+    position: fixed;
+    right: 18px;
+    width: 290px;
+    z-index: 9999;
+    top: 40px;
+}
+
+.alert-success-custom a{
+    color: white;
+}
+
+.alert-success-custom button, .alert-danger-custom button, .alert-warning-custom button{
+    -webkit-appearance: none;
+    padding: 0;
+    cursor: pointer;
+    background: 0 0;
+    border: 0;
+    position: absolute;
+    right: 8px;
+    top: 4px;
+}
+
+.alert-danger-custom{
+    color: #fff;
+    background-color: #fd5725;
+    border-color: #ff0000;
+    position: fixed;
+    right: 18px;
+    width: 290px;
+    z-index: 9999;
+    top: 40px;
+}
+
+.alert-warning-custom{
+    color: #fff;
+    background-color: #18a1d6;
+    border-color: #00d2ca;
+    position: fixed;
+    right: 18px;
+    width: 290px;
+    z-index: 9999;
+    top: 40px;
+}
+
+/* Блок с уведомлениями */

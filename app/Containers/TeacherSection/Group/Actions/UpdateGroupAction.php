@@ -1,21 +1,34 @@
 <?php
 
-namespace App\Containers\Group\Actions;
+namespace App\Containers\TeacherSection\Group\Actions;
 
+use App\Containers\TeacherSection\Course\Models\CourseGroup;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class UpdateGroupAction extends Action
 {
-    public function run(Request $request)
+    public function run($request)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
+        $course_id = $request->id;
 
-        $group = Apiato::call('Group@UpdateGroupTask', [$request->id, $data]);
+        if ($request->filled('groups')) {
+            $groups = collect(json_decode($request->get('groups')));
 
-        return $group;
+            $addGroups = $groups->filter(function($item){
+                return $item->action == 'add';
+            });
+
+            $deleteGroups = $groups->filter(function($item){
+                return $item->action == 'delete';
+            });
+
+            foreach ($addGroups as $group) {
+                CourseGroup::create(['course_id' => $course_id, 'group_id' => $group->id]);
+            }
+
+            foreach ($deleteGroups as $group) {
+                CourseGroup::where('course_id', $course_id)->where('group_id', $group->id)->delete();
+            }
+        }
     }
 }

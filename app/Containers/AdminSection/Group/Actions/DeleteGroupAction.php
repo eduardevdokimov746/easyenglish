@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Containers\Group\Actions;
+namespace App\Containers\AdminSection\Group\Actions;
 
+use App\Containers\TeacherSection\Group\Models\Group;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class DeleteGroupAction extends Action
 {
-    public function run(Request $request)
+    public function run($group_id)
     {
-        return Apiato::call('Group@DeleteGroupTask', [$request->id]);
+        return Group::where('id', $group_id)->delete();
     }
 }

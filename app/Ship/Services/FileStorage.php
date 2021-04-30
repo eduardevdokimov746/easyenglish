@@ -8,12 +8,14 @@ use Illuminate\Http\UploadedFile;
 class FileStorage
 {
     protected $pathIcons = 'file_icons/png/';
+    protected $currentUploadFolder = '';
     protected $currentFolder = '';
+    protected $currentPublicFolder = '';
 
     public function add($fileTmpPath, $fileName)
     {
-        $fileName = md5($fileName) . '.' . $this->getExtension($fileName);
-        $path = storage_path($this->currentFolder . $fileName);
+        $fileName = md5($fileName . $fileTmpPath) . '.' . $this->getExtension($fileName);
+        $path = storage_path($this->currentUploadFolder . $fileName);
 
         try{
             move_uploaded_file($fileTmpPath, $path);
@@ -72,8 +74,14 @@ class FileStorage
 
     public function toSection(): self
     {
-        $this->currentFolder = 'app/public/section/';
+        $this->currentFolder = 'section/';
+        $this->currentUploadFolder = 'app/public/section/';
         return $this;
+    }
+
+    public function getPathForDownload($fileName)
+    {
+        return $this->currentFolder . $fileName;
     }
 
     private function mapIcons($ext): string

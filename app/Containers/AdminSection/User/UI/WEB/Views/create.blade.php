@@ -3,26 +3,34 @@
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
+
+            @include('components.notices-admin')
             <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
+                <div class="row mb-2 d-flex justify-content-between">
+                    <div>
                         <h1>Создание пользователя</h1>
                     </div>
 
-                    <div class="col-sm-6">
+                    <div>
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item">
-                                <a href="#">Главная</a>
-                            </li>
-                            <li class="breadcrumb-item">
-                                <a href="#">Список</a>
-                            </li>
+                            <li class="breadcrumb-item"><a href="{{ route('web_admin_index') }}">Главная</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('web_admin_user_index', ['role' => request()->get('role', 'student')]) }}">Список аккаунтов</a></li>
                             <li class="breadcrumb-item active">Создание пользователя</li>
                         </ol>
                     </div>
                 </div>
             </div>
         </section>
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul style="list-style: none">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <section class="content">
             <form action="{{ route('web_admin_users_store') }}" method="post" enctype="multipart/form-data">
@@ -37,11 +45,13 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <h5 class="mt-2">Текущее</h5>
+                        <h5>Текущее</h5>
+
+                        <input type="hidden" name="isDefaultAvatar" value="0" id="isDefaultAvatar">
 
                         <div class="block-content-profile col-3 mt-2">
                             <div>
-                                <img src="{{ asset('images/no_image_user.png') }}" alt="">
+                                <img id="block-avatar" width="200" src="{{ asset('images/no_image_user.png') }}" alt="">
                             </div>
                         </div>
 
@@ -49,7 +59,15 @@
                             <label for="photo-profile">
                                 Изменить фото
                             </label>
-                            <input class="form-control" style="height: auto;" type="file" id="photo-profile" name="avatar">
+                            <input class="form-control" style="height: auto;" type="file" id="photo-profile" name="users[avatar]">
+
+                            <div class="invalid-feedback">
+                                {{ __('ship::validation.type-photo') }}
+                            </div>
+
+                            <div class="mt-2">
+                                <button class="btn btn-danger" onclick="setDefaultAvatar(event)">Удалить фото</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -64,7 +82,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="mt-2 form-group">
+                        <div class="form-group">
                             <label for="first-name">
                                 Имя
                             </label>
@@ -85,7 +103,7 @@
                         </div>
                         <div class="mt-2 form-group">
                             <label for="login" style="position: relative;">
-                                Логин
+                                Логин <span class="text-danger" title="Обязательно для заполнения">*</span>
                                 <i class="fa fa-question-circle-o" @click="showHideNoticeMaterial" :class="{ 'btn-active-notice-material' : isVisibleNoticeMaterial }" id="btn-notice-material" aria-hidden="true"></i>
                                 <div class="notice-autowrite-material" v-show="isVisibleNoticeMaterial">
                                     <p>
@@ -93,11 +111,11 @@
                                     </p>
                                 </div>
                             </label>
-                            <input class="form-control" type="text" :value="login" id="login" name="users[login]">
+                            <input class="form-control" type="text" v-model="login" id="login" name="users[login]">
                         </div>
                         <div class="mt-2 form-group">
                             <label for="email">
-                                Email
+                                Email <span class="text-danger" title="Обязательно для заполнения">*</span>
                             </label>
                             <input
                                     type="email"
@@ -113,14 +131,15 @@
                         </div>
 
                         <div class="mt-2 form-group">
-                            <label for="new_password">
-                                Пароль
+                            <label for="password" class="width-max">
+                                Пароль <span class="text-danger" title="Обязательно для заполнения">*</span>
                             </label>
-                            <label>
-                                (Показать
-                                <input type="checkbox">)
-                            </label>
-                            <input type="password" class="form-control" id="new_password" name="users[password]">
+                            <div class="input-group">
+                                <input id="password" :value="password" type="text" class="form-control" name="users[password]" aria-label="" aria-describedby="basic-addon1">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" @click="generatePassword">Сгенерировать</button>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mt-2 form-group">
@@ -134,7 +153,6 @@
                                 Роль <span class="text-danger" title="Обязательно для заполнения">*</span>
                             </label>
                             <select class="form-control" name="users[role]" v-model="role">
-                                <option selected value="default">Выберете роль</option>
                                 <option value="admin">Администратор</option>
                                 <option value="teacher">Преподаватель</option>
                                 <option value="student">Студент</option>
@@ -148,10 +166,9 @@
                             </label>
                             <select class="form-control" v-model="group" name="group" :disabled="!isRoleStudent">
                                 <option selected value="default">Выберете группу</option>
-                                <option>СКС-17</option>
-                                <option>СКС-18</option>
-                                <option>СКС-19</option>
-                                <option>СКС-20</option>
+                                @foreach($groups as $group)
+                                    <option value="{{ $group->slug }}">{{ $group->title }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -167,7 +184,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="mt-2 form-group">
+                        <div class="form-group">
                             <label for="city">
                                 Город
                             </label>
@@ -189,7 +206,8 @@
                 </div>
 
                 <div class="d-flex justify-content-end mt-3 pb-3">
-                    <button href="#" class="btn btn-primary">Создать</button>
+                    <a href="{{ route('web_admin_user_index', ['role' => request()->get('role', 'student')]) }}" class="btn btn-danger mr-2">Отмена</a>
+                    <button class="btn btn-primary">Создать</button>
                 </div>
             </form>
         </section>
@@ -211,12 +229,20 @@
                 last_name: '',
                 otchestvo: '',
                 email: 'localhost@mail.com',
-                role: 'default',
+                role: '{{ request()->get('role', 'student') }}',
                 group: 'default',
+                password: '',
+                login: ''
+            },
+            created: function(){
+                this.generatePassword();
             },
             methods:{
                 showHideNoticeMaterial: function(){
                     this.isVisibleNoticeMaterial = this.isVisibleNoticeMaterial ? false : true;
+                },
+                generatePassword: function(){
+                    this.password = getRandom(1000, 9999);
                 }
             },
             watch: {
@@ -224,21 +250,57 @@
                     if(this.email.length <= 0){
                         this.email = 'localhost@mail.com';
                     }
+                },
+                first_name: function(){
+                    if(isNotEmptyString(this.last_name) && isNotEmptyString(this.first_name) && isNotEmptyString(this.otchestvo)){
+
+                        if(this.isRoleStudent && this.group.length && this.group !== 'default'){
+                            this.login = toSlug(this.group + '-' + this.last_name + '-' + this.first_name.substr(0, 1) + this.otchestvo.substr(0, 1));
+                            return;
+                        }
+
+                        this.login = toSlug(this.last_name + '-' + this.first_name.substr(0, 1) + this.otchestvo.substr(0, 1));
+                        return;
+                    }
+                },
+                last_name: function(){
+                    if(isNotEmptyString(this.last_name) && isNotEmptyString(this.first_name) && isNotEmptyString(this.otchestvo)){
+
+                        if(this.isRoleStudent && this.group.length && this.group !== 'default'){
+                            this.login = toSlug(this.group + '-' + this.last_name + '-' + this.first_name.substr(0, 1) + this.otchestvo.substr(0, 1));
+                            return;
+                        }
+
+                        this.login = toSlug(this.last_name + '-' + this.first_name.substr(0, 1) + this.otchestvo.substr(0, 1));
+                        return;
+                    }
+                },
+                otchestvo: function(){
+                    if(isNotEmptyString(this.last_name) && isNotEmptyString(this.first_name) && isNotEmptyString(this.otchestvo)){
+
+                        if(this.isRoleStudent && this.group.length && this.group !== 'default'){
+                            this.login = toSlug(this.group + '-' + this.last_name + '-' + this.first_name.substr(0, 1) + this.otchestvo.substr(0, 1));
+                            return;
+                        }
+
+                        this.login = toSlug(this.last_name + '-' + this.first_name.substr(0, 1) + this.otchestvo.substr(0, 1));
+                        return;
+                    }
+                },
+                group: function(){
+                    if(isNotEmptyString(this.last_name) && isNotEmptyString(this.first_name) && isNotEmptyString(this.otchestvo)){
+
+                        if(this.isRoleStudent && this.group.length && this.group !== 'default'){
+                            this.login = toSlug(this.group + '-' + this.last_name + '-' + this.first_name.substr(0, 1) + this.otchestvo.substr(0, 1));
+                            return;
+                        }
+
+                        this.login = toSlug(this.last_name + '-' + this.first_name.substr(0, 1) + this.otchestvo.substr(0, 1));
+                        return;
+                    }
                 }
             },
             computed: {
-                login: function(){
-                    if(isNotEmptyString(this.last_name) && isNotEmptyString(this.first_name) && isNotEmptyString(this.otchestvo)){
-
-                        if(this.isRoleStudent && this.group.length){
-                            return this.group + '-' + this.last_name + '-' + this.first_name.substr(0, 1) + this.otchestvo.substr(0, 1);
-                        }
-
-                        return this.last_name + '-' + this.first_name.substr(0, 1) + this.otchestvo.substr(0, 1);
-                    }
-
-                    return '';
-                },
                 isRoleStudent: function(){
                     return this.role === 'student' ? true : false;
                 }
@@ -246,5 +308,44 @@
         };
 
         mixins.push(createMaterialComponent);
+
+        $(document).ready(function(){
+            var user_avatar = '{{ asset('images/no_image_user.png') }}';
+
+            $('#photo-profile').change(function(event) {
+                let reader = new FileReader();
+
+                reader.onload = (e) => {
+                    $('#block-avatar').attr('src', e.target.result);
+                };
+
+                if (this.files[0]) {
+                    if (
+                        this.files[0].type !== 'image/jpeg' &&
+                        this.files[0].type !== 'image/jpg' &&
+                        this.files[0].type !== 'image/png')
+                    {
+                        $(this).addClass('is-invalid');
+                        return;
+                    }
+
+                    $(this).removeClass('is-invalid');
+
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    $('#block-avatar').attr('src', user_avatar);
+                }
+                $('#isDefaultAvatar').attr('value', 0);
+            });
+        });
+
+        var defaultAvatar = '{{ asset('storage/users/profile_avatars/no_image_user.png') }}';
+
+        function setDefaultAvatar(event) {
+            event.preventDefault();
+            $('#isDefaultAvatar').attr('value', 1);
+            $('#block-avatar').attr('src', defaultAvatar);
+            $('#photo-profile').val('');
+        }
     </script>
 @endpush

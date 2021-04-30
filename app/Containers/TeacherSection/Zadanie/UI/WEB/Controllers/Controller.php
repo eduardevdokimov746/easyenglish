@@ -12,43 +12,39 @@ use App\Containers\Zadanie\UI\WEB\Requests\EditZadanieRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Teacher\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllTeachersRequest $request
-     */
-    public function index()
+    public function index($id)
     {
-        return view('teachersection/zadanie::index');
+        $course = Apiato::call('TeacherSection\Course@FindCourseByIdAction', [$id]);
+
+        if ($this->isNotTeacher() || \Gate::denies('update-course', $course)) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $zadanies = \Apiato::call('TeacherSection\Zadanie@GetZadaniesWithSectionListAction', [$id]);
+        $sections = \Apiato::call('TeacherSection\Zadanie@GetAllSectionsForCourseAction', [$id]);
+
+        return view('teachersection/zadanie::index', compact('zadanies', 'sections', 'course'));
     }
 
     public function zadanies()
     {
-        return view('teachersection/zadanie::courses_zadanies');
+        if ($this->isNotTeacher()) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $courses = \Apiato::call('TeacherSection\Zadanie@GetZadaniesWithCourseListAction', [\Auth::id()]);
+
+        $activePavItem = 'zadanies';
+        return view('teachersection/zadanie::courses_zadanies', compact('activePavItem', 'courses'));
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindTeacherByIdRequest $request
-     */
     public function show()
     {
         return view('teachersection/zadanie::show');
     }
 
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateTeacherRequest $request
-     */
     public function create()
     {
         if(request()->get('type') == 'testing'){
@@ -58,11 +54,6 @@ class Controller extends WebController
         return view('teachersection/zadanie::create_main');
     }
 
-    /**
-     * Add a new entity
-     *
-     * @param StoreTeacherRequest $request
-     */
     public function store(StoreTeacherRequest $request)
     {
         $teacher = Apiato::call('Teacher@CreateTeacherAction', [$request]);
@@ -70,11 +61,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditTeacherRequest $request
-     */
     public function edit()
     {
         //Определяем тип задания
@@ -87,11 +73,6 @@ class Controller extends WebController
         return view('teachersection/zadanie::edit_main');
     }
 
-    /**
-     * Update a given entity
-     *
-     * @param UpdateTeacherRequest $request
-     */
     public function update(UpdateTeacherRequest $request)
     {
         $teacher = Apiato::call('Teacher@UpdateTeacherAction', [$request]);
@@ -99,11 +80,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteTeacherRequest $request
-     */
     public function delete(DeleteTeacherRequest $request)
     {
         $result = Apiato::call('Teacher@DeleteTeacherAction', [$request]);

@@ -1,13 +1,17 @@
 <?php
 
-namespace App\Containers\ResponseStudent\Models;
+namespace App\Containers\TeacherSection\ResponseStudent\Models;
 
+use App\Containers\TeacherSection\ResponseTeacher\Models\ResponseTeacher;
+use App\Containers\User\Models\User;
 use App\Ship\Parents\Models\Model;
 
 class ResponseStudent extends Model
 {
-    protected $fillable = [
+    protected $table = 'responses_students';
 
+    protected $fillable = [
+        'updated_at'
     ];
 
     protected $attributes = [
@@ -31,4 +35,14 @@ class ResponseStudent extends Model
      * A resource key to be used by the the JSON API Serializer responses.
      */
     protected $resourceKey = 'responsestudents';
+
+    public function responseTeacher()
+    {
+        return $this->hasOne(ResponseTeacher::class, 'response_student_id', 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

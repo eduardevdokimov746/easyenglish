@@ -14,6 +14,7 @@ class Email extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'user_id',
         'email',
         'is_visible',
         'is_confirmation',

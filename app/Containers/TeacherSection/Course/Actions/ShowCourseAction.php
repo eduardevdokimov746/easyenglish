@@ -9,11 +9,6 @@ class ShowCourseAction extends Action
 {
     public function run(int $course_id)
     {
-        try{
-            Course::where('id', $course_id)->update(['is_visible' => 1]);
-            return true;
-        }catch (\Exception){
-            return false;
-        }
+        Course::where('id', $course_id)->update(['is_visible' => 1]);
     }
 }

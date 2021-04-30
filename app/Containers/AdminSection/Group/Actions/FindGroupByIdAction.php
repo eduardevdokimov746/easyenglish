@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Containers\Group\Actions;
+namespace App\Containers\AdminSection\Group\Actions;
 
+use App\Containers\TeacherSection\Group\Models\Group;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class FindGroupByIdAction extends Action
 {
-    public function run(Request $request)
+    public function run($id)
     {
-        $group = Apiato::call('Group@FindGroupByIdTask', [$request->id]);
+        $group = Group::where('id', $id)->with('students.student')->first();
 
         return $group;
     }

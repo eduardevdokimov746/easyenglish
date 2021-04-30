@@ -117,16 +117,25 @@
                                             <span class="btn-delete-link" title="Удалить ссылку" @click="deleteLink(indexSection, indexLink)">
                                                 <i class="fa fa-times" aria-hidden="true"></i>
                                             </span>
-                                            <p>
-                                                <label>Название ссылки:
-                                                    <input type="text" v-model="link.title">
-                                                </label>
-                                            </p>
-                                            <p>
-                                                <label>Адрес<span class="mark-required-field" title="Обязательно для заполнения">*</span>:
-                                                    <input type="text" v-model="link.url">
-                                                </label>
-                                            </p>
+
+                                            <div class="input-group mb-3" style="width: 95%">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="inputGroup-sizing-default">Название</span>
+                                                </div>
+                                                <input type="text" class="form-control" v-model="link.title" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                            </div>
+
+                                            <div class="input-group mb-3" style="width: 95%">
+                                                <div class="input-group-prepend">
+                                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@{{ link.type }}</button>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" style="cursor: pointer" @click="selectLinkType(indexSection, indexLink, 'http')">http://</a>
+                                                        <a class="dropdown-item" style="cursor: pointer" @click="selectLinkType(indexSection, indexLink, 'https')">https://</a>
+                                                    </div>
+                                                </div>
+
+                                                <input type="text" class="form-control" placeholder="yandex.ru" v-model="link.url">
+                                            </div>
                                         </div>
 
                                         <button type="button" class="btn btn-info" @click="addLink(indexSection)">Добавить ссылку</button>
@@ -182,8 +191,7 @@
                     </div>
 
                     <div>
-                        {{--@click.prevent="submitBtn"--}}
-                        <button class="btn btn-primary">Создать</button>
+                        <button class="btn btn-primary" @click.prevent="submitBtn">Создать</button>
                     </div>
                 </div>
             </form>
@@ -261,11 +269,23 @@
                 addLink: function(indexSection){
                     this.sections[indexSection].links.push({
                         title: '',
-                        url: ''
+                        url: '',
+                        type: 'https://'
                     });
                 },
                 deleteLink: function(indexSection, indexLink){
                     this.sections[indexSection].links.splice(indexLink, 1);
+                },
+                selectLinkType: function(indexSection, indexLink, type){
+                    console.log(indexSection, indexLink, type);
+                    switch (type) {
+                        case('http'):
+                            this.sections[indexSection].links[indexLink].type = 'http://';
+                            return;
+                        case('https'):
+                            this.sections[indexSection].links[indexLink].type = 'https://';
+                            return;
+                    }
                 },
                 submitBtn: function(){
                     var form = new FormData();
@@ -275,26 +295,29 @@
                     form.append('little_description', editor_little_description.getData());
                     form.append('target', editor_target.getData());
                     form.append('list_literature', editor_list_literature.getData());
-                    form.append('is_visible', $('input[name=is_visible]').is(':checked'));
+                    form.append('is_visible', $('input[name=is_visible]').is(':checked') ? 1 : 0);
 
-                    var sections = this.sections;
+                    if(this.sections.length > 0){
+                        var sections = this.sections;
 
-                    sections.forEach(function callback(item, index, sections) {
-                        if (window['editor_section_' + index + '_description']) {
-                            item['description'] = window['editor_section_' + index + '_description'].getData();
-                        } else {
-                            item['description'] = '';
-                        }
+                        sections.forEach(function callback(item, index, sections) {
+                            if (window['editor_section_' + index + '_description']) {
+                                item['description'] = window['editor_section_' + index + '_description'].getData();
+                            } else {
+                                item['description'] = '';
+                            }
 
-                        var files = item.filesRequest;
+                            var files = item.filesRequest;
 
-                        files.forEach(function(file, indexFile, files){
-                            form.append('file_section_' + index + '_' + indexFile, file);
+                            files.forEach(function(file, indexFile, files){
+                                form.append('file_section_' + index + '_' + indexFile, file);
+                            });
                         });
-                    });
+                        form.append('sections', JSON.stringify(sections));
+                    }
 
-                    form.append('sections', JSON.stringify(sections));
                     form.append('_token', token);
+
 
                     $.ajax({
                         url: '{{ route('web_teacher_courses_store') }}',
@@ -307,6 +330,9 @@
                             console.log(data);
                             if(data.status == 'success'){
                                 alertSuccess(successMsg);
+                                setTimeout(function(){
+                                    window.location.href = '{{ route('web_teacher_courses_index') }}';
+                                }, 1000);
                             }
 
                             if(data.status == 'error'){
@@ -314,6 +340,7 @@
                             }
                         },
                         error: function(error){
+                            console.log(error);
                             alertDanger(errorMsg);
                         }
                     });

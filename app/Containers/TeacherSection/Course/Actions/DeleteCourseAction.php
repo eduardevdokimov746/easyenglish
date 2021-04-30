@@ -9,12 +9,6 @@ class DeleteCourseAction extends Action
 {
     public function run(int $course_id)
     {
-        try{
-            Course::where('id', $course_id)->delete();
-
-            return true;
-        }catch (\Exception){
-            return false;
-        }
+        Course::where('id', $course_id)->delete();
     }
 }

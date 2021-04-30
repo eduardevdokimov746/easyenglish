@@ -1,29 +1,14 @@
 <?php
 
-namespace App\Containers\Group\Tasks;
+namespace App\Containers\AdminSection\Group\Tasks;
 
-use App\Containers\Group\Data\Repositories\GroupRepository;
-use App\Ship\Exceptions\DeleteResourceFailedException;
+use App\Containers\AdminSection\Group\Models\StudentGroup;
 use App\Ship\Parents\Tasks\Task;
-use Exception;
 
 class DeleteGroupTask extends Task
 {
-
-    protected $repository;
-
-    public function __construct(GroupRepository $repository)
+    public function run($user_id)
     {
-        $this->repository = $repository;
-    }
-
-    public function run($id)
-    {
-        try {
-            return $this->repository->delete($id);
-        }
-        catch (Exception $exception) {
-            throw new DeleteResourceFailedException();
-        }
+        StudentGroup::where('user_id', $user_id)->delete();
     }
 }

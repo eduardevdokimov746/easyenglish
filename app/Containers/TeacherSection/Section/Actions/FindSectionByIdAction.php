@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Containers\Section\Actions;
+namespace App\Containers\TeacherSection\Section\Actions;
 
+use App\Containers\TeacherSection\Section\Models\Section;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class FindSectionByIdAction extends Action
 {
-    public function run(Request $request)
+    public function run(int $section_id)
     {
-        $section = Apiato::call('Section@FindSectionByIdTask', [$request->id]);
+        $section = Section::where('id', $section_id)->with(['course', 'links', 'files'])->first();
 
         return $section;
     }

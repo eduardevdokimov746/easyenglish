@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Containers\Zadanie\Actions;
+namespace App\Containers\TeacherSection\Zadanie\Actions;
 
+use App\Containers\TeacherSection\Zadanie\Models\Zadanie;
 use App\Ship\Parents\Actions\Action;
 use App\Ship\Parents\Requests\Request;
 use Apiato\Core\Foundation\Facades\Apiato;
 
 class FindZadanieByIdAction extends Action
 {
-    public function run(Request $request)
+    public function run($id)
     {
-        $zadanie = Apiato::call('Zadanie@FindZadanieByIdTask', [$request->id]);
-
-        return $zadanie;
+        return Zadanie::where('id', $id)->first();
     }
 }

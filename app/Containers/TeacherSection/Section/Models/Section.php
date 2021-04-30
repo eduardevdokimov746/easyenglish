@@ -2,6 +2,7 @@
 
 namespace App\Containers\TeacherSection\Section\Models;
 
+use App\Containers\TeacherSection\Course\Models\Course;
 use App\Containers\TeacherSection\Zadanie\Models\Zadanie;
 use App\Ship\Parents\Models\Model;
 
@@ -47,5 +48,10 @@ class Section extends Model
     public function zadanies()
     {
         return $this->hasMany(Zadanie::class, 'section_id', 'id');
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id', 'id');
     }
 }

@@ -8,7 +8,6 @@ class Controller extends WebController
 {
     public function index()
     {
-        dd(\Auth::user());
         return view('index::index');
     }
 }

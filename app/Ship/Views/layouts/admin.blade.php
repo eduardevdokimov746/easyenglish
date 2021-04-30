@@ -16,7 +16,6 @@
 <body class="hold-transition sidebar-mini">
 
 @include('components.noscript')
-
     <div id="app" class="wrapper">
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
@@ -39,7 +38,7 @@
                             </p>
                         </li>
                         <li class="user-footer">
-                            <a href="#" class="btn btn-default btn-flat">Профиль</a>
+                            <a href="{{ route('web_admin_users_edit', auth()->id()) }}" class="btn btn-default btn-flat">Профиль</a>
                             <a href="{{ route('web_admin_logout') }}" class="btn btn-default btn-flat float-right">Выйти</a>
                         </li>
                     </ul>

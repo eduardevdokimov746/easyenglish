@@ -12,4 +12,11 @@ class Controller extends ApiController
 
         return $this->json($users);
     }
+
+    public function searchStudents()
+    {
+        $students = \Apiato::call('AdminSection\User@GetAllStudentsFromQueryAction', [request()->get('query')]);
+
+        return $this->json($students);
+    }
 }

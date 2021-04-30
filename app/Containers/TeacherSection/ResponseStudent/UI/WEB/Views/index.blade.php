@@ -5,7 +5,7 @@
 
         <div style="width: 95%; margin: 0 auto">
             <div class="head-content mb-4">
-                <h1 class="heading col">Ответы студентов на "Название задания"</h1>
+                <h1 class="heading col">Ответы студентов на "{{ $zadanie->title }}"</h1>
             </div>
 
             <div class="row">
@@ -20,43 +20,17 @@
                         <th>Оцененно</th>
                         <th>Изменение оценки</th>
                         </thead>
+                        @foreach($responses as $response)
                         <tr class="table-row" data-href="{{ route('web_teacher_responses_students_show', ['asd', 'asd', 'asd']) }}">
-                            <td>СКС-17</td>
-                            <td>Евдокимов Эдуард Игоревич</td>
-                            <td>20.20.2021</td>
-                            <td>20.20.2021</td>
-                            <td>10</td>
-                            <td>20.20.2021</td>
-                            <td>20.20.2021</td>
+                            <td>{{ $response->user->group->first()->title }}</td>
+                            <td>{{ $response->user->fio }}</td>
+                            <td>{{ $response->show_created_at }}</td>
+                            <td>{{ $response->show_updated_at }}</td>
+                            <td>{!! $response->responseTeacher?->result ?: '&mdash;' !!}</td>
+                            <td>{!! $response->responseTeacher?->show_created_at ?: '&mdash;' !!}</td>
+                            <td>{!! $response->responseTeacher?->show_updated_at ?: '&mdash;' !!}</td>
                         </tr>
-                        <tr class="table-row" data-href="{{ route('web_teacher_responses_students_show', ['asd', 'asd', 'asd']) }}">
-                            <td>СКС-17</td>
-                            <td>Евдокимов Эдуард Игоревич</td>
-                            <td>20.20.2021</td>
-                            <td>20.20.2021</td>
-                            <td>10</td>
-                            <td>20.20.2021</td>
-                            <td>20.20.2021</td>
-                        </tr>
-                        <tr class="table-row" data-href="{{ route('web_teacher_responses_students_show', ['asd', 'asd', 'asd']) }}">
-                            <td>СКС-17</td>
-                            <td>Евдокимов Эдуард Игоревич</td>
-                            <td>20.20.2021</td>
-                            <td>20.20.2021</td>
-                            <td>10</td>
-                            <td>20.20.2021</td>
-                            <td>20.20.2021</td>
-                        </tr>
-                        <tr class="table-row" data-href="{{ route('web_teacher_responses_students_show', ['asd', 'asd', 'asd']) }}">
-                            <td>СКС-17</td>
-                            <td>Евдокимов Эдуард Игоревич</td>
-                            <td>20.20.2021</td>
-                            <td>20.20.2021</td>
-                            <td>10</td>
-                            <td>20.20.2021</td>
-                            <td>20.20.2021</td>
-                        </tr>
-
+                        @endforeach
                     </table>
 
                 </div>
@@ -66,10 +40,11 @@
                         <h4>Группа</h4>
                         <ul>
                             <li>
-                                <select class="form-control">
-                                    <option>Все</option>
-                                    <option>СКС-17а</option>
-                                    <option>СКС-17б</option>
+                                <select v-model="currentGroup" @change="changeGroup" class="form-control">
+                                    <option value="all">Все</option>
+                                    @foreach($groups as $group)
+                                        <option value="{{ $group->slug }}">{{ $group->title }}</option>
+                                    @endforeach
                                 </select>
                             </li>
                         </ul>
@@ -79,7 +54,7 @@
                         <h4>Поиск</h4>
                         <ul>
                             <li>
-                                <input class="form-control" type="text" placeholder="ФИО студента">
+                                <input class="form-control" @keyup="search" v-model="searchQuery" type="text" placeholder="ФИО студента">
                             </li>
                         </ul>
                     </div>
@@ -89,26 +64,20 @@
                         <ul>
                             <li>
                                 <label class="radio-li-item">ФИО
-                                    <input name="radio-1" type="radio" checked>
+                                    <input name="radio-1" {{ request()->get('sort') == 'fio' ? 'checked' : '' }} @click="sort('fio')" type="radio" checked>
                                     <span class="checkmark"></span>
                                 </label>
                             </li>
                             <li>
                                 <label class="radio-li-item">Изменение ответа
-                                    <input name="radio-1" type="radio">
+                                    <input name="radio-1" {{ request()->get('sort') == 'updated_at' ? 'checked' : '' }} @click="sort('updated_at')" type="radio">
                                     <span class="checkmark"></span>
                                 </label>
                             </li>
                             <li>
                                 <label class="radio-li-item">Изменение оценки
-                                    <input name="radio-1" type="radio">
+                                    <input name="radio-1" {{ request()->get('sort') == 'result' ? 'checked' : '' }} @click="sort('result')" type="radio">
                                     <span class="checkmark"></span>
-                                </label>
-                            </li>
-                            <li>
-                                <label class="radio-li-item">Оценка
-                                    <input name="radio-1"  type="radio">
-                                    <span name="radio-1" class="checkmark"></span>
                                 </label>
                             </li>
                         </ul>
@@ -119,3 +88,94 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+    <script>
+        var responsesOnZadanie = {
+            data: {
+                currentGroup: '{{ request()->get('group', 'all') }}',
+                domain: '{{ config('app.url') }}',
+                searchQuery: '{{ request()->get('search') }}'
+            },
+            methods: {
+                changeGroup: function(){
+                    var path = window.location.pathname;
+                    var query = window.location.search;
+
+                    if (query.length > 0) {
+                        var params = query.replace('?', '').split('&');
+
+                        var index = _.findIndex(params, function(item){
+                            return item.search(/group/) != -1;
+                        });
+
+                        if(index !== -1) {
+                            params[index] = 'group=' + this.currentGroup;
+                        }else{
+                            params.push('group=' + this.currentGroup);
+                        }
+
+                        query = '?' + params.join('&');
+                    }else{
+                        query = '?group=' + this.currentGroup;
+                    }
+
+                    window.location.href = this.domain + path + query;
+                },
+                search: _.debounce(function(e){
+                    if(e.target.keyCode == 13)
+                        return;
+
+                    var path = window.location.pathname;
+                    var query = window.location.search;
+
+                    if (query.length > 0) {
+                        var params = query.replace('?', '').split('&');
+
+                        var index = _.findIndex(params, function(item){
+                            return item.search(/search/) != -1;
+                        });
+
+                        if(index !== -1) {
+                            params[index] = 'search=' + app.searchQuery;
+                        }else{
+                            params.push('search=' + app.searchQuery);
+                        }
+
+                        query = '?' + params.join('&');
+                    }else{
+                        query = '?search=' + this.searchQuery;
+                    }
+
+                    window.location.href = this.domain + path + query;
+                }, 1000),
+                sort: function(type){
+                    var path = window.location.pathname;
+                    var query = window.location.search;
+
+                    if (query.length > 0) {
+                        var params = query.replace('?', '').split('&');
+
+                        var index = _.findIndex(params, function(item){
+                            return item.search(/sort/) != -1;
+                        });
+
+                        if(index !== -1) {
+                            params[index] = 'sort=' + type;
+                        }else{
+                            params.push('sort=' + type);
+                        }
+
+                        query = '?' + params.join('&');
+                    }else{
+                        query = '?sort=' + type;
+                    }
+
+                    window.location.href = this.domain + path + query;
+                }
+            }
+        };
+
+        mixins.push(responsesOnZadanie);
+    </script>
+@endpush

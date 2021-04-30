@@ -9,11 +9,6 @@ class HideCourseAction extends Action
 {
     public function run(int $course_id)
     {
-        try{
-            Course::where('id', $course_id)->update(['is_visible' => 0]);
-            return true;
-        }catch (\Exception){
-            return false;
-        }
+        Course::where('id', $course_id)->update(['is_visible' => 0]);
     }
 }

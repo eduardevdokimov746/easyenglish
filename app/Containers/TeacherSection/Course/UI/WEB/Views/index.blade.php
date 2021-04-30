@@ -35,7 +35,7 @@
                         >
                             <td>@{{ course.title }}</td>
                             <td>@{{ course.sections_count }}</td>
-                            <td></td>
+                            <td>@{{ course.groups_count }}</td>
                             <td>@{{ course.created_at }}</td>
                             <td>@{{ course.updated_at }}</td>
                             <td>
@@ -61,13 +61,13 @@
 @push('scripts')
     <script>
         var errorMsg = '{{ __('ship::validation.error-server') }}';
+        var token = '{{ csrf_token() }}';
 
         var listCourse = {
             data: {
                 courses: []
             },
             created: function(){
-                console.log(JSON.parse('{!! $courses->toJson() !!}'));
                 this.courses = JSON.parse('{!! $courses->toJson() !!}');
             },
             methods: {
@@ -77,7 +77,7 @@
                     axios({
                             method: 'post',
                             url: '{{ route('api_teacher_course_hide') }}',
-                            data: {course_id: course_id},
+                            data: {course_id: course_id, '_token': token},
                             dataType: 'json'
                         }
                     ).then(function(response){
@@ -91,7 +91,7 @@
                     axios({
                             method: 'post',
                             url: '{{ route('api_teacher_course_show') }}',
-                            data: {course_id: course_id},
+                            data: {course_id: course_id, '_token': token},
                             dataType: 'json'
                         }
                     ).then(function(response){

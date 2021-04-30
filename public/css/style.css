@@ -303,19 +303,16 @@
     position: relative;
 }
 
-
 .btn-change-title-course{
     display: inline;
     background: #3369e7;
     padding: 0 10px;
     border-radius: 5px;
     color: white;
-    font-size: .4em;
     cursor: pointer;
     transition: .5s all;
-    position: absolute;
-    right: -40px;
-    top: 8px;
+    height: 35px;
+    margin-top: 10px;
 }
 
 .btn-change-title-course:hover{
@@ -1926,7 +1923,7 @@
 /*----------------------------------INDEX PAGE-------------------------------*/
 .index-body-div{
     min-height: 100vh;
-    background-image: url(http://custom/images/23.jpg);
+    background-image: url(../images/23.jpg);
     background-position: center;
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -2096,4 +2093,34 @@
 
 .btn-eye-show-hide:hover{
     color: black;
+}
+
+.div-students-create-group{
+    border: 1px solid silver;
+    border-radius: 5px;
+}
+
+.header-students-create-group{
+    text-align: center;
+    padding: 10px;
+}
+
+.list-students-create-group{
+    list-style: none;
+    margin: 10px 0;
+    padding: 0
+}
+
+.item-list-students-create-group{
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.item-list-students-create-group:hover{
+    background: #447efe7a;
+    border-radius: 5px;
 }

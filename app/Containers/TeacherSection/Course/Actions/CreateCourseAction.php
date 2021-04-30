@@ -18,7 +18,7 @@ class CreateCourseAction extends Action
                 'list_literature'
             ]);
 
-            $data['is_visible'] = (int)$request->filled('is_visible');
+            $data['is_visible'] = $request->get('is_visible', 0);
 
             $course = \Auth::user()->courses()->create($data);
 
