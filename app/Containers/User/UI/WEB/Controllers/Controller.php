@@ -2,6 +2,7 @@
 
 namespace App\Containers\User\UI\WEB\Controllers;
 
+use App\Containers\User\Breadcrumbs\EditUser;
 use App\Containers\User\UI\WEB\Requests\CreateUserRequest;
 use App\Containers\User\UI\WEB\Requests\DeleteUserRequest;
 use App\Containers\User\UI\WEB\Requests\GetAllUsersRequest;
@@ -54,7 +55,9 @@ class Controller extends WebController
             return redirect()->route('index');
         }
 
-        return view('user::edit', compact('user'));
+        $breadcrumb = new EditUser();
+
+        return view('user::edit', compact('user', 'breadcrumb'));
     }
 
     public function update(UpdateUserRequest $request)

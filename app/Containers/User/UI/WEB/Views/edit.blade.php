@@ -10,6 +10,8 @@
             </div>
         </div>
 
+        @include('components.breadcrumbs', [$breadcrumb])
+
         <div class="row">
             <form action="{{ route('web_user_update', $user->login) }}" enctype="multipart/form-data" class="col" method="post" novalidate>
                 @method('patch')

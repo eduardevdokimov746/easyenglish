@@ -4,416 +4,164 @@
     <section class="other_services pt-5" id="why">
         <div class="container mb-4">
             <div class="head-content mb-4">
-                <h1 class="heading col">Основы организации хозяйственной деятельности + КР</h1>
+                <h1 class="heading col">{{ $course->title }}</h1>
             </div>
 
             <div class="row">
                 <div class="col">
                     <div class="form mb-3">
                         <div class="form-head">
-                            <h2 style="text-align: center">Общая информация о дисциплине</h2>
+                            <h2 style="text-align: center">Основная информация</h2>
                         </div>
 
-                        <div class="row">
-                            <div class="col">
-                                <p style="white-space: pre-line;">
-                                    2020-2021 учебный год
-                                    Группы: СКС-17, СКС-17з
-                                    Название дисциплины: «Основы организации хозяйственной деятельности» (ОХД)
-                                    4 курс, 7 семестр
-                                    Курсовая работа по дисциплине «ОХД»: 4 курс, 8 семестр
-                                    Количество часов на изучение дисциплины: всего - 108 ч, в том числе:
-                                    лекции - 32 ч, практические занятия - 16 ч, СРС - 60 ч
-                                    Форма контроля - экзамен
-                                    Лектор - Гонтовая Наталия Викторовна
-
-                                    Вопросы преподавателю - через сообщения в «лс» на сайте ДО.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col">
-                                <h5>Прикрепленные ссылки</h5>
-                                <div>
-                                    <p><a href="#">Форум от 11.01.2021, 8-30 Экзамен по дисциплине «ОХД», Группа СКС-17</a></p>
-                                    <p><a href="#">Форум от 11.01.2021, 8-30 Экзамен по дисциплине «ОХД», Группа СКС-17</a></p>
-                                    <p><a href="#">Форум от 11.01.2021, 8-30 Экзамен по дисциплине «ОХД», Группа СКС-17</a></p>
+                        @if(!empty($course->characteristic))
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <h5>Характеристика курса</h5>
+                                    <div>
+                                        {!! $course->characteristic  !!}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
 
-                        <div class="row mt-4">
-                            <div class="col">
-                                <h5>Прикрепленные файлы</h5>
+                        @if(!empty($course->little_description))
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <h5>Описание</h5>
+                                    <div>
+                                        {!! $course->little_description  !!}
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
-                                <table class="table-hover mt-2 table-list-files" border="1">
-                                    <thead>
-                                        <tr>
+                        @if(!empty($course->target))
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <h5>Цель</h5>
+                                    <div>
+                                        {!! $course->target  !!}
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if(!empty($course->list_literature))
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <h5>Список рекомендуемой литературы</h5>
+                                    <div>
+                                        {!! $course->list_literature  !!}
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    @foreach($course->sections as $section)
+                        <div class="form mb-3">
+                            <div class="form-head">
+                                <h2 style="text-align: center">{{ $section->title }}</h2>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <p style="white-space: pre-line;">
+                                        {!! $section->description  !!}
+                                    </p>
+                                </div>
+                            </div>
+
+                            @if($section->links->isNotEmpty())
+                                <div class="row mt-4">
+                                    <div class="col">
+                                        <h5>Прикрепленные ссылки</h5>
+                                        <div>
+                                            @foreach($section->links as $linkIndex => $link)
+                                                <p>
+                                                    <a href="{{ $link->url }}" target="_blank">{{ $link->title }}</a>
+                                                </p>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if($section->files->isNotEmpty())
+                                <div class="row mt-4">
+                                    <div class="col">
+                                        <h5>Прикрепленные файлы</h5>
+
+                                        <table class="table-hover mt-2 table-list-files" border="1">
+                                            <thead>
+                                            <tr>
+                                                <th>№</th>
+                                                <th>Название</th>
+                                                <th>Размер</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($section->files as $fileIndex => $file)
+                                                <tr data-href="{{ route('web_section_file_download', $file->hash) }}" class="table-row">
+                                                    <td>{{ $fileIndex + 1 }}</td>
+                                                    <td class="text-left">
+                                                        <img class="table-list-radanie-file-icon" style="width: 30px;" src="{{ $file->icon }}" alt="">
+                                                        <span>{{ $file->title }}</span>
+                                                    </td>
+                                                    <td>{{ $file->size }}</td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if($section->zadanies->isNotEmpty())
+                                <div class="row mt-4" >
+                                    <div class="col">
+                                        <h5>Задания</h5>
+
+                                        <table class="table-hover mt-2 table-list-zadanie" border="1">
+                                            <thead>
                                             <th>№</th>
                                             <th>Название</th>
-                                            <th>Размер</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr data-href="#" class="table-row">
-                                            <td>1</td>
-                                            <td>
-                                                <img class="table-list-radanie-file-icon" style="width: 30px;" src="{{ asset('file_icons/png/doc.png') }}" alt="">
-                                                <span>file.pdf</span>
-                                            </td>
-                                            <td>2mb</td>
-                                        </tr>
-                                        <tr data-href="#" class="table-row">
-                                            <td>1</td>
-                                            <td>
-                                                <img class="table-list-radanie-file-icon" style="width: 30px;" src="{{ asset('file_icons/png/doc.png') }}" alt="">
-                                                <span>file.pdf</span>
-                                            </td>
-                                            <td>2mb</td>
-                                        </tr>
-                                        <tr data-href="#" class="table-row">
-                                            <td>1</td>
-                                            <td>
-                                                <img class="table-list-radanie-file-icon" style="width: 30px;" src="{{ asset('file_icons/png/doc.png') }}" alt="">
-                                                <span>file.pdf</span>
-                                            </td>
-                                            <td>2mb</td>
-                                        </tr>
-                                        <tr data-href="#" class="table-row">
-                                            <td>1</td>
-                                            <td>
-                                                <img class="table-list-radanie-file-icon" style="width: 30px;" src="{{ asset('file_icons/png/doc.png') }}" alt="">
-                                                <span>file.pdf</span>
-                                            </td>
-                                            <td>2mb</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col">
-                                <h5>Задания</h5>
-
-                                <table class="table-hover mt-2 table-list-zadanie" border="1">
-                                    <thead>
-                                    <th>№</th>
-                                    <th>Название</th>
-                                    <th>Тип</th>
-                                    <th>Дата получения</th>
-                                    <th>Срок сдачи</th>
-                                    <th>Статус</th>
-                                    <th>Оценка</th>
-                                    </thead>
-                                    <tr class="table-info table-row" data-href="#">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Новое</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr class="table-warning table-row" data-href="#">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>На проверке</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr class="table-success table-row" data-href="#">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Зачтено</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr class="table-danger table-row" data-href="#">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Не зачтено</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Новое</td>
-                                        <td>-</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form mb-3">
-                        <div class="form-head">
-                            <h2 style="text-align: center">Общая информация о дисциплине</h2>
-                        </div>
-
-                        <div class="row">
-                            <div class="col">
-                                <p style="white-space: pre-line;">
-                                    2020-2021 учебный год
-                                    Группы: СКС-17, СКС-17з
-                                    Название дисциплины: «Основы организации хозяйственной деятельности» (ОХД)
-                                    4 курс, 7 семестр
-                                    Курсовая работа по дисциплине «ОХД»: 4 курс, 8 семестр
-                                    Количество часов на изучение дисциплины: всего - 108 ч, в том числе:
-                                    лекции - 32 ч, практические занятия - 16 ч, СРС - 60 ч
-                                    Форма контроля - экзамен
-                                    Лектор - Гонтовая Наталия Викторовна
-
-                                    Вопросы преподавателю - через сообщения в «лс» на сайте ДО.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col">
-                                <h5>Прикрепленные ссылки</h5>
-                                <div>
-                                    <p><a href="#">Форум от 11.01.2021, 8-30 Экзамен по дисциплине «ОХД», Группа СКС-17</a></p>
-                                    <p><a href="#">Форум от 11.01.2021, 8-30 Экзамен по дисциплине «ОХД», Группа СКС-17</a></p>
-                                    <p><a href="#">Форум от 11.01.2021, 8-30 Экзамен по дисциплине «ОХД», Группа СКС-17</a></p>
+                                            <th>Тип</th>
+                                            <th>Дата получения</th>
+                                            <th>Срок сдачи</th>
+                                            <th>Статус</th>
+                                            <th>Оценка</th>
+                                            </thead>
+                                            @foreach($section->zadanies as $zadanieIndex => $zadanie)
+                                                <tr class="table-info table-row" data-href="#">
+                                                    <td>{{ $zadanieIndex + 1 }}</td>
+                                                    <td>{{ $zadanie->title }}</td>
+                                                    <td>20.12.2020</td>
+                                                    <td>20.12.2020</td>
+                                                    <td>Новое</td>
+                                                    <td>-</td>
+                                                </tr>
+                                            @endforeach
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
-
-                        <div class="row mt-4">
-                            <div class="col">
-                                <h5>Прикрепленные файлы</h5>
-                                <table class="table-hover mt-2" border="1" style="text-align: center">
-                                    <thead>
-                                    <tr>
-                                        <th>№</th>
-                                        <th>Название</th>
-                                        <th>Размер</th>
-                                        <th>Скачать</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>file.pdf</td>
-                                        <td>2mb</td>
-                                        <td><i class="fa fa-download" aria-hidden="true"></i></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col">
-                                <h5>Задания</h5>
-
-                                <table class="table-hover" border="1" style="background: white;
-    width: 100%;
-    text-align: center;
-    border: 1px solid silver;">
-                                    <thead>
-                                    <th>№</th>
-                                    <th>Преподаватель</th>
-                                    <th>Тип</th>
-                                    <th>Дата получения</th>
-                                    <th>Срок сдачи</th>
-                                    <th>Статус</th>
-                                    <th>Оценка</th>
-                                    </thead>
-                                    <tr class="table-info">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Новое</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr class="table-warning">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>На проверке</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr class="table-success">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Зачтено</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr class="table-danger">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Не зачтено</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Новое</td>
-                                        <td>-</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form mb-3">
-                        <div class="form-head">
-                            <h2 style="text-align: center">Общая информация о дисциплине</h2>
-                        </div>
-
-                        <div class="row">
-                            <div class="col">
-                                <p style="white-space: pre-line;">
-                                    2020-2021 учебный год
-                                    Группы: СКС-17, СКС-17з
-                                    Название дисциплины: «Основы организации хозяйственной деятельности» (ОХД)
-                                    4 курс, 7 семестр
-                                    Курсовая работа по дисциплине «ОХД»: 4 курс, 8 семестр
-                                    Количество часов на изучение дисциплины: всего - 108 ч, в том числе:
-                                    лекции - 32 ч, практические занятия - 16 ч, СРС - 60 ч
-                                    Форма контроля - экзамен
-                                    Лектор - Гонтовая Наталия Викторовна
-
-                                    Вопросы преподавателю - через сообщения в «лс» на сайте ДО.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col">
-                                <h5>Прикрепленные ссылки</h5>
-                                <div>
-                                    <p><a href="#">Форум от 11.01.2021, 8-30 Экзамен по дисциплине «ОХД», Группа СКС-17</a></p>
-                                    <p><a href="#">Форум от 11.01.2021, 8-30 Экзамен по дисциплине «ОХД», Группа СКС-17</a></p>
-                                    <p><a href="#">Форум от 11.01.2021, 8-30 Экзамен по дисциплине «ОХД», Группа СКС-17</a></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col">
-                                <h5>Прикрепленные файлы</h5>
-                                <table class="table-hover mt-2" border="1" style="text-align: center">
-                                    <thead>
-                                    <tr>
-                                        <th>№</th>
-                                        <th>Название</th>
-                                        <th>Размер</th>
-                                        <th>Скачать</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>file.pdf</td>
-                                        <td>2mb</td>
-                                        <td><i class="fa fa-download" aria-hidden="true"></i></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col">
-                                <h5>Задания</h5>
-
-                                <table class="table-hover" border="1" style="background: white;
-    width: 100%;
-    text-align: center;
-    border: 1px solid silver;">
-                                    <thead>
-                                    <th>№</th>
-                                    <th>Преподаватель</th>
-                                    <th>Тип</th>
-                                    <th>Дата получения</th>
-                                    <th>Срок сдачи</th>
-                                    <th>Статус</th>
-                                    <th>Оценка</th>
-                                    </thead>
-                                    <tr class="table-info">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Новое</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr class="table-warning">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>На проверке</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr class="table-success">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Зачтено</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr class="table-danger">
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Не зачтено</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Иванова Ивановна</td>
-                                        <td>Перевод</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Новое</td>
-                                        <td>-</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
 
                 <div class="col-md-3 main-right-div">
                     <div class="right-div-block">
                         <h4>Информация</h4>
-                        <p><b>Преподаватель:</b> <p>Евдокимов Эдуард Игоревич</p></p>
-                        <p><b>Последнее обновление:</b> <p>12.02.2021 12:23</p></p>
+                        <p>
+                            <b>Преподаватель:</b>
+                            <a href="{{ route('web_user_show', $course->teacher->login) }}">
+                                <span>{{ $course->teacher->fio }}</span>
+                            </a>
+                        </p>
+                        <p><b>Последнее обновление:</b> <p>{{ $course->show_updated_at }}</p></p>
                     </div>
+
                     <div class="right-div-block">
                         <h4>Задания</h4>
                         <p><a href="{{ route('web_student_zadanies_index', 'asd') }}"><b>Все:</b> <span>44</span></a></p>

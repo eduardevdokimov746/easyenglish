@@ -3,90 +3,28 @@
 namespace App\Containers\StudentSection\Course\UI\WEB\Controllers;
 
 use App\Ship\Parents\Controllers\WebController;
-use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Course\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllCoursesRequest $request
-     */
     public function index()
     {
-        return view('studentsection/course::index');
+        if ($this->isNotStudent()) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $courses = \Apiato::call('StudentSection\Course@FindCoursesByUserIdAction', [\Auth::id()]);
+
+        return view('studentsection/course::index', compact('courses'));
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindCourseByIdRequest $request
-     */
-    public function show()
+    public function show($id)
     {
-        return view('studentsection/course::show');
-    }
+        $course = \Apiato::call('StudentSection\Course@FindCourseByIdAction', [$id]);
 
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateCourseRequest $request
-     */
-    public function create(CreateCourseRequest $request)
-    {
-        // ..
-    }
+        if ($this->isNotStudent() || \Gate::denies('show-course', $course)) {
+            return abort(403, __('ship::http_errors.403'));
+        }
 
-    /**
-     * Add a new entity
-     *
-     * @param StoreCourseRequest $request
-     */
-    public function store(StoreCourseRequest $request)
-    {
-        $course = Apiato::call('Course@CreateCourseAction', [$request]);
-
-        // ..
-    }
-
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditCourseRequest $request
-     */
-    public function edit(EditCourseRequest $request)
-    {
-        $course = Apiato::call('Course@GetCourseByIdAction', [$request]);
-
-        // ..
-    }
-
-    /**
-     * Update a given entity
-     *
-     * @param UpdateCourseRequest $request
-     */
-    public function update(UpdateCourseRequest $request)
-    {
-        $course = Apiato::call('Course@UpdateCourseAction', [$request]);
-
-        // ..
-    }
-
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteCourseRequest $request
-     */
-    public function delete(DeleteCourseRequest $request)
-    {
-         $result = Apiato::call('Course@DeleteCourseAction', [$request]);
-
-         // ..
+        return view('studentsection/course::show', compact('course'));
     }
 }

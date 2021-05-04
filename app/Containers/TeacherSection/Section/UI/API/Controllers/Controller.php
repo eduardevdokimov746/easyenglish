@@ -38,4 +38,13 @@ class Controller extends ApiController
 
         return abort(500);
     }
+
+    public function getAllSectionFromCourse()
+    {
+        try {
+            return \Apiato::call('TeacherSection\Section@GetAllSectionsFromCourseAction', [request()->get('data')['id']]);
+        } catch (\Exception) {
+            return abort(500);
+        }
+    }
 }

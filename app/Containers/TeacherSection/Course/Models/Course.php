@@ -6,6 +6,7 @@ use App\Containers\TeacherSection\Group\Models\CourseGroup;
 use App\Containers\TeacherSection\Group\Models\Group;
 use App\Containers\TeacherSection\Section\Models\Section;
 use App\Containers\TeacherSection\Zadanie\Models\Zadanie;
+use App\Containers\User\Models\User;
 use App\Ship\Parents\Models\Model;
 
 class Course extends Model
@@ -58,5 +59,10 @@ class Course extends Model
     public function zadanies()
     {
         return $this->hasManyThrough(Zadanie::class, Section::class, 'course_id', 'section_id', 'id', 'id');
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

@@ -15,9 +15,6 @@ class GetZadaniesWithCourseListAction extends Action
                 $query->doesntHave('responseTeacher');
             }])->get();
 
-
-
-
         $courses = $courses->map(function($item){
             $item->countNewResponse = $item->zadanies->pluck('responseStudents')->collapse()->count();
             $item->lastAddResponse = $item->zadanies->pluck('responseStudents')->collapse()->sortByDesc('updated_at')->first();

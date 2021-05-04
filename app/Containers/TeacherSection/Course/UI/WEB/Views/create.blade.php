@@ -9,6 +9,8 @@
                 </h1>
             </div>
 
+            @include('components.breadcrumbs', [$breadcrumb])
+
             @if (!$errors->has('data-auth-not-valid') && $errors->any())
                 <div class="alert alert-danger">
                     <ul style="list-style: none">
@@ -134,7 +136,7 @@
                                                     </div>
                                                 </div>
 
-                                                <input type="text" class="form-control" placeholder="yandex.ru" v-model="link.url">
+                                                <input type="text" class="form-control" placeholder="yandex.ru" @keyup="replaceUrl($event, indexSection, indexLink)" v-model="link.url">
                                             </div>
                                         </div>
 
@@ -364,7 +366,18 @@
                 },
                 deleteFile: function(e, indexSection, indexFile) {
                     this.sections[indexSection].files.splice(indexFile, 1);
-                }
+                },
+                replaceUrl: function(e, indexSection, indexLink){
+                    var url = e.target.value;
+
+                    if(/(https?:\/\/)\S+/.test(url)){
+                        var newUrl = url.replace(/(https?:\/\/)/, '');
+                        var type = url.match(/(https?:\/\/)/)[0];
+                        this.sections[indexSection].links[indexLink].url = newUrl;
+                        this.sections[indexSection].links[indexLink].edit_url = newUrl;
+                        this.sections[indexSection].links[indexLink].type = type;
+                    }
+                },
             },
             computed: {
                 isVisibleInputFile: function(obj){

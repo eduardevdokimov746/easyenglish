@@ -2,6 +2,7 @@
 
 namespace App\Containers\TeacherSection\Section\UI\WEB\Controllers;
 
+use App\Containers\TeacherSection\Section\Breadcrumbs\EditSection;
 use App\Containers\TeacherSection\Section\UI\WEB\Requests\UpdateSectionRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
@@ -42,8 +43,9 @@ class Controller extends WebController
         }
 
         $icons = json_encode(\FileStorage::getIcons());
+        $breadcrumb = new EditSection(['title_next' => $section->course->title, 'id' => $section->course->id]);
 
-        return view('teachersection/section::edit', compact('section', 'icons'));
+        return view('teachersection/section::edit', compact('section', 'icons', 'breadcrumb'));
     }
 
     public function delete($id)
@@ -86,6 +88,12 @@ class Controller extends WebController
             })->each(function($item) use ($id) {
                 $item['url'] = $item['edit_url'];
                 \Apiato::call('TeacherSection\Section@CreateLinkAction', [$id, $item]);
+            });
+
+            $links->filter(function($item){
+                return !isset($item['action']) || empty($item['action']);
+            })->each(function($item) {
+                \Apiato::call('TeacherSection\Section@UpdateLinkAction', [$item['id'], $item]);
             });
 
             $files = collect(json_decode($request->get('deleteFiles'), 1));

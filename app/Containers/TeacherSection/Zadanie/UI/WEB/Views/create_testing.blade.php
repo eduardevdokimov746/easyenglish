@@ -16,41 +16,38 @@
 
                         <div class="form-group mt-3">
                             <label for="list_courses">
-                                Курс<span class="mark-required-field" title="Обязательно для заполнения">*</span>
-                                <select id="list_courses" class="form-control">
-                                    <option>Название курса 1</option>
-                                    <option>Название курса 2</option>
-                                    <option>Название курса 3</option>
+                                Курс <span class="mark-required-field" title="Обязательно для заполнения">*</span>
+                                <select id="list_courses" class="form-control" v-model="currentCourse" :class="{'is-invalid' : currentCourse == 'default' && isSelectCourse}">
+                                    <option value="default">Выберите курс</option>
+                                    <option v-for="(course, indexCourse) in courses" :value="course.id" :key="course.id">@{{ course.title }}</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    {{ __('teachersection/zadanie::validation.select-course') }}
+                                </div>
                             </label>
                         </div>
 
                         <div class="form-group mt-3">
                             <label for="list_sections">
-                                Раздел<span class="mark-required-field" title="Обязательно для заполнения">*</span>
-                                <select id="list_sections" class="form-control">
-                                    <option>Название раздела 1</option>
-                                    <option>Название раздела 2</option>
-                                    <option>Название раздела 3</option>
+                                Раздел <span class="mark-required-field" title="Обязательно для заполнения">*</span>
+                                <select id="list_sections" class="form-control" :class="{'is-invalid' : (currentSection == 'default' && isSelectSection)}" v-model="currentSection" :disabled="currentCourse != 'default' ? null : 'disabled'">
+                                    <option value="default">Выберите раздел</option>
+                                    <option v-for="(section, indexSection) in sections" :value="section.id" :key="section.id">@{{ section.title }}</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    {{ __('teachersection/zadanie::validation.select-section') }}
+                                </div>
                             </label>
                         </div>
 
                         <div class="form-group mt-3">
                             <label for="title_course">
-                                Название<span class="mark-required-field" title="Обязательно для заполнения">*</span>
-                                <input id="title_course" class="form-control" type="text">
-                            </label>
-                        </div>
+                                Название <span class="mark-required-field" title="Обязательно для заполнения">*</span>
+                                <input id="title_course" class="form-control" :class="{'is-invalid' : title.length <= 0 && isChangedTitle}" v-model="title" type="text">
 
-                        <div class="form-group mt-3">
-                            <label>
-                                Дата публикации
-                                <input id="datetime-input-zadan-queue" type="datetime-local" :disabled="isDisableQueuePublish">
-                                <label for="set-zadan-queue" style="width: auto" class="no-margin">
-                                    <input type="checkbox" value="" id="set-zadan-queue" v-model="isDisableQueuePublish">
-                                    Отложить публикацию задания
-                                </label>
+                                <div class="invalid-feedback">
+                                    {{ __('ship::validation.required', ['attribute' => __('ship::attributes.title')]) }}
+                                </div>
                             </label>
                         </div>
 
@@ -200,8 +197,6 @@
                             <button class="btn btn-info" @click="addZadanieItem">Добавить вопрос</button>
                         </div>
                         <div>
-                            <button class="btn btn-light" style="margin-right: 10px">Сохранить как шаблон</button>
-                            <button class="btn btn-light" style="margin-right: 10px">Предпросмотр</button>
                             <button class="btn btn-primary">Создать</button>
                         </div>
                     </div>
@@ -213,27 +208,15 @@
                         <ul>
                             <li>
                                 <label class="radio-li-item checkbox-url" data-url="{{ route('web_teacher_zadanies_create', ['type' => 'main'])}}">Обычное
-                                    <input name="radio-1" type="radio">
+                                    <input name="radio-1" type="radio" {{ request()->get('type', 'main') == 'main' ? 'checked' : '' }}>
                                     <span class="checkmark"></span>
                                 </label>
                             </li>
                             <li>
                                 <label class="radio-li-item checkbox-url" data-url="{{ route('web_teacher_zadanies_create', ['type' => 'testing'])}}">Тестирование
-                                    <input name="radio-1" type="radio">
+                                    <input name="radio-1" type="radio" {{ request()->get('type') == 'testing' ? 'checked' : ''}}>
                                     <span class="checkmark"></span>
                                 </label>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="right-div-block">
-                        <h4>Шаблоны</h4>
-                        <ul>
-                            <li>
-                               <select class="form-control">
-                                   <option>Шаблон 1</option>
-                                   <option>Шаблон 2</option>
-                                   <option>Шаблон 3</option>
-                               </select>
                             </li>
                         </ul>
                     </div>
@@ -245,11 +228,31 @@
 
 @push('scripts')
     <script>
+        var msgError = '{{ __('ship::validation.error-server') }}';
+        var notIssetSection = '{{ __('teachersection/zadanie::validation.not-isset-section') }}'
+        var token = '{{ csrf_token() }}';
+        var redirectUrl = '{{ config('app.url') . '/' . Route::getRoutes()->getByName('web_teacher_zadanies_index')->uri}}';
+
+
         var createTestingZadanieComponent = {
             data: {
+                title: '',
+                isChangedTitle: false,
+                currentCourse: 'default',
+                isSelectCourse: false,
+                currentSection: 'default',
+                isSelectSection: false,
+                type: '{{ request()->get('type', 'main') }}',
                 zadanieItems: [],
                 isDisableQueuePublish: true,
-                isDisableLimitTime: true
+                isDisableLimitTime: true,
+                courses: [],
+                sections: [],
+                deadline: '',
+                isPublished: false
+            },
+            created: function(){
+                this.courses = JSON.parse('{!! $courses->toJson() !!}');
             },
             mounted: function(){
                 this.addZadanieItem();
@@ -402,7 +405,39 @@
                 delDataToV3: function(index){
                     this.zadanieItems[index].words.pop();
                 }
-            }
+            },
+            watch: {
+                currentCourse: function(){
+                    this.isSelectCourse = true;
+                    this.sections.splice(0, this.sections.length);
+                    this.isSelectSection = false;
+                    this.currentSection = 'default';
+
+                    if(this.currentCourse == 'default'){
+                        return;
+                    }
+
+                    axios.post('{{ route('api_teacher_sections_get_sections_from_course') }}', {
+                        data: {id: app.currentCourse},
+                        type: 'post'
+                    }).then(function(response){
+                        if(response.data.length <= 0){
+                            alertNotice(notIssetSection);
+                        }else{
+                            app.sections = response.data;
+                        }
+
+                    }).catch(function(error){
+                        alertDanger(msgError);
+                    });
+                },
+                currentSection: function(){
+                    this.isSelectSection = true;
+                },
+                title: function(){
+                    this.isChangedTitle = true;
+                }
+            },
         };
 
         mixins.push(createTestingZadanieComponent);

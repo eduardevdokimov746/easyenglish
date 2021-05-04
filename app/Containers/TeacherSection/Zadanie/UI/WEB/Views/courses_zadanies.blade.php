@@ -10,6 +10,8 @@
                 </div>
             </div>
 
+            @include('components.breadcrumbs', [$breadcrumb])
+
             <div class="row">
                 <div style="background: white; width: 100%">
                     <table class="table table-hover" style="text-align: center">

@@ -11,6 +11,6 @@ class FindZadanieByIdAction extends Action
 {
     public function run($id)
     {
-        return Zadanie::where('id', $id)->first();
+        return Zadanie::with(['files', 'links', 'section'])->where('id', $id)->first();
     }
 }

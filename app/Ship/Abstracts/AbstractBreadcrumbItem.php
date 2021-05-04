@@ -37,9 +37,9 @@ abstract class AbstractBreadcrumbItem implements BreadcrumbItemInterface
         return $breadcrumbs;
     }
 
-    protected function createNext()
+    protected function createNext($data = [])
     {
-        return new $this->next();
+        return new $this->next($data);
     }
 
     protected function getTemplateCurrent()
@@ -66,6 +66,32 @@ abstract class AbstractBreadcrumbItem implements BreadcrumbItemInterface
         }
     }
 
-    abstract protected function getTitle(): string;
-    abstract protected function getUrl(): string;
+    protected function getUrl()
+    {
+        if (isset($this->data['url']) && !empty($this->data['url'])) {
+            return $this->data['url'];
+        }
+
+        if (method_exists($this, 'url')) {
+            return $this->url();
+        }
+
+        return '';
+    }
+
+    protected function getTitle()
+    {
+        if (isset($this->data['title']) && !empty($this->data['title'])) {
+            return $this->data['title'];
+        }
+
+        return $this->title();
+    }
+
+    protected function url()
+    {
+        return '';
+    }
+
+    abstract protected function title(): string;
 }

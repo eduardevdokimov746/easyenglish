@@ -12,7 +12,13 @@ class Zadanie extends Model
     protected $table = 'zadanies';
 
     protected $fillable = [
-
+        'title',
+        'user_id',
+        'section_id',
+        'type',
+        'description',
+        'is_visible',
+        'deadline'
     ];
 
     protected $attributes = [
@@ -50,5 +56,15 @@ class Zadanie extends Model
     public function section()
     {
         return $this->belongsTo(Section::class, 'section_id', 'id');
+    }
+
+    public function links()
+    {
+        return $this->hasMany(Link::class, 'zadanie_id', 'id');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'zadanie_id', 'id');
     }
 }

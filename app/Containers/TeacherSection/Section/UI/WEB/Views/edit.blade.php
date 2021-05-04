@@ -9,6 +9,8 @@
                 </h1>
             </div>
 
+            @include('components.breadcrumbs', [$breadcrumb])
+
             <div class="row mt-2">
                 <div class="col">
                     <div class="form mb-3">

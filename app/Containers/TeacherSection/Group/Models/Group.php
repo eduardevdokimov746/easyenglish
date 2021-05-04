@@ -3,6 +3,8 @@
 namespace App\Containers\TeacherSection\Group\Models;
 
 use App\Containers\AdminSection\Group\Models\StudentGroup;
+use App\Containers\TeacherSection\Course\Models\Course;
+use App\Containers\TeacherSection\Course\Models\CourseGroup;
 use App\Ship\Parents\Models\Model;
 
 class Group extends Model
@@ -40,5 +42,10 @@ class Group extends Model
     public function students()
     {
         return $this->hasMany(StudentGroup::class, 'group_id', 'id');
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'course_groups', 'group_id', 'course_id');
     }
 }

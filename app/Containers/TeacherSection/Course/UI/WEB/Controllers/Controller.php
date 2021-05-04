@@ -2,10 +2,14 @@
 
 namespace App\Containers\TeacherSection\Course\UI\WEB\Controllers;
 
+use App\Containers\TeacherSection\Course\Breadcrumbs\CourseEdit;
 use App\Containers\TeacherSection\Course\UI\WEB\Requests\StoreCourseRequest;
 use App\Containers\TeacherSection\Section\UI\WEB\Requests\UpdateSectionRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
+use App\Containers\TeacherSection\Course\Breadcrumbs\CreateCourse;
+use App\Containers\TeacherSection\Course\Breadcrumbs\CourseList;
+use App\Containers\TeacherSection\Course\Breadcrumbs\CourseSingle;
 
 class Controller extends WebController
 {
@@ -15,7 +19,7 @@ class Controller extends WebController
             return abort(403, __('ship::http_errors.403'));
         }
 
-        $breadcrumb = new \App\Ship\Services\Breadcrumbs\CourseList();
+        $breadcrumb = new CourseList();
 
         $courses = Apiato::call('TeacherSection\Course@GetAllCoursesAction', [\Auth::id()]);
 
@@ -35,7 +39,7 @@ class Controller extends WebController
         $title = $course->title;
         $url = route('web_teacher_courses_show', $course->id);
 
-        $breadcrumb = new \App\Ship\Services\Breadcrumbs\CourseSingle(compact('title', 'url'));
+        $breadcrumb = new CourseSingle(compact('title', 'url'));
 
         return view('teachersection/course::show', compact('breadcrumb', 'course'));
     }
@@ -48,7 +52,9 @@ class Controller extends WebController
 
         $icons = json_encode(\FileStorage::getIcons());
 
-        return view('teachersection/course::create', compact('icons'));
+        $breadcrumb = new CreateCourse();
+
+        return view('teachersection/course::create', compact('icons', 'breadcrumb'));
     }
 
     public function store(StoreCourseRequest $request)
@@ -119,8 +125,9 @@ class Controller extends WebController
         }
 
         $icons = json_encode(\FileStorage::getIcons());
+        $breadcrumb = new CourseEdit(['title_next' => $course->title, 'id' => $course->id]);
 
-        return view('teachersection/course::edit', compact('icons', 'course'));
+        return view('teachersection/course::edit', compact('icons', 'course', 'breadcrumb'));
     }
 
     public function update($id)
@@ -212,6 +219,12 @@ class Controller extends WebController
                         $item['url'] =  $item['edit_url'];
 
                         \Apiato::call('TeacherSection\Section@CreateLinkAction', [$section['id'], $item]);
+                    });
+
+                    $links->filter(function($item){
+                        return !isset($item['action']) || empty($item['action']);
+                    })->each(function($item){
+                        \Apiato::call('TeacherSection\Section@UpdateLinkAction', [$item['id'], $item]);
                     });
 
                     if (!empty($section['files'])) {

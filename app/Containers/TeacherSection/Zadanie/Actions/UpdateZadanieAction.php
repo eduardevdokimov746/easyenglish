@@ -1,21 +1,17 @@
 <?php
 
-namespace App\Containers\Zadanie\Actions;
+namespace App\Containers\TeacherSection\Zadanie\Actions;
 
+use App\Containers\TeacherSection\Zadanie\Models\Zadanie;
 use App\Ship\Parents\Actions\Action;
 use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class UpdateZadanieAction extends Action
 {
-    public function run(Request $request)
+    public function run(int $zadanie_id, Request $request)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
+        $data = $request->only(['title', 'section_id', 'type', 'description', 'is_visible', 'deadline']);
 
-        $zadanie = Apiato::call('Zadanie@UpdateZadanieTask', [$request->id, $data]);
-
-        return $zadanie;
+        Zadanie::where('id', $zadanie_id)->update($data);
     }
 }

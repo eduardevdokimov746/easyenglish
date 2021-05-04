@@ -85,7 +85,7 @@
                 token: '{{ csrf_token() }}'
             },
             created: function(){
-                this.courses = JSON.parse('{!! $courses->toJson() !!}');
+                this.courses = JSON.parse('{!! str_replace('\\"', "\\'", $courses->toJson()) !!}');
                 this.searchGroups = JSON.parse('{!! $groups !!}');
                 this.defaultGroups = JSON.parse('{!! $groups !!}');
                 var domain = '{{ config('app.url') }}';

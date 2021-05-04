@@ -4,9 +4,7 @@ namespace App\Containers\AdminSection\Group\UI\WEB\Controllers;
 
 use App\Containers\AdminSection\Group\UI\WEB\Requests\UpdateGroupRequest;
 use App\Containers\AdminSection\Group\UI\WEB\Requests\StoreGroupRequest;
-use App\Containers\User\Models\User;
 use App\Ship\Parents\Controllers\WebController;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class Controller extends WebController
 {

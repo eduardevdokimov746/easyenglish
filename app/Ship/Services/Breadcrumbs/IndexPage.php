@@ -20,12 +20,12 @@ class IndexPage extends AbstractBreadcrumbItem
         return $this->getTemplateMiddle();
     }
 
-    protected function getTitle(): string
+    protected function title(): string
     {
         return 'Главная';
     }
 
-    protected function getUrl(): string
+    protected function url(): string
     {
         return route('index');
     }

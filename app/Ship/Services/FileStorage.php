@@ -79,6 +79,13 @@ class FileStorage
         return $this;
     }
 
+    public function toZadanie(): self
+    {
+        $this->currentFolder = 'zadanie/';
+        $this->currentUploadFolder = 'app/public/zadanie/';
+        return $this;
+    }
+
     public function getPathForDownload($fileName)
     {
         return $this->currentFolder . $fileName;

@@ -9,7 +9,9 @@
                 </h1>
             </div>
 
-            @if (!$errors->has('data-auth-not-valid') && $errors->any())
+            @include('components.breadcrumbs', [$breadcrumb])
+
+        @if (!$errors->has('data-auth-not-valid') && $errors->any())
                 <div class="alert alert-danger">
                     <ul style="list-style: none">
                         @foreach ($errors->all() as $error)

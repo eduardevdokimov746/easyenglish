@@ -104,7 +104,6 @@ class User extends Authenticatable
             case('teacher'): return 'Преподаватель';
             case('student'): return 'Студент';
             case('simple'): return 'Пользователь';
-
         }
     }
 

@@ -8,6 +8,8 @@
                 <h1 class="heading col">Ответы студентов на "{{ $zadanie->title }}"</h1>
             </div>
 
+            @include('components.breadcrumbs', [$breadcrumb])
+
             <div class="row">
                 <div class="py-3 col-md-9">
                     <table class="table-hover table-list-zadanie" border="1">

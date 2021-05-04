@@ -8,6 +8,8 @@
                 <h1 class="heading col">Задания курса "{{ $course->title }}"</h1>
             </div>
 
+            @include('components.breadcrumbs', [$breadcrumb])
+
             <div class="row">
                 <div class="py-3 col-md-9">
                     <table class="table-hover table-list-zadanie" border="1">
@@ -20,6 +22,8 @@
                         <th>Срок сдачи</th>
                         <th>Дата изменения</th>
                         <th>Изменить</th>
+                        <th>Видимость</th>
+                        <th>Удалить</th>
                         </thead>
                         @foreach($zadanies as $zadanie)
                             <tr class="table-row" data-href="{{ route('web_teacher_responses_students_index', $zadanie->id) }}">
@@ -31,8 +35,26 @@
                                 <td>{{ $zadanie->formatDate($zadanie->deadline) }}</td>
                                 <td>{{ $zadanie->show_updated_at }}</td>
                                 <td>
-                                    <a href="{{ route('web_teacher_zadanies_edit', 'asd') }}">
+                                    <a href="{{ route('web_teacher_zadanies_edit', $zadanie->id) }}" title="Редактировать">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                                @if($zadanie->is_visible)
+                                    <td>
+                                        <a href="{{ route('web_teacher_zadanies_hide', $zadanie->id) }}" title="Скрыть">
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                @else
+                                    <td>
+                                        <a href="{{ route('web_teacher_zadanies_visible', $zadanie->id) }}" title="Показать">
+                                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                @endif
+                                <td>
+                                    <a href="{{ route('web_teacher_zadanies_delete', $zadanie->id) }}" title="Удалить">
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
