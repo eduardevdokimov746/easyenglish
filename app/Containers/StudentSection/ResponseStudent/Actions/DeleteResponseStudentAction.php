@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Containers\ResponseStudent\Actions;
+namespace App\Containers\StudentSection\ResponseStudent\Actions;
 
+use App\Containers\TeacherSection\ResponseStudent\Models\ResponseStudent;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class DeleteResponseStudentAction extends Action
 {
-    public function run(Request $request)
+    public function run($id)
     {
-        return Apiato::call('ResponseStudent@DeleteResponseStudentTask', [$request->id]);
+        return ResponseStudent::where('id', $id)->delete()
     }
 }

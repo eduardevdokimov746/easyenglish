@@ -19,21 +19,38 @@ abstract class Model extends AbstractModel
 
     protected function serializeDate(\DateTimeInterface $date)
     {
-        return $date->format('h:m d.m.Y');
+        return $date->format('H:i d.m.Y');
     }
 
     public function formatDate($dateTime)
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s', $dateTime)->format('h:m d.m.Y');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $dateTime)->format('H:i d.m.Y');
     }
 
     public function getShowCreatedAtAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at'])->format('h:m d.m.Y');
+        if (empty($this->attributes['created_at'])) {
+            return '';
+        }
+
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at'])->format('H:i d.m.Y');
     }
 
     public function getShowUpdatedAtAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['updated_at'])->format('h:m d.m.Y');
+        if (empty($this->attributes['updated_at'])) {
+            return '';
+        }
+
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['updated_at'])->format('H:i d.m.Y');
+    }
+
+    public function getDateIsoFormat($dateTime)
+    {
+        if (empty($dateTime)) {
+            return '';
+        }
+
+        return Carbon::createFromFormat('Y-m-d H:i:s', $dateTime)->isoFormat('dddd, D MMMM YYYY, H:mm');
     }
 }

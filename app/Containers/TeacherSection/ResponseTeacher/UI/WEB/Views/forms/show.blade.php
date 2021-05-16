@@ -10,63 +10,38 @@
                 Оценка
             </th>
             <td>
-                10/10
+                {!! !is_null($response->responseTeacher) && $response->responseTeacher->is_credited == 1 ? $response->responseTeacher->result : '&mdash;' !!}
             </td>
-        </tr>
-
-        <tr>
-            <th>Состояние ответа на задание</th>
-            <td>Ответ не отправлен</td>
         </tr>
         <tr>
             <th>Состояние оценивания</th>
-            <td>Не оценено</td>
+            <td>{{ $response->type }}</td>
         </tr>
         <tr>
             <th>Ответ добавлен</th>
-            <td>Вторник, 12 января 2021, 17:48</td>
+            <td>{!! !is_null($response->responseTeacher) ? $response->getDateIsoFormat($response->responseTeacher->created_at) : '&mdash;' !!}</td>
         </tr>
         <tr>
             <th>Ответ изменен</th>
-            <td>Вторник, 12 января 2021, 17:48</td>
+            <td>{!! !is_null($response->responseTeacher) ? $response->getDateIsoFormat($response->responseTeacher->updated_at) : '&mdash;' !!}</td>
         </tr>
         </tbody>
     </table>
 
+    @if(is_null($response->responseTeacher) && !empty($response->responseTeacher))
     <div class="row mt-4">
         <div class="col">
             <h5>Комментарий</h5>
-            <div>Какой-то комментарий</div>
+            <div>{!! $response->responseTeacher->comment !!}</div>
         </div>
     </div>
-
-    <div class="row mt-4">
-        <div class="col">
-            <h5>Прикрепленные файлы</h5>
-            <table border="1" class="table-hover mt-2 table-list-files">
-                <thead>
-                <tr>
-                    <th>№</th>
-                    <th>Название</th>
-                    <th>Размер</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>
-                        <img src="http://custom/file_icons/png/doc.png" alt="" class="table-list-radanie-file-icon" style="width: 30px;">
-                        <span>test.pdf</span>
-                    </td>
-                    <td>2mb</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    @endif
 
     <div class="d-flex justify-content-end">
-        <button class="btn btn-primary" @click="changeForm('create')">Добавить ответ</button>
-        <button class="btn btn-info" style="display: none" @click="changeForm('edit')">Редактировать</button>
+        @if(is_null($response->responseTeacher))
+            <button class="btn btn-primary" @click="changeForm('create')">Добавить ответ</button>
+        @else
+            <button class="btn btn-info"  @click="changeForm('edit')">Редактировать</button>
+        @endif
     </div>
 </div>

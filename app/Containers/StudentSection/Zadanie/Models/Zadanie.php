@@ -6,6 +6,8 @@ use App\Ship\Parents\Models\Model;
 
 class Zadanie extends Model
 {
+
+
     protected $fillable = [
 
     ];

@@ -1,5 +1,5 @@
 <div id="btn-chat-panel" v-show="!isShowChat" @click="showHideChat">
-    <div class="count-notice" v-show="countNotice">
+    <div class="count-notice" v-show="countNotice != 0">
         <span>@{{ countNotice }}</span>
     </div>
 
@@ -93,7 +93,7 @@
         </div>
         <!-- ВЫПАДАЮШИЙ СПИСОК ВЫДЕЛЕННЫХ ПОЛЬЗОВАТЕЛЕЙ ДЛЯ СОЗДАНИЯ БЕСЕДЫ -->
 
-        <div v-show="isVisibleDialogWithUser && !selectedMessagesList.length" class="user-info">
+        <div v-if="isVisibleDialogWithUser && !selectedMessagesList.length" class="user-info">
             <div class="head-option-dialog-form">
                 <div class="form-prev-dialog-form" @click="hideFormDialog">
                     <span>
@@ -108,16 +108,17 @@
 
             <div class="main-info-sender mt-2" v-show="!isVisibleOptionsChatGroupForm">
                 <div class="image-avatar">
-                <img src="{{ asset('images/1.jpg') }}" alt="" class="user-avatar">
-                <!--                    <i class="fa fa-user" aria-hidden="true"></i>-->
+
+                    <img v-if="dialogHeader.img != 'no_image_user.png'" :src="'http://easyenglish.ddns.net/storage/users/profile_avatars/' + dialogHeader.img" alt="" class="user-avatar">
+
+                    <i class="fa fa-user" aria-hidden="true" style="color: #474747;" v-if="dialogHeader.img == 'no_image_user.png'"></i>
             </div>
                 <div class="content-item">
-                <p class="name-user">Евдокимов Эдуард Игоревич</p>
-                <p class="status">В сети</p>
+                <p class="name-user">@{{ dialogHeader.title }}</p>
+                {{--<p class="status">В сети</p>--}}
             </div>
             </div>
         </div>
-
 
         <!-- СТРОКА ИЗМЕНЕНИЯ НАЗВАНИЯ БЕСЕДЫ -->
         <div class="mt-2 input-group" id="form-create-group" v-show="isVisibleOptionsChatGroupForm">
@@ -168,193 +169,212 @@
 
     </div>
     <div id="body">
+
         <!-- СПИСОК ДИАЛОГОВ -->
         <ul class="list-dialog">
-
             {{--            LI ДЛЯ ОБЫЧНОГО ПОИСКА ПОЛЬЗОВАТЕЛЕЙ--}}
-            <li v-for="user in findUsersList">
+            <li v-for="(user, indexUser) in findUsersList" @click="selectFindUser(indexUser)">
                 <div class="image-avatar">
-                    <img src="{{ asset('images/1.jpg') }}" alt="" class="user-avatar">
+                    <img :src="user.avatar_path" alt="" class="user-avatar" v-if="user.avatar != 'no_image_user.png'">
+                    <i class="fa fa-user" v-if="user.avatar == 'no_image_user.png'"></i>
                 </div>
 
                 <div class="content-item">
-                    <p class="name-user">@{{ user }}<span class="time-last-msg">1 час</span></p>
+                    <p class="name-user">@{{ user.fio.length <= 0 ? user.login : user.fio }}</p>
                 </div>
             </li>
+
             {{--            LI ДЛЯ ОБЫЧНОГО ПОИСКА ПОЛЬЗОВАТЕЛЕЙ--}}
 
             {{--            LI ДЛЯ ПОИСКА ДЛЯ СОЗДАНИЯ ГРУППЫ--}}
-            <li v-for="user in findUsersForCreateGroup" @click="selectedUser(user.id)">
-                <div class="image-avatar">
-                    <i class="fa fa-user" aria-hidden="true"></i>
-                </div>
-                <div class="content-item">
-                    <p class="name-user">@{{ user.name }}
-                        <span class="custom-checkbox" :class="{'custom-checkbox-checked': user.isSelected}">
-                            <i class="fa fa-check" aria-hidden="true" v-show="user.isSelected"></i>
-                        </span>
-                    </p>
+            {{--<li v-for="user in findUsersForCreateGroup" @click="selectedUser(user.id)">--}}
+                {{--<div class="image-avatar">--}}
+                    {{--<i class="fa fa-user" aria-hidden="true"></i>--}}
+                {{--</div>--}}
+                {{--<div class="content-item">--}}
+                    {{--<p class="name-user">@{{ user.name }}--}}
+                        {{--<span class="custom-checkbox" :class="{'custom-checkbox-checked': user.isSelected}">--}}
+                            {{--<i class="fa fa-check" aria-hidden="true" v-show="user.isSelected"></i>--}}
+                        {{--</span>--}}
+                    {{--</p>--}}
 
-                </div>
-            </li>
+                {{--</div>--}}
+            {{--</li>--}}
             {{--            LI ДЛЯ ПОИСКА ДЛЯ СОЗДАНИЯ ГРУППЫ--}}
-
 
             <template v-if="isShowListDialogs">
-
                 {{--LI ДИАЛОГА ГРУППЫ--}}
-                <li :class="{'new-message-dialog': true}">
-                    <div class="image-avatar-group">
+
+                <li :class="{'new-message-dialog': dialog.isset_new_msg}" v-for="(dialog, indexDialog) in dialogs" @click="showDialog(indexDialog)" :key="dialog.hash">
+
+                    <div class="image-avatar-group" v-if="dialog.type == 'group'">
                         <i class="fa fa-users" aria-hidden="true"></i>
+                    </div>
+
+                    <div class="image-avatar" v-if="dialog.type == 'dialog' && dialog.is_default_avatar == 0">
+                        <img :src="dialog.img" alt="" class="user-avatar">
+                    </div>
+
+                    <div class="image-avatar" v-if="dialog.type == 'dialog' && dialog.is_default_avatar == 1">
+                        <i class="fa fa-user" aria-hidden="true"></i>
                     </div>
 
                     <div class="content-item">
                         <div class="title-message-content-dialogs">
                             <p class="name-message-dialogs">
-                                Евдокимов Эдуард Игоревич
-                            </p>
-                            <p class="time-message-dialogs">
-                                1 час
+                                @{{ dialog.title }}
                             </p>
                         </div>
 
                         <div class="div-body-message-content-dialogs">
                             <p class="body-message-dialogs">
-                                <b class="sender">Вы:</b> Добро пожаловать на сайт
+                                <b class="sender" v-if="dialog.last_msg !== undefined && dialog.last_msg.sender == 'my'">Вы:</b>
+                                <span v-show="!dialog.isWriting">@{{ dialog.last_msg !== undefined ? dialog.last_msg.msg : ''}}</span>
+
+                                <span v-show="dialog.isWriting">
+                                    Набирает сообщение
+                                    <object type="image/svg+xml" data="{{ asset('images/826.svg') }}" style="width: 20px; vertical-align: middle;">
+                                        Your browser does not support SVG
+                                    </object>
+                                </span>
                             </p>
-                            <p class="count-notice-message-dialogs">
-                                22
+
+                            <p class="count-notice-message-dialogs" v-if="dialog.isset_new_msg">
+                                @{{ dialog.new_msg_count }}
                             </p>
                         </div>
-
                     </div>
                 </li>
+
                 {{--LI ДИАЛОГА ГРУППЫ--}}
 
                 {{--LI ДИАЛОГА С ПОЛЬЗОВАТЕЛЕМ--}}
-                <li>
-                <div class="image-avatar">
-                    <img src="{{ asset('images/1.jpg') }}" alt="" class="user-avatar">
-                </div>
-                <div class="content-item">
-                    <p class="name-user">Евдокимов Эдуард Игоревич <span class="time-last-msg">1 час</span></p>
-                    <p class="last-msg"><b class="sender">Вы:</b> Добро пожаловать на сайт</p>
-                </div>
-            </li>
+                {{--<li>--}}
+                    {{--<div class="image-avatar">--}}
+                        {{--<img src="{{ asset('images/1.jpg') }}" alt="" class="user-avatar">--}}
+                    {{--</div>--}}
+                    {{--<div class="content-item">--}}
+                        {{--<p class="name-user">Евдокимов Эдуард Игоревич <span class="time-last-msg">1 час</span></p>--}}
+                        {{--<p class="last-msg"><b class="sender">Вы:</b> Добро пожаловать на сайт</p>--}}
+                    {{--</div>--}}
+                {{--</li>--}}
                 {{--LI ДИАЛОГА С ПОЛЬЗОВАТЕЛЕМ--}}
 
                 {{--LI ДИАЛОГА С ПОЛЬЗОВАТЕЛЕМ БЕЗ АВАТАРКИ--}}
-                <li>
-                <div class="image-avatar">
-                    <i class="fa fa-user" aria-hidden="true"></i>
-                </div>
-                <div class="content-item">
-                    <p class="name-user">Евдокимов Эдуард Игоревич <span class="time-last-msg">1 час</span></p>
-                    <p class="last-msg"><b class="sender">Вы:</b> Добро пожаловать на сайт</p>
-                </div>
-            </li>
+                {{--<li>--}}
+                    {{--<div class="image-avatar">--}}
+                        {{--<i class="fa fa-user" aria-hidden="true"></i>--}}
+                    {{--</div>--}}
+                    {{--<div class="content-item">--}}
+                        {{--<p class="name-user">Евдокимов Эдуард Игоревич <span class="time-last-msg">1 час</span></p>--}}
+                        {{--<p class="last-msg"><b class="sender">Вы:</b> Добро пожаловать на сайт</p>--}}
+                    {{--</div>--}}
+                {{--</li>--}}
                 {{--LI ДИАЛОГА С ПОЛЬЗОВАТЕЛЕМ БЕЗ АВАТАРКИ--}}
-
-                <li v-for="dialog in dialogs" @click="showDialog(dialog.id)">
-                    <div class="image-avatar">
-                        <i class="fa fa-user" aria-hidden="true"></i>
-                    </div>
-                    <div class="content-item">
-                        <p class="name-user">@{{ dialog.name }}<span class="time-last-msg">1 час</span></p>
-                        <p class="last-msg"><b class="sender">Вы:</b> @{{ dialog.message }}</p>
-                    </div>
-                </li>
             </template>
         </ul>
         <!-- СПИСОК ДИАЛОГОВ -->
 
-
         {{--СООБЩЕНИЯ--}}
-{{--        --}}
-        <ul style="padding: 10px;" class="list-msgs" v-show="isVisibleDialogWithUser && !isVisibleOptionsChatGroupForm">
+        <ul style="padding: 10px;"
+            class="list-msgs"
+            v-show="isVisibleDialogWithUser && !isVisibleOptionsChatGroupForm">
 
-            <li class="msg" v-for="msg in messages">
-
-                <div class="div-watched-message-icon" v-if="msg.user_id == 1">
-                    <i class="fa fa-check-circle-o watch-message-icon" aria-hidden="true" v-if="!msg.isWatched" title="Доставленно"></i>
-                    <i class="fa fa-check-circle watch-message-icon" aria-hidden="true" v-if="msg.isWatched" title="Просмотренно"></i>
-                </div>
-
-{{--                [msg.id == 1] 1 - это мой id аутентифицированного пользователя--}}
-                <div class="msg-content"
-                     :class="[msg.user_id == 1 ? 'my-msg' : 'sender-msg', {'selected-msg' : msg.isSelected}]"
-                     @click="selectMessage(msg.id)"
-                     :data-selected="msg.isSelected"
-                >
-                    <div class="head">
-                        <p>@{{ msg.user_name }}<span>@{{ msg.time }}</span></p>
+            <div v-for="(msg, indexMsg) in messages" style="display: contents;">
+                <li class="msg">
+                    <div class="div-watched-message-icon" v-if="msg.user_id == auth_id && isLastMyMessages(indexMsg)">
+                        <i class="fa fa-check-circle-o watch-message-icon" aria-hidden="true" v-if="!msg.is_checked" title="Доставленно"></i>
+                        <i class="fa fa-check-circle watch-message-icon" aria-hidden="true" v-if="msg.is_checked" title="Просмотренно"></i>
                     </div>
-                    <div>
-                        @{{ msg.body }}
-                    </div>
-                </div>
-            </li>
 
-            <li class="databox">
-                25 октября 2020
-            </li>
+                    <div class="msg-content"
+                         :class="[msg.user_id == auth_id ? 'my-msg' : 'sender-msg', {'selected-msg' : msg.isSelected}]"
+                         @click="selectMessage(msg.id)"
+                         :data-selected="msg.isSelected"
+                    >
+                        <div class="head">
+                            <p>@{{ getUser(msg.user_id).name }}<span>@{{ msg.time }}</span></p>
+                        </div>
 
-            <li data-check="off" class="msg">
-                <div class="msg-content sender-msg">
-                    <div class="head">
-                        <p>Евдокимов Эдуард Игоревич <span>15:32</span></p>
-                    </div>
-                    <div class="msg-body">
-                        <p style="font-size: 1.1em">
-                            <a href="#">
-                                <i class="fa fa-file" style="font-size: 1.5em" aria-hidden="true"></i>
-                                <span>file.txt</span>
-                                <span>220kb</span>
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </li>
+                        <div v-if="msg.type == 'simple'">
+                            @{{ msg.content }}
+                        </div>
 
-            <li data-check="off" class="msg">
-                <div class="msg-content my-msg">
-                    <div class="head">
-                        <p>Евдокимов Эдуард Игоревич <span>15:32</span></p>
+                        <div class="msg-body" v-if="msg.type == 'file'">
+                            <p style="font-size: 1.1em">
+                                <a href="#">
+                                    <i class="fa fa-file" style="font-size: 1.5em" aria-hidden="true"></i>
+                                    <span>file.txt</span>
+                                    <span>220kb</span>
+                                </a>
+                            </p>
+                        </div>
                     </div>
-                    <div class="msg-body">
-                        <p style="font-size: 1.1em">
-                            <a href="#">
-                                <i class="fa fa-file" style="font-size: 1.5em" aria-hidden="true"></i>
-                                <span>file.txt</span>
-                                <span>220kb</span>
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </li>
+                </li>
 
-            <li id="info-writing-msg">
-                <p>Пользователь набирает сообщение
+                <li class="databox" v-if="issetDataBox(msg.id)">
+                    @{{ getDataBox(msg.id).date }}
+                </li>
+
+            </div>
+
+
+            {{--<li data-check="off" class="msg">--}}
+                {{--<div class="msg-content sender-msg">--}}
+                    {{--<div class="head">--}}
+                        {{--<p>Евдокимов Эдуард Игоревич <span>15:32</span></p>--}}
+                    {{--</div>--}}
+                    {{--<div class="msg-body">--}}
+                        {{--<p style="font-size: 1.1em">--}}
+                            {{--<a href="#">--}}
+                                {{--<i class="fa fa-file" style="font-size: 1.5em" aria-hidden="true"></i>--}}
+                                {{--<span>file.txt</span>--}}
+                                {{--<span>220kb</span>--}}
+                            {{--</a>--}}
+                        {{--</p>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--</li>--}}
+
+            {{--<li data-check="off" class="msg">--}}
+                {{--<div class="msg-content my-msg">--}}
+                    {{--<div class="head">--}}
+                        {{--<p>Евдокимов Эдуард Игоревич <span>15:32</span></p>--}}
+                    {{--</div>--}}
+                    {{--<div class="msg-body">--}}
+                        {{--<p style="font-size: 1.1em">--}}
+                            {{--<a href="#">--}}
+                                {{--<i class="fa fa-file" style="font-size: 1.5em" aria-hidden="true"></i>--}}
+                                {{--<span>file.txt</span>--}}
+                                {{--<span>220kb</span>--}}
+                            {{--</a>--}}
+                        {{--</p>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--</li>--}}
+
+            <li id="info-writing-msg" style="text-align: center" v-show="isFriendWriting">
+                <p style="font-size: .7em;">@{{ userWriting }} набирает сообщение
                     <object type="image/svg+xml" data="{{ asset('images/826.svg') }}" style="width: 20px; vertical-align: middle;">
                         Your browser does not support SVG
                     </object>
                 </p>
             </li>
+
         </ul>
         {{--СООБЩЕНИЯ--}}
-
     </div>
 
     {{--    ФОРМА НАБОРА СООБЩЕНИЯ--}}
     <div id="footer" v-show="isVisibleDialogWithUser && !isVisibleOptionsChatGroupForm">
         <div class="textarea-box">
-            <textarea rows="5" placeholder="Введите сообщение..." v-model="messageTextarea"></textarea>
+            <textarea rows="5" placeholder="Введите сообщение..." v-model="messageTextarea" @focus="focusTextarea"></textarea>
         </div>
         <div class="box-message-bnts">
             <p class="btn-message-form" id="upload-file" title="Прикрепить файл" @click="showModalUploadFileChat">
                 <i class="fa fa-paperclip" aria-hidden="true"></i>
             </p>
-            <p class="btn-message-form" title="Отправить">
+            <p class="btn-message-form" title="Отправить" @click="sendMsg">
                 <i class="fa fa-share" aria-hidden="true"></i>
             </p>
         </div>
@@ -412,6 +432,12 @@
 
 @push('scripts')
     <script>
+        var token = '{{ csrf_token() }}';
+        var errorMsg = '{{ __('ship::validation.error-server') }}';
+
+        var notice = new Howl({
+            src: "{{ asset('notice.mp3') }}"
+        });
 
         function changeHeightBodyChatForm(isFromDialog){
             var height = $('#head').height() + 20;
@@ -426,42 +452,27 @@
         var listDialogsChatComponent = {
             data: {
                 dialogs: [
-                    {
-                        'id': 1,
-                        'name': 'Василий Пупкин',
-                        'message': 'Добро пожаловать на сайт'
-                    },
-                    {
-                        'id': 2,
-                        'name': 'Василий Пупкин',
-                        'message': 'Добро пожаловать на сайт'
-                    },
-                    {
-                        'id': 3,
-                        'name': 'Василий Пупкин',
-                        'message': 'Добро пожаловать на сайт'
-                    },
-                    {
-                        'id': 4,
-                        'name': 'Василий Пупкин',
-                        'message': 'Добро пожаловать на сайт'
-                    },
-                    {
-                        'name': 'Василий Пупкин',
-                        'message': 'Добро пожаловать на сайт'
-                    },
-                    {
-                        'name': 'Василий Пупкин',
-                        'message': 'Добро пожаловать на сайт'
-                    },
-                    {
-                        'name': 'Василий Пупкин',
-                        'message': 'Добро пожаловать на сайт'
-                    },
-                    {
-                        'name': 'Василий Пупкин',
-                        'message': 'Добро пожаловать на сайт'
-                    }
+                    // {
+                    //     'id': 1,
+                    //     'name': 'Василий Пупкин',
+                    //     'message': 'Добро пожаловать на сайт'
+                    // },
+                    // {
+                    //     'id': 2,
+                    //     'name': 'Василий Пупкин',
+                    //     'message': 'Добро пожаловать на сайт'
+                    // },
+                    // {
+                    //     'id': 3,
+                    //     'name': 'Василий Пупкин',
+                    //     'message': 'Добро пожаловать на сайт'
+                    // },
+                    // {
+                    //     'id': 4,
+                    //     'name': 'Василий Пупкин',
+                    //     'message': 'Добро пожаловать на сайт'
+                    // },
+
                 ],
             },
             computed: {
@@ -545,66 +556,68 @@
 
         var dialogChatComponent = {
             data: {
+                auth_id: '{{ \Auth::id() }}',
+                dialogHeader: {},
                 usersDialog: [
-                    {'id': 1, 'name': 'user 1', 'isSelected': false},
-                    {'id': 2, 'name': 'user 2', 'isSelected': false}
+                    // {'id': 1, 'name': 'user 1', 'isSelected': false},
+                    // {'id': 2, 'name': 'user 2', 'isSelected': false}
                 ],
                 isVisibleDialogWithUser: false,
                 messages: [
-                    {
-                        id: 1,
-                        user_id: 1, // ID отправителя. Определяем тип сообщения (мое, чужое) по id. id == auth_id - мое, иначе чужое
-                        user_name: 'Евдокимов Эдуард Игоревич',
-                        body: 'Само сообщение',
-                        time: '12:42',
-                        date_time: '2020-11-12 12:42',
-                        isChanged: false,
-                        isWatched: true,
-                        isSelected: false,
-                    },
-                    {
-                        id: 2,
-                        user_id: 2, // ID отправителя. Определяем тип сообщения (мое, чужое) по id. id == auth_id - мое, иначе чужое
-                        user_name: 'Евдокимов Эдуард Игоревич',
-                        body: 'Само сообщение',
-                        time: '12:42',
-                        date_time: '2020-11-12 12:42',
-                        isChanged: false,
-                        isWatched: false,
-                        isSelected: false,
-                    },
-                    {
-                        id: 3,
-                        user_id: 3, // ID отправителя. Определяем тип сообщения (мое, чужое) по id. id == auth_id - мое, иначе чужое
-                        user_name: 'Евдокимов Эдуард Игоревич',
-                        body: 'Само сообщение',
-                        time: '12:42',
-                        date_time: '2020-11-12 12:42',
-                        isChanged: false,
-                        isWatched: false,
-                        isSelected: false,
-                    },{
-                        id: 4,
-                        user_id: 1, // ID отправителя. Определяем тип сообщения (мое, чужое) по id. id == auth_id - мое, иначе чужое
-                        user_name: 'Евдокимов Эдуард Игоревич',
-                        body: 'Само сообщение',
-                        time: '12:42',
-                        date_time: '2021-02-11 12:42',
-                        isChanged: false,
-                        isWatched: false,
-                        isSelected: false,
-                    },
-                    {
-                        id: 5,
-                        user_id: 5, // ID отправителя. Определяем тип сообщения (мое, чужое) по id. id == auth_id - мое, иначе чужое
-                        user_name: 'Евдокимов Эдуард Игоревич',
-                        body: 'Само сообщение',
-                        time: '12:42',
-                        date_time: '2021-11-02 11:42',
-                        isChanged: false,
-                        isWatched: false,
-                        isSelected: false,
-                    }
+                    // {
+                    //     id: 1,
+                    //     user_id: 1, // ID отправителя. Определяем тип сообщения (мое, чужое) по id. id == auth_id - мое, иначе чужое
+                    //     user_name: 'Евдокимов Эдуард Игоревич',
+                    //     body: 'Само сообщение',
+                    //     time: '12:42',
+                    //     date_time: '2020-11-12 12:42',
+                    //     isChanged: false,
+                    //     isWatched: true,
+                    //     isSelected: false,
+                    // },
+                    // {
+                    //     id: 2,
+                    //     user_id: 2, // ID отправителя. Определяем тип сообщения (мое, чужое) по id. id == auth_id - мое, иначе чужое
+                    //     user_name: 'Евдокимов Эдуард Игоревич',
+                    //     body: 'Само сообщение',
+                    //     time: '12:42',
+                    //     date_time: '2020-11-12 12:42',
+                    //     isChanged: false,
+                    //     isWatched: false,
+                    //     isSelected: false,
+                    // },
+                    // {
+                    //     id: 3,
+                    //     user_id: 3, // ID отправителя. Определяем тип сообщения (мое, чужое) по id. id == auth_id - мое, иначе чужое
+                    //     user_name: 'Евдокимов Эдуард Игоревич',
+                    //     body: 'Само сообщение',
+                    //     time: '12:42',
+                    //     date_time: '2020-11-12 12:42',
+                    //     isChanged: false,
+                    //     isWatched: false,
+                    //     isSelected: false,
+                    // },{
+                    //     id: 4,
+                    //     user_id: 1, // ID отправителя. Определяем тип сообщения (мое, чужое) по id. id == auth_id - мое, иначе чужое
+                    //     user_name: 'Евдокимов Эдуард Игоревич',
+                    //     body: 'Само сообщение',
+                    //     time: '12:42',
+                    //     date_time: '2021-02-11 12:42',
+                    //     isChanged: false,
+                    //     isWatched: false,
+                    //     isSelected: false,
+                    // },
+                    // {
+                    //     id: 5,
+                    //     user_id: 5, // ID отправителя. Определяем тип сообщения (мое, чужое) по id. id == auth_id - мое, иначе чужое
+                    //     user_name: 'Евдокимов Эдуард Игоревич',
+                    //     body: 'Само сообщение',
+                    //     time: '12:42',
+                    //     date_time: '2021-11-02 11:42',
+                    //     isChanged: false,
+                    //     isWatched: false,
+                    //     isSelected: false,
+                    // }
                 ],
                 selectedMessagesList: [],
                 isDisabledCheckboxDeleteMsgForAllUsers: true,
@@ -612,22 +625,182 @@
                 isShowBtnRewriteMessage: true,
                 isDisabledBtnSendRewriteMsg: false,
                 messageTextarea: '',
-                typeDialog: ''
+                typeDialog: '',
+                dataBoxes: [],
+                currentChatHash: ''
             },
             methods: {
-                showDialog: function(dialog_id){
-                    $('#form-chat #head').css('height', '102px');
-                    changeHeightBodyChatForm(true);
-                    this.isVisibleDialogWithUser = true;
-                    this.typeDialog = 'group';
+                getUser: function(user_id){
+                    var indexUser = _.findIndex(this.usersDialog, function(item){
+                        return item.id == user_id;
+                    });
+
+                    if(indexUser != -1){
+                        return this.usersDialog[indexUser];
+                    }
+                },
+                getFriendDialog: function(){
+                    return _.find(app.usersDialog, function(item){
+                        return item.id != app.auth_id;
+                    });
+                },
+                issetDataBox: function(message_id){
+                    return typeof this.dataBoxes[message_id] != "undefined";
+                },
+                getDataBox: function(message_id){
+                    if(this.dataBoxes[message_id] !== null){
+                        return this.dataBoxes[message_id];
+                    }
+                },
+                showDialog: function(indexDialog){
+                    var chatHash = this.dialogs[indexDialog].hash;
+                    this.currentChatHash = chatHash;
+
+                    $.ajax({
+                        url: '{{ route('web_chat_show_dialog') }}',
+                        data: {'hash': chatHash, '_token': token},
+                        method: 'post',
+                        success: function(response){
+                            var data = JSON.parse(response);
+                            console.log(data, data.dialog.data);
+
+                            if (data.dialog.data.type == 'dialog') {
+                                app.typeDialog = 'dialog';
+                                app.usersDialog = data.dialog.users;
+                                app.messages = data.dialog.msgs;
+
+                                var friend = app.getFriendDialog();
+                                app.dialogHeader.title = friend.name;
+                                app.dialogHeader.img = friend.avatar;
+                            }
+
+                            if (data.dataBoxes) {
+                                app.dataBoxes = data.dataBoxes;
+                            }
+
+                            $('#form-chat #head').css('height', '102px');
+                            changeHeightBodyChatForm(true);
+                            app.isVisibleDialogWithUser = true;
+                            app.scrollDownMessageList();
+                            app.checkMessages();
+                        },
+                        error: function(error){
+                            alertDanger(errorMsg);
+                        }
+                    });
+                },
+                selectFindUser: function(indexUser){
+                    var user_id = this.findUsersList[indexUser].id;
+
+                    $.ajax({
+                        url: '{{ route('web_chat_select_find_user') }}',
+                        data: {'_token': token, 'user_id': user_id},
+                        type: 'post',
+                        success: function(response){
+                            app.findUsersList = [];
+
+                            console.log(response);
+                            var data = JSON.parse(response);
+
+                            app.typeDialog = 'dialog';
+                            app.usersDialog = data.dialog.users;
+                            app.messages = data.dialog.msgs;
+                            app.currentChatHash = data.hash;
+
+                            if (data.dataBoxes) {
+                                app.dataBoxes = data.dataBoxes;
+                            }
+
+                            var friend = app.getFriendDialog();
+                            app.dialogHeader.title = friend.name;
+                            app.dialogHeader.img = friend.avatar;
+
+                            $('#form-chat #head').css('height', '102px');
+                            changeHeightBodyChatForm(true);
+                            app.isVisibleDialogWithUser = true;
+                            app.queryString = '';
+                        },
+                        error: function(error){
+                            console.log(error);
+                        }
+                    });
                 },
                 hideFormDialog: function(){
                     if(this.isVisibleOptionsChatGroupForm){
                         this.showHideOptionsChatGroupForm();
                     }
+
+                    this.messages = [];
+                    this.dataBoxes = [];
+                    this.messageTextarea = '';
+                    this.usersDialog = [];
+                    this.dialogHeader = {};
+
+                    $.ajax({
+                        url: '{{ route('web_chat_index') }}',
+                        method: 'post',
+                        data: {'_token': token},
+                        success: function (data) {
+                            console.log(JSON.parse(data));
+                            app.dialogs = Object.values(JSON.parse(data));
+
+                            app.dialogs.sort(function(k, v){
+                                return new Date(v.sort_date) - new Date(k.sort_date);
+                            });
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+
                     this.isVisibleDialogWithUser = false;
                     $('#form-chat #head').css('height', '92px');
                     changeHeightBodyChatForm();
+                },
+                sendMsg: function(){
+                    if(isEmptyString(this.messageTextarea)){
+                        return;
+                    }
+
+                    var data = {
+                        '_token': token,
+                        'topic': app.getTopicChat(),
+                        'hash': app.currentChatHash,
+                        'message': {
+                            'user_id': app.auth_id,
+                            'type': 'simple',
+                            'content': app.messageTextarea,
+                        }
+                    };
+
+                    $.ajax({
+                        url: '{{ route('web_chat_send_message') }}',
+                        data: data,
+                        type: 'post',
+                        success: function(response){
+                            console.log(response);
+
+                            var data = JSON.parse(response);
+
+                            app.messages.push(data);
+
+                            app.newMessage();
+                            app.scrollDownMessageList();
+                            app.messageTextarea = '';
+                        },
+                        error: function(error){
+                            console.log(error);
+                            alertDanger(errorMsg);
+                        }
+                    });
+                },
+                newMessage: function(friendSender = false){
+                    if(friendSender){
+                        notice.play();
+                    }
+
+                    app.userWriting = '';
+                    app.isFriendWriting = false;
                 },
                 selectMessage: function(msg_id){
                     var indexMessageFromSelectedMsg = _.findIndex(this.selectedMessagesList, {'id': msg_id});
@@ -718,39 +891,196 @@
                 isShowChat: false,
                 queryString: '',
                 findUsersList: [],
-                countNotice: 0
+                countNotice: parseInt('{{ $countNoticeChat }}'),
+                conn: {},
+                isFriendWriting: false,
+                userWriting: ''
             },
-            methods: {
-                findUsersAction: function(){
-                    if(isEmptyString(this.queryString)){
-                        this.findUsersForCreateGroup = [];
-                        this.findUsersList = [];
+            created: function(){
+                this.conn = new WebSocket('ws://easyenglish.ddns.net:5555');
+
+                this.conn.onopen = function(e) {
+                    console.log("Connection established!");
+                    setTimeout(function(){
+                        app.conn.send(JSON.stringify({'setTopic': app.auth_id}));
+                    }, 1000);
+                };
+
+                this.conn.onmessage = function(e) {
+                    console.log(e.data);
+
+                    var response = JSON.parse(e.data);
+                    console.log(response);
+
+                    if (response.type == 'writing') {
+
+                        if (app.isShowListDialogs) {
+
+                            var hash = response.hash;
+
+                            var indexDialog = _.findIndex(app.dialogs, function(item){
+                                return item.hash == hash;
+                            });
+
+                            if (indexDialog != -1) {
+
+                                var dialog = app.dialogs[indexDialog];
+                                dialog.isWriting = true;
+
+                                clearTimeout(window.tim1);
+                                var d = app.dialogs.splice(0, app.dialogs.length);
+                                app.dialogs = d;
+
+                                window.tim1 = setTimeout(function () {
+                                    dialog.isWriting = false;
+                                    var d = app.dialogs.splice(0, app.dialogs.length);
+                                    app.dialogs = d;
+                                }, 2000);
+                            }
+
+                            return;
+                        }
+
+                        app.showNoticeWriting(response.name);
                         return;
                     }
-                    setTimeout(function(){
-                        //ajax на поиск пользователей queryString
-                    }, 100);
 
-                    if(this.isVisibleCreateChatGroupForm || this.isVisibleOptionsChatGroupForm){
-                        this.findUsersForCreateGroup.push({'id': 1, 'name': 'user 1', 'isSelected': false});
-                        this.findUsersForCreateGroup.push({'id': 2, 'name': 'user 2', 'isSelected': false});
-                        this.findUsersForCreateGroup.push({'id': 3, 'name': 'user 3', 'isSelected': false});
+                    if (response.type == 'checked') {
+                        app.touchCheckedMessages();
+                        return;
+                    }
 
-                        if(this.selectedUsers.length){
-                            var index;
-                            _.each(this.findUsersForCreateGroup, (item) => {
-                                index = _.findIndex(this.selectedUsers, {'id': item.id});
-                                if(index >= 0){
-                                    item.isSelected = true;
+                    if (app.isShowListDialogs) {
+                        var hash = response.hash;
+
+                        var indexDialog = _.findIndex(app.dialogs, function(item){
+                            return item.hash == hash;
+                        });
+
+                        if (indexDialog === -1) {
+                            $.ajax({
+                                url: '{{ route('web_chat_index') }}',
+                                method: 'post',
+                                data: {'_token': token},
+                                success: function (data) {
+                                    console.log(JSON.parse(data));
+                                    app.dialogs = JSON.parse(data);
+                                },
+                                error: function (error) {
+                                    console.log(error);
                                 }
                             });
+                        } else {
+                            var dialog = app.dialogs[indexDialog];
+
+                            if(dialog.last_msg){
+                                dialog.last_msg.msg = response.content.content;
+                                dialog.last_msg.sender = 'friend';
+                                if(dialog.isset_new_msg){
+                                    dialog.new_msg_count++;
+                                }else{
+                                    dialog.isset_new_msg = 1;
+                                    dialog.new_msg_count = 1;
+                                }
+
+                                if(app.dialogs.length > 1){
+                                    app.dialogs.unshift(...app.dialogs.splice(indexDialog,1));
+                                }
+                            }else{
+                                $.ajax({
+                                    url: '{{ route('web_chat_index') }}',
+                                    method: 'post',
+                                    data: {'_token': token},
+                                    success: function (data) {
+                                        console.log('3333');
+                                        console.log(JSON.parse(data));
+                                        app.dialogs = JSON.parse(data);
+                                    },
+                                    error: function (error) {
+                                        console.log(error);
+                                    }
+                                });
+                            }
                         }
-                    }else{
-                        this.findUsersList.push('Василий Петрович');
+
+                        app.newMessage(1);
+                        app.countNotice++;
+                        return;
                     }
-                },
+
+                    if (app.isVisibleDialogWithUser) {
+                        app.messages.push(response.content);
+
+                        app.checkMessages();
+                    }
+
+                    app.countNotice++;
+
+                    app.newMessage(1);
+                };
+            },
+            methods: {
+                findUsersAction: _.debounce(() => {
+                    if(isEmptyString(app.queryString) || app.queryString.length <= 2){
+                        app.findUsersForCreateGroup = [];
+                        app.findUsersList = [];
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '{{ route('web_chat_find_users') }}',
+                        data: {query: app.queryString, '_token': token},
+                        type: 'post',
+                        success: function(response){
+                            console.log(response);
+                            var data = JSON.parse(response);
+
+
+                            if(this.isVisibleCreateChatGroupForm || this.isVisibleOptionsChatGroupForm){
+                                this.findUsersForCreateGroup.push({'id': 1, 'name': 'user 1', 'isSelected': false});
+                                this.findUsersForCreateGroup.push({'id': 2, 'name': 'user 2', 'isSelected': false});
+                                this.findUsersForCreateGroup.push({'id': 3, 'name': 'user 3', 'isSelected': false});
+
+                                if(this.selectedUsers.length){
+                                    var index;
+                                    _.each(this.findUsersForCreateGroup, (item) => {
+                                        index = _.findIndex(this.selectedUsers, {'id': item.id});
+                                        if(index >= 0){
+                                            item.isSelected = true;
+                                        }
+                                    });
+                                }
+                            }else{
+                                app.findUsersList = data;
+                            }
+                        },
+                        error: function(error){
+                            console.log(error);
+                        }
+                    });
+
+                }, 1000),
                 showHideChat: function (){
                     this.isShowChat = this.isShowChat ? false : true;
+                    this.queryString = '';
+                    if (this.isShowChat) {
+                        $.ajax({
+                            url: '{{ route('web_chat_index') }}',
+                            method: 'post',
+                            data: {'_token': token},
+                            success: function (data) {
+                                console.log(JSON.parse(data));
+                                app.dialogs = Object.values(JSON.parse(data));
+
+                                app.dialogs.sort(function(k, v){
+                                    return new Date(v.sort_date) - new Date(k.sort_date);
+                                });
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                    }
 
                     if(this.isVisibleDialogWithUser){
                         $('#form-chat #head').css('height', '102px');
@@ -759,8 +1089,115 @@
                         $('#form-chat #head').css('height', '92px');
                         changeHeightBodyChatForm();
                     }
+                },
+                scrollDownMessageList: function(){
+                    setTimeout(function(){
+                        var div = $("#body");
+                        div.scrollTop(div.prop('scrollHeight'));
+                    }, 100);
+                },
+                showNoticeWriting: function(name){
+                    this.userWriting = name;
+                    this.isFriendWriting = true;
+
+                    this.scrollDownMessageList();
+
+                    clearTimeout(window.tim);
+
+                    window.tim = setTimeout(function () {
+                        app.userWriting = '';
+                        app.isFriendWriting = false;
+                    }, 2000);
+                },
+                getTopicChat: function(){
+                    if (this.typeDialog == 'dialog') {
+                        return this.getFriendDialog().id;
+                    } else {
+                        return this.currentChatHash;
+                    }
+                },
+                touchCheckedMessages: function(){
+                    this.messages = _.map(this.messages, function(item){
+                        if (item.user_id == app.auth_id) {
+                            item.is_checked = 1;
+                        }
+
+                        return item;
+                    });
+                },
+                isLastMyMessages: function(indexMessage){
+                    return _.findIndex(app.messages, function(item, key){
+                        if (key > indexMessage) {
+                            return item.user_id != app.auth_id;
+                        }
+
+                        return false;
+                    }) === -1;
+                },
+                focusTextarea: function(){
+                    this.checkMessages();
+                },
+                checkMessages: function(){
+                    var msgs = [];
+
+                    this.messages.forEach(function(item, index, messages){
+
+                        var object = Object.assign({}, item);
+                        msgs.push(object);
+                    });
+
+                    var hasUncheckedMessageFriend = _.findIndex(msgs.reverse(), function(item, key){
+                        if (!item.is_checked && item.user_id != app.auth_id) {
+                            return true;
+                        }
+                    });
+
+                    if (hasUncheckedMessageFriend !== -1) {
+                        this.messages.forEach(function(item, index, messages){
+                            if (!item.is_checked && item.user_id != app.auth_id) {
+                                item.is_checked = 1;
+                                app.countNotice--;
+                            }
+                        });
+
+                        var data = {
+                            '_token': token,
+                            'topic': this.getTopicChat(),
+                            'hash': this.currentChatHash,
+                        };
+
+                        $.ajax({
+                            url: '{{ route('web_chat_check_messages') }}',
+                            data: data,
+                            type: 'post',
+                            success: function(response) {
+                                console.log(response);
+                            },
+                            error: function(error){
+                                console.log(error);
+                            }
+                        });
+                    }
+
+
                 }
             },
+            watch: {
+                messageTextarea: function(){
+                    console.log('asd');
+                    this.focusTextarea();
+
+                    this.conn.send(JSON.stringify({
+                        'topic': this.getTopicChat(),
+                        'msg': {
+                            'hash': this.currentChatHash,
+                            'type': 'writing',
+                            'name': this.getUser(this.auth_id).name
+                        }
+                    }));
+                }
+            },
+
             computed: {
 
             }

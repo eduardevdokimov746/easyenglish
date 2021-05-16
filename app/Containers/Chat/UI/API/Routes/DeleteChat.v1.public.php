@@ -23,7 +23,5 @@
 $router->delete('chats/{id}', [
     'as' => 'api_chat_delete_chat',
     'uses'  => 'Controller@deleteChat',
-    'middleware' => [
-      'auth:api',
-    ],
+
 ]);

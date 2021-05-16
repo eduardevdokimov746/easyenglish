@@ -179,7 +179,7 @@
                                 <div class="form-group">
                                     <label>
                                         Видимость
-                                        <input type="checkbox" name="is_visible" v-model="section.is_visible">
+                                        <input type="checkbox" name="is_visible" v-model="section.$model.is_visible">
                                     </label>
                                 </div>
                             </div>
@@ -314,7 +314,10 @@
                             files.forEach(function(file, indexFile, files){
                                 form.append('file_section_' + index + '_' + indexFile, file);
                             });
+
+                            item['is_visible'] = item['is_visible'] == true ? 1 : 0;
                         });
+
                         form.append('sections', JSON.stringify(sections));
                     }
 

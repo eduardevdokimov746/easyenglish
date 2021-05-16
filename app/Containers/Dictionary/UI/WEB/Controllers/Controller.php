@@ -12,18 +12,8 @@ use App\Containers\Dictionary\UI\WEB\Requests\EditDictionaryRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Dictionary\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllDictionariesRequest $request
-     */
     public function index()
     {
         //$dictionaries = Apiato::call('Dictionary@GetAllDictionariesAction', [$request]);
@@ -33,11 +23,6 @@ class Controller extends WebController
         return view('dictionary::index');
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindDictionaryByIdRequest $request
-     */
     public function show(FindDictionaryByIdRequest $request)
     {
         $dictionary = Apiato::call('Dictionary@FindDictionaryByIdAction', [$request]);
@@ -45,21 +30,11 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateDictionaryRequest $request
-     */
     public function create(CreateDictionaryRequest $request)
     {
         // ..
     }
 
-    /**
-     * Add a new entity
-     *
-     * @param StoreDictionaryRequest $request
-     */
     public function store(StoreDictionaryRequest $request)
     {
         $dictionary = Apiato::call('Dictionary@CreateDictionaryAction', [$request]);
@@ -67,11 +42,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditDictionaryRequest $request
-     */
     public function edit(EditDictionaryRequest $request)
     {
         $dictionary = Apiato::call('Dictionary@GetDictionaryByIdAction', [$request]);
@@ -79,11 +49,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Update a given entity
-     *
-     * @param UpdateDictionaryRequest $request
-     */
     public function update(UpdateDictionaryRequest $request)
     {
         $dictionary = Apiato::call('Dictionary@UpdateDictionaryAction', [$request]);
@@ -91,15 +56,45 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteDictionaryRequest $request
-     */
     public function delete(DeleteDictionaryRequest $request)
     {
          $result = Apiato::call('Dictionary@DeleteDictionaryAction', [$request]);
 
          // ..
+    }
+
+    public function getWord()
+    {
+        try {
+            $word = \Apiato::call('Dictionary@FindWordByIdAction', [request()->get('id')]);
+
+            return json_encode($word);
+        } catch (\Exception) {
+            return abort(500);
+        }
+    }
+
+    public function addNewTranslate()
+    {
+        try {
+            $data = request()->only(['english_word_id', 'user_id', 'translate']);
+
+            $word = \Apiato::call('Dictionary@AddTranslateWordAction', [$data]);
+
+            return json_encode($word);
+        } catch (\Exception) {
+            return abort(500);
+        }
+    }
+
+    public function deleteTranslate()
+    {
+        try {
+            $count_deleted = \Apiato::call('Dictionary@DeleteTranslateWordAction', [request()->get('id')]);
+
+            return $count_deleted;
+        } catch (\Exception) {
+            return abort(500);
+        }
     }
 }

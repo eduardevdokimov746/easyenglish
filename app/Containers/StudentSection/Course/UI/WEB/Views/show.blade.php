@@ -7,8 +7,11 @@
                 <h1 class="heading col">{{ $course->title }}</h1>
             </div>
 
+            @include('components.breadcrumbs', [$breadcrumb])
+
             <div class="row">
                 <div class="col">
+                    @if(!empty($course->characteristic) || !empty($course->little_description) || !empty($course->target) || !empty($course->list_literature))
                     <div class="form mb-3">
                         <div class="form-head">
                             <h2 style="text-align: center">Основная информация</h2>
@@ -58,6 +61,8 @@
                             </div>
                         @endif
                     </div>
+                    @endif
+
                     @foreach($course->sections as $section)
                         <div class="form mb-3">
                             <div class="form-head">
@@ -124,22 +129,27 @@
 
                                         <table class="table-hover mt-2 table-list-zadanie" border="1">
                                             <thead>
-                                            <th>№</th>
                                             <th>Название</th>
-                                            <th>Тип</th>
                                             <th>Дата получения</th>
                                             <th>Срок сдачи</th>
                                             <th>Статус</th>
+                                            <th>Дата ответа</th>
+                                            <th>Дата обновления</th>
                                             <th>Оценка</th>
                                             </thead>
                                             @foreach($section->zadanies as $zadanieIndex => $zadanie)
-                                                <tr class="table-info table-row" data-href="#">
-                                                    <td>{{ $zadanieIndex + 1 }}</td>
-                                                    <td>{{ $zadanie->title }}</td>
-                                                    <td>20.12.2020</td>
-                                                    <td>20.12.2020</td>
-                                                    <td>Новое</td>
-                                                    <td>-</td>
+                                                <tr class="table-row {{ $zadanie->statusStyle }}" data-href="{{ route('web_student_zadanies_show', [$course->id, $zadanie->id]) }}">
+                                                <td>{{ $zadanie?->title }}</td>
+                                                <td>{{ $zadanie?->show_updated_at }}</td>
+                                                <td>{{ $zadanie?->formatDate($zadanie?->deadline) }}</td>
+                                                <td>{{ $zadanie?->statusTitle }}</td>
+                                                <td>{!! $zadanie->responseStudents->isEmpty() ? '&mdash;' : $zadanie->responseStudents->first()->show_created_at !!}</td>
+                                                <td>{!! $zadanie->responseStudents->isEmpty() ? '&mdash;' : $zadanie->responseStudents->first()->show_updated_at !!}</td>
+                                                <td>{!!
+                                                    $zadanie->responseStudents->isNotEmpty() &&
+                                                    !is_null($zadanie->responseStudents->first()->responseTeacher) &&
+                                                    $zadanie->responseStudents->first()->responseTeacher->first()->is_credited == 1 ?
+                                                    $zadanie->responseStudents->first()->responseTeacher->first()->result : '&mdash;'  !!}</td>
                                                 </tr>
                                             @endforeach
                                         </table>
@@ -164,10 +174,10 @@
 
                     <div class="right-div-block">
                         <h4>Задания</h4>
-                        <p><a href="{{ route('web_student_zadanies_index', 'asd') }}"><b>Все:</b> <span>44</span></a></p>
-                        <p><a href="{{ route('web_student_zadanies_index', 'asd') }}"><b>Новые:</b> <span>2</span></a></p>
-                        <p><a href="#"><b>На проверке:</b> <span>4</span></a></p>
-                        <p><a href="#"><b>Выполенные:</b> <span>23</span></a></p>
+                        <p><a href="{{ route('web_student_zadanies_index', [$course->id, 'filter' => 'all']) }}"><b>Все:</b> <span>{{ $zadaniesCounts['all'] }}</span></a></p>
+                        <p><a href="{{ route('web_student_zadanies_index', [$course->id, 'filter' => 'new']) }}"><b>Новые:</b> <span>{{ $zadaniesCounts['new'] }}</span></a></p>
+                        <p><a href="{{ route('web_student_zadanies_index', [$course->id, 'filter' => 'on_checked']) }}"><b>На проверке:</b> <span>{{ $zadaniesCounts['on_checked'] }}</span></a></p>
+                        <p><a href="{{ route('web_student_zadanies_index', [$course->id, 'filter' => 'done']) }}"><b>Выполенные:</b> <span>{{ $zadaniesCounts['done'] }}</span></a></p>
                     </div>
                 </div>
             </div>

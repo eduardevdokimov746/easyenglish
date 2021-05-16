@@ -23,7 +23,5 @@
 $router->get('chats/{id}', [
     'as' => 'api_chat_find_chat_by_id',
     'uses'  => 'Controller@findChatById',
-    'middleware' => [
-      'auth:api',
-    ],
+
 ]);

@@ -11,25 +11,13 @@ use App\Containers\Material\UI\WEB\Requests\StoreMaterialRequest;
 use App\Containers\Material\UI\WEB\Requests\EditMaterialRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
+use Carbon\Carbon;
+use WebSocket\Client;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Material\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllMaterialsRequest $request
-     */
     public function index()
     {
-        //$materials = Apiato::call('Material@GetAllMaterialsAction', [$request]);
-
-        // ..
-
         return view('material::index');
     }
 
@@ -38,35 +26,22 @@ class Controller extends WebController
         return view('material::my');
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindMaterialByIdRequest $request
-     */
     public function show($id)
     {
        // $material = Apiato::call('Material@FindMaterialByIdAction', [$request]);
 
         // ..
 
-        return view('material::show');
+        $countNoticeChat = \Apiato::call('Chat@GetCountNoticeAction');
+
+        return view('material::show', compact('countNoticeChat'));
     }
 
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateMaterialRequest $request
-     */
     public function create(CreateMaterialRequest $request)
     {
         // ..
     }
 
-    /**
-     * Add a new entity
-     *
-     * @param StoreMaterialRequest $request
-     */
     public function store(StoreMaterialRequest $request)
     {
         $material = Apiato::call('Material@CreateMaterialAction', [$request]);
@@ -74,11 +49,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditMaterialRequest $request
-     */
     public function edit(EditMaterialRequest $request)
     {
         $material = Apiato::call('Material@GetMaterialByIdAction', [$request]);
@@ -86,11 +56,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Update a given entity
-     *
-     * @param UpdateMaterialRequest $request
-     */
     public function update(UpdateMaterialRequest $request)
     {
         $material = Apiato::call('Material@UpdateMaterialAction', [$request]);
@@ -98,11 +63,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteMaterialRequest $request
-     */
     public function delete(DeleteMaterialRequest $request)
     {
          $result = Apiato::call('Material@DeleteMaterialAction', [$request]);

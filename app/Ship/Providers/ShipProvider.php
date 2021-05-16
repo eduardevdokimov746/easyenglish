@@ -27,7 +27,11 @@ class ShipProvider extends MainProvider
         'ShipLocalization' => \App\Ship\Facades\ShipLocalizationFacade::class,
         'PhotoStorage' => \App\Ship\Facades\PhotoStorageFacade::class,
         'Breadcrumbs' => \App\Ship\Facades\BreadcrumbsFacade::class,
-        'FileStorage' => \App\Ship\Facades\FileStorageFacade::class
+        'FileStorage' => \App\Ship\Facades\FileStorageFacade::class,
+        'ChatStorage' => \App\Ship\Facades\ChatStorageFacade::class,
+        'Chat' => \App\Ship\Facades\ChatFacade::class,
+        'ChatMessage' => \App\Ship\Facades\ChatMessageFacade::class,
+        'SoundStorage' => \App\Ship\Facades\SoundStorageFacade::class
     ];
 
     public function __construct()
@@ -78,6 +82,8 @@ class ShipProvider extends MainProvider
         });
 
         \View::share('active_element_main_menu', '');
+
+        \Carbon\Carbon::setLocale(\App::getLocale());
     }
 
     /**

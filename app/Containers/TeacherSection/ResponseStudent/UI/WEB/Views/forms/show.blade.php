@@ -10,11 +10,11 @@
             <td>
                 <div class="content-course-cart">
                     <div class="div-image-course-cart" style="width: 40px; height: 40px;">
-                        <img src="{{ asset('images/no_image_user.png') }}">
+                        <img src="{{ PhotoStorage::getProfileAvatar($response->user) }}">
                     </div>
                     <div class="div-name-prepod-course-cart">
                         <p class="name-prepod-course-cart" style="color: black;">
-                            Евдокимов Эдуард Игоревич
+                            {{ $response->user->fio }}
                         </p>
                     </div>
                 </div>
@@ -22,48 +22,55 @@
         </tr>
         <tr>
             <th>Крайний срок сдачи</th>
-            <td>Вторник, 29 июня 2021, 00:00</td>
+            <td>{{ $response->getDateIsoFormat($response->zadanie->deadline) }}</td>
         </tr>
         <tr>
             <th>Ответ добавлен</th>
-            <td>Вторник, 12 января 2021, 17:48</td>
+            <td>{{ $response->getDateIsoFormat($response->created_at) }}</td>
         </tr>
         <tr>
             <th>Ответ изменен</th>
-            <td>Вторник, 12 января 2021, 17:48</td>
+            <td>{{ $response->getDateIsoFormat($response->updated_at) }}</td>
         </tr>
         </tbody>
     </table>
 
+    @if(!empty($response->comment))
     <div class="row mt-4">
         <div class="col">
             <h5>Комментарий</h5>
-            <div>Какой-то комментарий</div>
+            <div>{!! $response->comment !!}</div>
         </div>
     </div>
+    @endif
 
-    <div class="row mt-4">
-        <div class="col">
-            <h5>Прикрепленные файлы</h5>
-            <table border="1" class="table-hover mt-2 table-list-files">
-                <thead>
-                <tr>
-                    <th>№</th>
-                    <th>Название</th>
-                    <th>Размер</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>
-                        <img src="http://custom/file_icons/png/doc.png" alt="" class="table-list-radanie-file-icon" style="width: 30px;">
-                        <span>test.pdf</span>
-                    </td>
-                    <td>2mb</td>
-                </tr>
-                </tbody>
-            </table>
+    @if($response->files->isNotEmpty())
+        <div class="row mt-4">
+            <div class="col">
+                <h5>Прикрепленные файлы</h5>
+
+                <table class="table-hover mt-2 table-list-files" border="1">
+                    <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Название</th>
+                        <th>Размер</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($response->files as $fileIndex => $file)
+                        <tr data-href="{{ route('web_response_student_file_download', $file->hash) }}" class="table-row">
+                            <td>{{ $fileIndex + 1 }}</td>
+                            <td class="text-left">
+                                <img class="table-list-radanie-file-icon" style="width: 30px;" src="{{ $file->icon }}" alt="">
+                                <span>{{ $file->title }}</span>
+                            </td>
+                            <td>{{ $file->size }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    @endif
 </div>

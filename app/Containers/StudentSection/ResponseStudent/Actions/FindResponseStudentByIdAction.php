@@ -1,17 +1,14 @@
 <?php
 
-namespace App\Containers\ResponseStudent\Actions;
+namespace App\Containers\StudentSection\ResponseStudent\Actions;
 
+use App\Containers\TeacherSection\ResponseStudent\Models\ResponseStudent;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class FindResponseStudentByIdAction extends Action
 {
-    public function run(Request $request)
+    public function run($id)
     {
-        $responsestudent = Apiato::call('ResponseStudent@FindResponseStudentByIdTask', [$request->id]);
-
-        return $responsestudent;
+        return ResponseStudent::find($id);
     }
 }

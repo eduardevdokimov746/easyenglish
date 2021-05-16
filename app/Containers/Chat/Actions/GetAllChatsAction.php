@@ -2,16 +2,30 @@
 
 namespace App\Containers\Chat\Actions;
 
+use App\Containers\Chat\Models\ChatUser;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
+use App\Ship\Services\Chat;
+use Carbon\Carbon;
 
 class GetAllChatsAction extends Action
 {
-    public function run(Request $request)
+    public function run()
     {
-        $chats = Apiato::call('Chat@GetAllChatsTask', [], ['addRequestCriteria']);
+        $chats = ChatUser::where('user_id', \Auth::id())->with('chat')->get();
 
-        return $chats;
+        if ($chats->isNotEmpty()) {
+
+            $previews = $chats->map(function($chat) {
+                return \Chat::setHash($chat->chat->hash)->getPreview();
+            });
+
+            $previews = $previews->sortByDesc(function($item){
+                return Carbon::createFromFormat('Y-m-d H:i:s', $item['sort_date'])->getTimestamp();
+            });
+
+            return $previews->toArray();
+        }
+
+        return [];
     }
 }

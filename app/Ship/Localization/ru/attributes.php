@@ -11,5 +11,6 @@ return [
     'users.login' => 'логин',
     'users.email' => 'эл. почта',
     'users.password' => 'пароль',
-    'title-group' => 'название группы'
+    'title-group' => 'название группы',
+    'result' => 'оценка'
 ];

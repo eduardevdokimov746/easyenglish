@@ -1,21 +1,14 @@
 <?php
 
-namespace App\Containers\ResponseTeacher\Actions;
+namespace App\Containers\TeacherSection\ResponseTeacher\Actions;
 
+use App\Containers\TeacherSection\ResponseStudent\Models\ResponseStudent;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class CreateResponseTeacherAction extends Action
 {
-    public function run(Request $request)
+    public function run($response_id, $data)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
-
-        $responseteacher = Apiato::call('ResponseTeacher@CreateResponseTeacherTask', [$data]);
-
-        return $responseteacher;
+        return ResponseStudent::where('id', $response_id)->first()->responseTeacher()->create($data);
     }
 }

@@ -11,5 +11,6 @@ return [
     'users.login' => 'login',
     'users.email' => 'email',
     'users.password' => 'password',
-    'title-group' => 'group title'
+    'title-group' => 'group title',
+    'result' => 'result'
 ];

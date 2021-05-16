@@ -13,9 +13,11 @@ class UpdateUserAction extends Action
     public function run(int $user_id, Request $request)
     {
         if ($request->hasFile('users.avatar')) {
-            Apiato::call('User@UpdateUserAvatarTask', [$user_id, $request->file('users.avatar'), $request->get('isDefaultAvatar')]);
+            $avatar = Apiato::call('User@UpdateUserAvatarTask', [$user_id, $request->file('users.avatar'), $request->get('isDefaultAvatar')]);
+            \Apiato::call('Chat@ChangeUserAvatarAction', [$user_id, $avatar]);
         } else if ($request->get('isDefaultAvatar')) {
-            Apiato::call('User@UpdateUserAvatarTask', [$user_id, null, $request->get('isDefaultAvatar')]);
+            $avatar = Apiato::call('User@UpdateUserAvatarTask', [$user_id, null, $request->get('isDefaultAvatar')]);
+            \Apiato::call('Chat@ChangeUserAvatarAction', [$user_id, $avatar]);
         }
 
         $user = Apiato::call('User@UpdateUserTask', [$user_id, $request->get('users')]);

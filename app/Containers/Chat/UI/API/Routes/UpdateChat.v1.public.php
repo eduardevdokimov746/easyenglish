@@ -23,7 +23,5 @@
 $router->patch('chats/{id}', [
     'as' => 'api_chat_update_chat',
     'uses'  => 'Controller@updateChat',
-    'middleware' => [
-      'auth:api',
-    ],
+
 ]);

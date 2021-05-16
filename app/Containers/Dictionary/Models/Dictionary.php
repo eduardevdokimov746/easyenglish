@@ -6,8 +6,13 @@ use App\Ship\Parents\Models\Model;
 
 class Dictionary extends Model
 {
-    protected $fillable = [
+    protected $table = 'dictionaries';
+    public $timestamps = false;
 
+    protected $fillable = [
+        'user_id',
+        'english_word_id',
+        'rus_translate_id'
     ];
 
     protected $attributes = [
@@ -20,11 +25,6 @@ class Dictionary extends Model
 
     protected $casts = [
 
-    ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at',
     ];
 
     /**

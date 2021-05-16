@@ -2,6 +2,7 @@
 
 namespace App\Containers\Chat\UI\WEB\Controllers;
 
+use App\Containers\Chat\Jobs\SendMessageJob;
 use App\Containers\Chat\UI\WEB\Requests\CreateChatRequest;
 use App\Containers\Chat\UI\WEB\Requests\DeleteChatRequest;
 use App\Containers\Chat\UI\WEB\Requests\GetAllChatsRequest;
@@ -12,92 +13,84 @@ use App\Containers\Chat\UI\WEB\Requests\EditChatRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Chat\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllChatsRequest $request
-     */
-    public function index(GetAllChatsRequest $request)
+    public function index()
     {
-        $chats = Apiato::call('Chat@GetAllChatsAction', [$request]);
+        try {
+            $chats = \Apiato::call('Chat@GetAllChatsAction');
 
-        // ..
+            return json_encode($chats);
+        } catch (\Exception) {
+            return abort(500);
+        }
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindChatByIdRequest $request
-     */
-    public function show(FindChatByIdRequest $request)
+    public function showDialog()
     {
-        $chat = Apiato::call('Chat@FindChatByIdAction', [$request]);
+        $chatHash = request()->get('hash');
 
-        // ..
+        $dialog = \Chat::setHash($chatHash)->getDialog();
+
+        \Apiato::call('Chat@CheckedMessagesAction', [$chatHash]);
+
+        $response['dialog'] = $dialog;
+        $response['dataBoxes'] = \Chat::setHash($chatHash)->createDataBoxes($dialog['msgs']);
+
+        return json_encode($response);
     }
 
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateChatRequest $request
-     */
-    public function create(CreateChatRequest $request)
+    public function findUsers()
     {
-        // ..
+        $query = request()->get('query');
+
+        $users = \Apiato::call('Chat@FindUsersFromQueryAction', [$query]);
+
+        return json_encode($users);
     }
 
-    /**
-     * Add a new entity
-     *
-     * @param StoreChatRequest $request
-     */
-    public function store(StoreChatRequest $request)
+    public function selectFindUser()
     {
-        $chat = Apiato::call('Chat@CreateChatAction', [$request]);
+        $user_id = request()->get('user_id');
 
-        // ..
+        $chat = \Apiato::call('Chat@FindChatWithUserFromUserIdAction', [$user_id]);
+
+
+        if (is_null($chat)) {
+            $hash = \Apiato::call('Chat@CreateDialogAction', [$user_id]);
+            //return json_encode(['type' => 'old', \Chat::setHash($chat['hash'])->getDialog()]);
+        } else {
+            $hash = $chat['hash'];
+        }
+
+        $dialog = \Chat::setHash($hash)->getDialog();
+        $response['dialog'] = $dialog;
+        $response['dataBoxes'] = \Chat::setHash($hash)->createDataBoxes($dialog['msgs']);
+        $response['hash'] = $hash;
+
+        return json_encode($response);
     }
 
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditChatRequest $request
-     */
-    public function edit(EditChatRequest $request)
+    public function sendMessage()
     {
-        $chat = Apiato::call('Chat@GetChatByIdAction', [$request]);
+        $topic = request()->get('topic');
+        $hash = request()->get('hash');
+//        var_dump($hash);
+//        die;
+        $message = request()->get('message');
 
-        // ..
+        \Apiato::call('Chat@CheckedMessagesAction', [$hash]);
+        $message = \Apiato::call('Chat@WriteMessageAction', [$hash, $message]);
+
+        dispatch(new SendMessageJob($topic, $hash, $message))->onQueue('chat');
+
+        return json_encode($message);
     }
 
-    /**
-     * Update a given entity
-     *
-     * @param UpdateChatRequest $request
-     */
-    public function update(UpdateChatRequest $request)
+    public function checkedMessages()
     {
-        $chat = Apiato::call('Chat@UpdateChatAction', [$request]);
+        $hash = request()->get('hash');
 
-        // ..
-    }
-
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteChatRequest $request
-     */
-    public function delete(DeleteChatRequest $request)
-    {
-         $result = Apiato::call('Chat@DeleteChatAction', [$request]);
-
-         // ..
+        \Apiato::call('Chat@CheckedMessagesAction', [$hash]);
     }
 }

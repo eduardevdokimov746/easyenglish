@@ -21,7 +21,7 @@ class CreateUserAction extends Action
             ]);
 
             if (!is_null($userDataSocial = \SocialAuthSession::getTableData('users'))) {
-                $userData = array_merge($userData, $userDataSocial);
+                $userData = array_merge($userDataSocial, $userData);
             }
 
             $user = \Apiato::call('User@CreateUserTask', [$userData]);

@@ -174,22 +174,19 @@
 
                                 <table class="table-hover mt-2 table-list-zadanie" border="1">
                                     <thead>
-                                    <th>№</th>
                                     <th>Название</th>
-                                    <th>Тип</th>
                                     <th>Дата получения</th>
                                     <th>Срок сдачи</th>
                                     <th>Статус</th>
                                     <th>Оценка</th>
                                     </thead>
                                     @foreach($section->zadanies as $zadanieIndex => $zadanie)
-                                    <tr class="table-info table-row" data-href="#">
-                                        <td>{{ $zadanieIndex + 1 }}</td>
+                                    <tr class="table-row" data-href="{{ route('web_teacher_responses_students_index', $zadanie->id) }}">
                                         <td>{{ $zadanie->title }}</td>
-                                        <td>20.12.2020</td>
-                                        <td>20.12.2020</td>
-                                        <td>Новое</td>
-                                        <td>-</td>
+                                        <td>{{ $zadanie->show_updated_at }}</td>
+                                        <td>{{ $zadanie->formatDate($zadanie->deadline) }}</td>
+                                        <td>&mdash;</td>
+                                        <td>&mdash;</td>
                                     </tr>
                                     @endforeach
                                 </table>

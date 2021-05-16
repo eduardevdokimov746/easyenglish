@@ -4,9 +4,9 @@
     <section class="services py-5" id="services">
         <div class="container">
             <h3 class="heading mb-5">Курсы</h3>
-            @if($courses->isEmpty())
+            @if(is_null($courses))
                 <h5>Вы не подписаны ни на один курс</h5>
-            @endif
+            @else
             @foreach($courses->chunk(2) as $coursesRow)
                 <div class="row">
                     @foreach($coursesRow as $course)
@@ -26,7 +26,7 @@
                                                     </p>
                                                 </div>
                                             </div>
-                                            <p class="mt-2">Новые задания: {{ $course->zadanies->count() }}</p>
+                                            <p class="mt-2">Новые задания: {{ $course->newZadanies }}</p>
                                         </div>
                                     </a>
                                 </div>
@@ -35,6 +35,7 @@
                     @endforeach
                 </div>
             @endforeach
+            @endif
         </div>
     </section>
 @endsection

@@ -236,4 +236,17 @@ class Controller extends WebController
             return abort(500);
         }
     }
+
+    public function fileDownload($hash)
+    {
+        $file = \Apiato::call('TeacherSection\Zadanie@FindFileByHashAction', [$hash]);
+
+        if (is_null($file)) {
+            return back(500);
+        }
+
+        $fileName = $file->hash . '.' . $file->ext;
+
+        return \Storage::download(\FileStorage::toZadanie()->getPathForDownload($fileName), $file->title);
+    }
 }

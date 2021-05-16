@@ -2,102 +2,48 @@
 
 namespace App\Containers\StudentSection\Zadanie\UI\WEB\Controllers;
 
-use App\Containers\Zadanie\UI\WEB\Requests\CreateZadanieRequest;
-use App\Containers\Zadanie\UI\WEB\Requests\DeleteZadanieRequest;
-use App\Containers\Zadanie\UI\WEB\Requests\GetAllZadaniesRequest;
-use App\Containers\Zadanie\UI\WEB\Requests\FindZadanieByIdRequest;
-use App\Containers\Zadanie\UI\WEB\Requests\UpdateZadanieRequest;
-use App\Containers\Zadanie\UI\WEB\Requests\StoreZadanieRequest;
-use App\Containers\Zadanie\UI\WEB\Requests\EditZadanieRequest;
+use App\Containers\StudentSection\Zadanie\Breadcrumbs\ZadanieList;
+use App\Containers\StudentSection\Zadanie\Breadcrumbs\ZadanieSingle;
 use App\Ship\Parents\Controllers\WebController;
-use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Zadanie\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllZadaniesRequest $request
-     */
-    public function index()
+    public function index($id)
     {
-        return view('studentsection/zadanie::index');
+        $course = \Apiato::call('StudentSection\Course@FindCourseByIdAction', [$id]);
+
+        if ($this->isNotStudent() || \Gate::denies('show-course', $course)) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        $zadanies = \Apiato::call('StudentSection\Zadanie@GetAllZadaniesAction', [$id]);
+        $sections = $course->sections;
+
+        $breadcrumb = new ZadanieList([
+            'next_title' => $course->title,
+            'next_url' => route('web_student_courses_show', $course->id)
+        ]);
+
+        return view('studentsection/zadanie::index', compact('zadanies', 'sections', 'course', 'breadcrumb'));
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindZadanieByIdRequest $request
-     */
-    public function show()
+    public function show($course, $zadanie)
     {
-        return view('studentsection/zadanie::show_testing');
-        return view('studentsection/zadanie::show_main');
+        $zadanie = \Apiato::call('StudentSection\Zadanie@FindZadanieByIdAction', [$zadanie]);
+        $icons = json_encode(\FileStorage::getIcons());
+
+        $breadcrumb = new ZadanieSingle([
+            'title' => $zadanie->title,
+            'next_title' => $zadanie->section->course->title,
+            'next_url' => route('web_student_courses_show', $zadanie->section->course->id)
+        ]);
+
+        return view('studentsection/zadanie::show_main', compact('zadanie', 'icons', 'breadcrumb'));
+//        return view('studentsection/zadanie::show_testing');
     }
 
     public function result()
     {
         return view('studentsection/zadanie::result_testing');
-    }
-
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateZadanieRequest $request
-     */
-    public function create(CreateZadanieRequest $request)
-    {
-        // ..
-    }
-
-    /**
-     * Add a new entity
-     *
-     * @param StoreZadanieRequest $request
-     */
-    public function store()
-    {
-
-    }
-
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditZadanieRequest $request
-     */
-    public function edit(EditZadanieRequest $request)
-    {
-        $zadanie = Apiato::call('Zadanie@GetZadanieByIdAction', [$request]);
-
-        // ..
-    }
-
-    /**
-     * Update a given entity
-     *
-     * @param UpdateZadanieRequest $request
-     */
-    public function update(UpdateZadanieRequest $request)
-    {
-        $zadanie = Apiato::call('Zadanie@UpdateZadanieAction', [$request]);
-
-        // ..
-    }
-
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteZadanieRequest $request
-     */
-    public function delete(DeleteZadanieRequest $request)
-    {
-         $result = Apiato::call('Zadanie@DeleteZadanieAction', [$request]);
-
-         // ..
     }
 }

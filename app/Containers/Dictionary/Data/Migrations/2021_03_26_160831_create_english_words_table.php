@@ -11,6 +11,7 @@ class CreateEnglishWordsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('word')->unique();
+            $table->string('image')->default('no-image-word.jpg');
 
             $table->foreign('user_id')
                 ->on('users')

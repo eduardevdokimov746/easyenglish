@@ -6,8 +6,13 @@ use App\Ship\Parents\Models\Model;
 
 class Chat extends Model
 {
-    protected $fillable = [
+    protected $table = 'chats';
+    public $timestamps = false;
 
+    protected $fillable = [
+        'type',
+        'title',
+        'hash'
     ];
 
     protected $attributes = [
@@ -22,13 +27,8 @@ class Chat extends Model
 
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
-
-    /**
-     * A resource key to be used by the the JSON API Serializer responses.
-     */
-    protected $resourceKey = 'chats';
+    public function users()
+    {
+        return $this->hasMany(ChatUser::class, 'chat_id', 'id');
+    }
 }

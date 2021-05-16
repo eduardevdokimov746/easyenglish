@@ -20,5 +20,6 @@ class UpdateUserAvatarTask extends Task
         }
 
         $user->update(['avatar' => $fileName]);
+        return $fileName;
     }
 }

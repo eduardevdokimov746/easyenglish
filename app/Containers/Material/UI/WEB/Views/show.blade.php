@@ -93,7 +93,9 @@
 
     @include('dictionary::modal')
 
-    @include('chat::modal')
+    @can('chat')
+        @include('chat::modal')
+    @endcan
 @endsection
 
 @push('scripts')

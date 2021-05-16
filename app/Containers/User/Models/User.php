@@ -39,7 +39,8 @@ class User extends Authenticatable
 
     public $appends = [
         'fio',
-        'roleLang'
+        'roleLang',
+        'avatar_path'
     ];
 
     protected $dates = [
@@ -86,6 +87,11 @@ class User extends Authenticatable
         } else {
             return 'remember_token';
         }
+    }
+
+    public function getAvatarPathAttribute()
+    {
+        return \PhotoStorage::getProfileAvatar($this);
     }
 
     public function getFioAttribute($value)

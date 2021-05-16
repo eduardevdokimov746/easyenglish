@@ -9,31 +9,19 @@ use App\Containers\Material\UI\WEB\Requests\FindMaterialByIdRequest;
 use App\Containers\Material\UI\WEB\Requests\UpdateMaterialRequest;
 use App\Containers\Material\UI\WEB\Requests\StoreMaterialRequest;
 use App\Containers\Material\UI\WEB\Requests\EditMaterialRequest;
+use App\Containers\TeacherSection\Material\UI\WEB\Requests\PrepareTextRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\Material\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllMaterialsRequest $request
-     */
     public function index()
     {
-        return view('teachersection/material::index');
+        $activePavItem = 'materials';
+
+        return view('teachersection/material::index', compact('activePavItem'));
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindMaterialByIdRequest $request
-     */
     public function show(FindMaterialByIdRequest $request)
     {
         $material = Apiato::call('Material@FindMaterialByIdAction', [$request]);
@@ -41,21 +29,34 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateMaterialRequest $request
-     */
     public function create()
     {
         return view('teachersection/material::create');
     }
 
-    /**
-     * Add a new entity
-     *
-     * @param StoreMaterialRequest $request
-     */
+    public function prepareText(PrepareTextRequest $request)
+    {
+        $text = \Apiato::call('TeacherSection\Material@PrepareTextAction', [$request]);
+
+        $plainTitle = $request->get('plain_title');
+        $plainText = $request->get('plain_text');
+        $htmlTitle = $text['html_title'];
+        $htmlText = $text['html_text'];
+        $isAutogenerate = $request->filled('auto-generate');
+        $isPrepare = true;
+        $newWords = $text['newWords'];
+
+        return view('teachersection/material::create', compact(
+            'plainTitle',
+            'plainText',
+            'htmlTitle',
+            'htmlText',
+            'isAutogenerate',
+            'isPrepare',
+            'newWords'
+        ));
+    }
+
     public function store(StoreMaterialRequest $request)
     {
         $material = Apiato::call('Material@CreateMaterialAction', [$request]);
@@ -63,21 +64,11 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditMaterialRequest $request
-     */
     public function edit()
     {
         return view('teachersection/material::edit');
     }
 
-    /**
-     * Update a given entity
-     *
-     * @param UpdateMaterialRequest $request
-     */
     public function update(UpdateMaterialRequest $request)
     {
         $material = Apiato::call('Material@UpdateMaterialAction', [$request]);
@@ -85,11 +76,6 @@ class Controller extends WebController
         // ..
     }
 
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteMaterialRequest $request
-     */
     public function delete(DeleteMaterialRequest $request)
     {
          $result = Apiato::call('Material@DeleteMaterialAction', [$request]);

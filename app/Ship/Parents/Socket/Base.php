@@ -2,8 +2,7 @@
 
 namespace App\Ship\Parents\Socket;
 
-use App\Containers\User\Jobs\TestJob;
-use App\Containers\User\Models\User;
+use App\Containers\Chat\Jobs\SendMessageJob;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
@@ -24,27 +23,20 @@ class Base implements MessageComponentInterface {
 
     public function onMessage(ConnectionInterface $from, $msg) {
         $numRecv = count($this->clients) - 1;
+
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
         $data = json_decode($msg, 1);
 
         if(isset($data['setTopic'])){
-
             $this->clients->offsetSet($from, ['topic' => $data['setTopic']]);
             return;
         }
 
         foreach ($this->clients as $client) {
-
-            if ($this->clients[$client]['topic'] == $data['topic']) {
-                // The sender is not the receiver, send to each client connected
-
-                //dispatch(new TestJob($this, $client->resourceId, $msg))->onQueue('messages');
-
-
-
-                $client->send($data['msg']);
+            if ($this->clients[$client]['topic'] == $data['topic'] && $from != $client) {
+                $client->send(json_encode($data['msg']));
             }
         }
     }

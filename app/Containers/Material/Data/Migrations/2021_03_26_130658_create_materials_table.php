@@ -14,6 +14,7 @@ class CreateMaterialsTable extends Migration
             $table->text('plain_text');
             $table->text('html_text');
             $table->set('complexity', ['basic', 'middle', 'advanced']);
+            $table->string('image')->default('no-image-material.jpg');
             $table->unsignedInteger('count_likes')->default(0);
             $table->unsignedInteger('count_dislikes')->default(0);
             $table->timestamps();

@@ -13,6 +13,8 @@ class CreateDictionariesTable extends Migration
             $table->unsignedBigInteger('english_word_id');
             $table->unsignedBigInteger('rus_translate_id');
 
+            $table->unique(['user_id', 'english_word_id', 'rus_translate_id']);
+
             $table->foreign('user_id')
                 ->on('users')
                 ->references('id')

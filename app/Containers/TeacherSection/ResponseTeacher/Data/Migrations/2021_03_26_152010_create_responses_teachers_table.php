@@ -11,8 +11,9 @@ class CreateResponsesTeachersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('response_student_id');
-            $table->text('result');
+            $table->text('result')->nullable();
             $table->text('comment')->nullable();
+            $table->tinyInteger('is_credited')->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')

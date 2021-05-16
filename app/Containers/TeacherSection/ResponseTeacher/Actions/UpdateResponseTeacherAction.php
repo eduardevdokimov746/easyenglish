@@ -1,21 +1,14 @@
 <?php
 
-namespace App\Containers\ResponseTeacher\Actions;
+namespace App\Containers\TeacherSection\ResponseTeacher\Actions;
 
+use App\Containers\TeacherSection\ResponseTeacher\Models\ResponseTeacher;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class UpdateResponseTeacherAction extends Action
 {
-    public function run(Request $request)
+    public function run($response_id, $data)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
-
-        $responseteacher = Apiato::call('ResponseTeacher@UpdateResponseTeacherTask', [$request->id, $data]);
-
-        return $responseteacher;
+        ResponseTeacher::where('id', $response_id)->update($data);
     }
 }

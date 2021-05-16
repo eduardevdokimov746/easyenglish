@@ -2,6 +2,8 @@
 
 namespace App\Containers\StudentSection\Course\UI\WEB\Controllers;
 
+use App\Containers\StudentSection\Course\Breadcrumbs\CourseSingle;
+use App\Containers\StudentSection\Course\Breadcrumbs\ZadanieSingle;
 use App\Ship\Parents\Controllers\WebController;
 
 class Controller extends WebController
@@ -25,6 +27,10 @@ class Controller extends WebController
             return abort(403, __('ship::http_errors.403'));
         }
 
-        return view('studentsection/course::show', compact('course'));
+        $breadcrumb = new CourseSingle(['title' => $course->title]);
+
+        $zadaniesCounts = \Apiato::call('StudentSection\Zadanie@GetAllTypesCountZadaniesAction', [$id]);
+
+        return view('studentsection/course::show', compact('course','zadaniesCounts', 'breadcrumb'));
     }
 }

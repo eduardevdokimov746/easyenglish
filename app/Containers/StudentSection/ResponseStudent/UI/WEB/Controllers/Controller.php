@@ -2,102 +2,65 @@
 
 namespace App\Containers\StudentSection\ResponseStudent\UI\WEB\Controllers;
 
-use App\Containers\ResponseStudent\UI\WEB\Requests\CreateResponseStudentRequest;
-use App\Containers\ResponseStudent\UI\WEB\Requests\DeleteResponseStudentRequest;
-use App\Containers\ResponseStudent\UI\WEB\Requests\GetAllResponseStudentsRequest;
-use App\Containers\ResponseStudent\UI\WEB\Requests\FindResponseStudentByIdRequest;
-use App\Containers\ResponseStudent\UI\WEB\Requests\UpdateResponseStudentRequest;
-use App\Containers\ResponseStudent\UI\WEB\Requests\StoreResponseStudentRequest;
-use App\Containers\ResponseStudent\UI\WEB\Requests\EditResponseStudentRequest;
+use App\Containers\StudentSection\ResponseStudent\UI\WEB\Requests\StoreResponseStudentRequest;
+use App\Containers\StudentSection\ResponseStudent\UI\WEB\Requests\UpdateResponseStudentRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 
-/**
- * Class Controller
- *
- * @package App\Containers\ResponseStudent\UI\WEB\Controllers
- */
 class Controller extends WebController
 {
-    /**
-     * Show all entities
-     *
-     * @param GetAllResponseStudentsRequest $request
-     */
-    public function index(GetAllResponseStudentsRequest $request)
+    public function store($id, StoreResponseStudentRequest $request)
     {
-        $responsestudents = Apiato::call('ResponseStudent@GetAllResponseStudentsAction', [$request]);
+        try {
+            $data = array_merge(['user_id' => \Auth::id()], $request->only(['comment']));
 
-        // ..
+            $response = \Apiato::call('StudentSection\ResponseStudent@CreateResponseStudentAction', [$id, $data]);
+
+            collect($_FILES)->filter(function($item, $key){
+                return str_contains($key, 'file');
+            })->each(function($item) use ($response){
+                \Apiato::call('StudentSection\ResponseStudent@CreateFileAction', [$response->id, $item]);
+            });
+
+            return json_encode(['type' => 'success', 'msg' => __('studentsection/responsestudent::action.created')]);
+        } catch (\Exception) {
+            return json_encode(['type' => 'error', 'msg' => __('ship::validation.error-server')]);
+        }
     }
 
-    /**
-     * Show one entity
-     *
-     * @param FindResponseStudentByIdRequest $request
-     */
-    public function show(FindResponseStudentByIdRequest $request)
+    public function update($id, UpdateResponseStudentRequest $request)
     {
-        $responsestudent = Apiato::call('ResponseStudent@FindResponseStudentByIdAction', [$request]);
+        $response = \Apiato::call('StudentSection\ResponseStudent@FindResponseStudentByIdAction', [$id]);
 
-        // ..
+        if ($this->isNotStudent() || \Gate::denies('update-response-student', $response)) {
+            return abort(403, __('ship::http_errors.403'));
+        }
+
+        try {
+            \Apiato::call('StudentSection\ResponseStudent@UpdateResponseStudentAction', [$id, $request->only(['comment'])]);
+
+            if ($request->filled('files')) {
+                collect(json_decode($request->get('files'), 1))->filter(function ($item) {
+                    if (isset($item['action']) && $item['action'] === 'delete') {
+                        \Apiato::call('StudentSection\ResponseStudent@DeleteFileAction', [$item]);
+                    }
+                });
+            }
+
+            collect($_FILES)->filter(function($item, $key){
+                return str_contains($key, 'file');
+            })->each(function($item) use ($response){
+                \Apiato::call('StudentSection\ResponseStudent@CreateFileAction', [$response->id, $item]);
+            });
+
+            return json_encode(['type' => 'success', 'msg' => __('studentsection/responsestudent::action.updated')]);
+        } catch (\Exception) {
+            return json_encode(['type' => 'error', 'msg' => __('ship::validation.error-server')]);
+        }
     }
 
-    /**
-     * Create entity (show UI)
-     *
-     * @param CreateResponseStudentRequest $request
-     */
-    public function create(CreateResponseStudentRequest $request)
-    {
-        // ..
-    }
-
-    /**
-     * Add a new entity
-     *
-     * @param StoreResponseStudentRequest $request
-     */
-    public function store(StoreResponseStudentRequest $request)
-    {
-        $responsestudent = Apiato::call('ResponseStudent@CreateResponseStudentAction', [$request]);
-
-        // ..
-    }
-
-    /**
-     * Edit entity (show UI)
-     *
-     * @param EditResponseStudentRequest $request
-     */
-    public function edit(EditResponseStudentRequest $request)
-    {
-        $responsestudent = Apiato::call('ResponseStudent@GetResponseStudentByIdAction', [$request]);
-
-        // ..
-    }
-
-    /**
-     * Update a given entity
-     *
-     * @param UpdateResponseStudentRequest $request
-     */
-    public function update(UpdateResponseStudentRequest $request)
-    {
-        $responsestudent = Apiato::call('ResponseStudent@UpdateResponseStudentAction', [$request]);
-
-        // ..
-    }
-
-    /**
-     * Delete a given entity
-     *
-     * @param DeleteResponseStudentRequest $request
-     */
     public function delete(DeleteResponseStudentRequest $request)
     {
          $result = Apiato::call('ResponseStudent@DeleteResponseStudentAction', [$request]);
-
-         // ..
     }
 }

@@ -11,6 +11,8 @@
 <!-- main scripts -->
 <!-- scripts for app -->
 <script type="text/javascript" src="{{ asset('js/main.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.core.min.js"></script>
+
 <!-- scripts for app -->
 
 <script>

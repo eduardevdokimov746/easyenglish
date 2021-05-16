@@ -75,4 +75,9 @@ class Photo
             $this->deleteProfileAvatar($name);
         }
     }
+
+    public function getProfileAvatarForImage($fileName)
+    {
+        return asset($this->publicPathProfile . $fileName);
+    }
 }

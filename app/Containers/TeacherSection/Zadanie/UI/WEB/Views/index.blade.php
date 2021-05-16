@@ -11,7 +11,9 @@
             @include('components.breadcrumbs', [$breadcrumb])
 
             <div class="row">
+
                 <div class="py-3 col-md-9">
+                    @if($zadanies->isNotEmpty())
                     <table class="table-hover table-list-zadanie" border="1">
                         <thead>
                         <th>Название</th>
@@ -60,7 +62,11 @@
                             </tr>
                         @endforeach
                     </table>
+                    @else
+                        <h5>Задания не найдены</h5>
+                    @endif
                 </div>
+
 
                 <div class="py-3 col-md-3 main-right-div">
                     <div class="right-div-block">

@@ -13,7 +13,6 @@ class CreateRusTranslateWordsTable extends Migration
             $table->unsignedBigInteger('english_word_id');
             $table->string('translate');
             $table->unsignedInteger('count_add')->default(0);
-            $table->softDeletes();
 
             $table->foreign('user_id')
                 ->on('users')

@@ -12,6 +12,7 @@
 
             <div class="row">
                 <div class="py-3 col-md-9">
+                    @if($responses->isNotEmpty())
                     <table class="table-hover table-list-zadanie" border="1">
                         <thead>
                         <th>Группа</th>
@@ -23,7 +24,7 @@
                         <th>Изменение оценки</th>
                         </thead>
                         @foreach($responses as $response)
-                        <tr class="table-row" data-href="{{ route('web_teacher_responses_students_show', ['asd', 'asd', 'asd']) }}">
+                        <tr class="table-row" data-href="{{ route('web_teacher_responses_students_show', [$zadanie->id, $response->id]) }}">
                             <td>{{ $response->user->group->first()->title }}</td>
                             <td>{{ $response->user->fio }}</td>
                             <td>{{ $response->show_created_at }}</td>
@@ -34,6 +35,9 @@
                         </tr>
                         @endforeach
                     </table>
+                    @else
+                        <h5>Ответы не найдены</h5>
+                    @endif
 
                 </div>
 

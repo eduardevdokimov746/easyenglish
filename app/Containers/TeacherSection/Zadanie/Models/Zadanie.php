@@ -36,6 +36,11 @@ class Zadanie extends Model
     protected $dates = [
         'created_at',
         'updated_at',
+        'deadline'
+    ];
+
+    protected $appends = [
+        'show_updated_at',
     ];
 
     /**
