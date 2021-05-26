@@ -2125,3 +2125,12 @@
     background: #447efe7a;
     border-radius: 5px;
 }
+
+.in-dictionary{
+    background-color: #ceb501;
+}
+
+.in-dictionary-list-translate{
+    background: #3369e7;
+    color: white;
+}

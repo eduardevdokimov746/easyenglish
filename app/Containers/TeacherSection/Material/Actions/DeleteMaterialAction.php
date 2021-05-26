@@ -1,15 +1,22 @@
 <?php
 
-namespace App\Containers\Material\Actions;
+namespace App\Containers\TeacherSection\Material\Actions;
 
+use App\Containers\Material\Models\Material;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class DeleteMaterialAction extends Action
 {
-    public function run(Request $request)
+    public function run($material_id)
     {
-        return Apiato::call('Material@DeleteMaterialTask', [$request->id]);
+        $material = Material::find($material_id);
+
+        if ($material->image !== 'no-image-material.png') {
+            if (\FileStorage::toMaterial()->has($material->image)) {
+                \FileStorage::toMaterial()->delete($material->image);
+            }
+        }
+
+        return Material::where('id', $material_id)->delete();
     }
 }

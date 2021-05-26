@@ -18,7 +18,9 @@ class Controller extends WebController
 {
     public function index()
     {
-        return view('material::index');
+        $materials = \Apiato::call('Material@GetAllMaterialsAction');
+
+        return view('material::index', compact('materials'));
     }
 
     public function my()
@@ -28,45 +30,70 @@ class Controller extends WebController
 
     public function show($id)
     {
-       // $material = Apiato::call('Material@FindMaterialByIdAction', [$request]);
-
-        // ..
-
+        $material = \Apiato::call('Material@FindMaterialByIdAction', [$id]);
+        $dictionary = \Apiato::call('Dictionary@GetUserDictionaryAction', [\Auth::id()]);
         $countNoticeChat = \Apiato::call('Chat@GetCountNoticeAction');
 
-        return view('material::show', compact('countNoticeChat'));
+        return view('material::show', compact('countNoticeChat', 'material', 'dictionary'));
     }
 
-    public function create(CreateMaterialRequest $request)
+    public function addToMy()
     {
-        // ..
+        try {
+            \Apiato::call('Material@AddToMyAction', [\Auth::id(), request()->get('material_id')]);
+            return json_encode(['msg' => __('material::action.add-to-my')]);
+        } catch (\Exception) {
+            return abort(500);
+        }
     }
 
-    public function store(StoreMaterialRequest $request)
+    public function deleteFromMy()
     {
-        $material = Apiato::call('Material@CreateMaterialAction', [$request]);
-
-        // ..
+        try {
+            \Apiato::call('Material@DeleteFromMyAction', [\Auth::id(), request()->get('material_id')]);
+            return json_encode(['msg' => __('material::action.delete-from-my')]);
+        } catch (\Exception) {
+            return abort(500);
+        }
     }
 
-    public function edit(EditMaterialRequest $request)
+    public function addLike()
     {
-        $material = Apiato::call('Material@GetMaterialByIdAction', [$request]);
-
-        // ..
+        try {
+            \Apiato::call('Material@AddLikeAction', [\Auth::id(), request()->get('material_id')]);
+            return 1;
+        } catch (\Exception) {
+            return abort(500);
+        }
     }
 
-    public function update(UpdateMaterialRequest $request)
+    public function addDislike()
     {
-        $material = Apiato::call('Material@UpdateMaterialAction', [$request]);
-
-        // ..
+        try {
+            \Apiato::call('Material@AddDislikeAction', [\Auth::id(), request()->get('material_id')]);
+            return 1;
+        } catch (\Exception) {
+            return abort(500);
+        }
     }
 
-    public function delete(DeleteMaterialRequest $request)
+    public function deleteLike()
     {
-         $result = Apiato::call('Material@DeleteMaterialAction', [$request]);
+        try {
+            \Apiato::call('Material@DeleteLikeAction', [\Auth::id(), request()->get('material_id')]);
+            return 1;
+        } catch (\Exception) {
+            return abort(500);
+        }
+    }
 
-         // ..
+    public function deleteDislike()
+    {
+        try {
+            \Apiato::call('Material@DeleteDislikeAction', [\Auth::id(), request()->get('material_id')]);
+            return 1;
+        } catch (\Exception) {
+            return abort(500);
+        }
     }
 }

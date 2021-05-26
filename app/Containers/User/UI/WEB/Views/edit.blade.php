@@ -359,6 +359,7 @@
                 } else {
                     $('#block-avatar').attr('src', user_avatar);
                 }
+
                 $('#isDefaultAvatar').attr('value', 0);
             });
         });

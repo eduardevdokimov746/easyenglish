@@ -2,7 +2,7 @@
 
 namespace App\Containers\TeacherSection\Zadanie\Breadcrumbs;
 
-use App\Containers\TeacherSection\Course\Breadcrumbs\CourseList;
+use App\Containers\TeacherSection\Course\Breadcrumbs\MaterialList;
 use App\Ship\Abstracts\AbstractBreadcrumbItem;
 
 class EditZadanie extends AbstractBreadcrumbItem

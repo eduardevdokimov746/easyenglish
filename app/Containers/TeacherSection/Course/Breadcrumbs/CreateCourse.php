@@ -6,7 +6,7 @@ use App\Ship\Abstracts\AbstractBreadcrumbItem;
 
 class CreateCourse extends AbstractBreadcrumbItem
 {
-    protected $next = CourseList::class;
+    protected $next = MaterialList::class;
     protected $isCurrent = 1;
 
     public function draw($html = '')

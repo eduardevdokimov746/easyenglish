@@ -4,10 +4,14 @@ namespace App\Containers\Material\Models;
 
 use App\Ship\Parents\Models\Model;
 
-class Material extends Model
+class MaterialDislikes extends Model
 {
-    protected $fillable = [
+    protected $table = 'dislikes';
+    public $timestamps = false;
 
+    protected $fillable = [
+        'user_id',
+        'material_id',
     ];
 
     protected $attributes = [
@@ -20,11 +24,6 @@ class Material extends Model
 
     protected $casts = [
 
-    ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at',
     ];
 
     /**

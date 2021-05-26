@@ -6,8 +6,19 @@ use App\Ship\Parents\Models\Model;
 
 class Material extends Model
 {
-    protected $fillable = [
+    protected $table = 'materials';
 
+    protected $fillable = [
+        'user_id',
+        'plain_title',
+        'html_title',
+        'plain_text',
+        'html_text',
+        'complexity',
+        'image',
+        'count_likes',
+        'count_dislikes',
+        'is_visible'
     ];
 
     protected $attributes = [
@@ -25,10 +36,21 @@ class Material extends Model
     protected $dates = [
         'created_at',
         'updated_at',
+        'deleted_at'
     ];
 
-    /**
-     * A resource key to be used by the the JSON API Serializer responses.
-     */
-    protected $resourceKey = 'materials';
+    public function likes()
+    {
+        return $this->hasMany(MaterialLikes::class, 'material_id', 'id');
+    }
+
+    public function dislikes()
+    {
+        return $this->hasMany(MaterialDislikes::class, 'material_id', 'id');
+    }
+
+    public function addUsers()
+    {
+        return $this->hasMany(MaterialUser::class, 'material_id', 'id');
+    }
 }

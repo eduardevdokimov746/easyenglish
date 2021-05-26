@@ -27,8 +27,13 @@ class Dictionary extends Model
 
     ];
 
-    /**
-     * A resource key to be used by the the JSON API Serializer responses.
-     */
-    protected $resourceKey = 'dictionaries';
+    public function engWord()
+    {
+        return $this->belongsTo(EngWord::class, 'english_word_id', 'id');
+    }
+
+    public function rusWord()
+    {
+        return $this->belongsTo(RusTranslateWord::class, 'rus_translate_id', 'id');
+    }
 }

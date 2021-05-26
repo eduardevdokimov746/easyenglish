@@ -1,17 +1,14 @@
 <?php
 
-namespace App\Containers\Material\Actions;
+namespace App\Containers\TeacherSection\Material\Actions;
 
+use App\Containers\Material\Models\Material;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class FindMaterialByIdAction extends Action
 {
-    public function run(Request $request)
+    public function run($id)
     {
-        $material = Apiato::call('Material@FindMaterialByIdTask', [$request->id]);
-
-        return $material;
+        return Material::find($id);
     }
 }

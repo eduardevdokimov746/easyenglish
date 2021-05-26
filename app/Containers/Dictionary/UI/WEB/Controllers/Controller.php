@@ -56,11 +56,31 @@ class Controller extends WebController
         // ..
     }
 
-    public function delete(DeleteDictionaryRequest $request)
+    public function add()
     {
-         $result = Apiato::call('Dictionary@DeleteDictionaryAction', [$request]);
+        try {
+            $data = [
+                \Auth::id(),
+                request()->get('eng_word_id'),
+                request()->get('rus_translate_id')
+            ];
 
-         // ..
+            \Apiato::call('Dictionary@CreateDictionaryAction', $data);
+            return 1;
+        } catch (\Exception) {
+            return abort(500);
+        }
+    }
+
+    public function delete()
+    {
+        $data = [
+            \Auth::id(),
+            request()->get('eng_word_id'),
+            request()->get('rus_translate_id')
+        ];
+
+        \Apiato::call('Dictionary@DeleteDictionaryAction', $data);
     }
 
     public function getWord()

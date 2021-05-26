@@ -35,7 +35,24 @@ class PrepareTextTask extends Task
 
         })->implode(' ');
 
-        return ['html' => $textHtml, 'newWords' => $newWords];
+        $textHtmlToDB = collect(\Str::of(str_replace("\r\n", ' <br> ', $text))->split('#\s#'))->map(function ($word) use ($wordsModel) {
+            if ($word == '<br>') {
+                return '<br>';
+            }
+
+            $index = $wordsModel->search(function ($item) use ($word) {
+                return \Str::lower(trim(trim($word), '.,-_+|/\\*()[]^$#&@{}"\'<>=?!')) == $item->word;
+            });
+
+            if ($index !== false) {
+                $prepareWord = $wordsModel->get($index);
+
+                return $this->createHtmlToDB($prepareWord, $word);
+            }
+
+        })->implode(' ');
+
+        return ['html' => $textHtml, 'htmlToDb' => $textHtmlToDB, 'newWords' => $newWords];
     }
 
     protected function findAndCreateNewWords($words, $isAutogenerate)
@@ -119,19 +136,18 @@ class PrepareTextTask extends Task
     protected function createHtml($wordModel, $plainWord)
     {
         return '<span :class="[{\'word\': hasTranslate('.$wordModel->id.')}, {\'untranslate-word\': !hasTranslate('.$wordModel->id.')}]" @click="showListTranslate(' .$wordModel->id. ', $event)">' .$plainWord. '</span>';
+    }
 
-        if ($wordModel->rusTranslate->isNotEmpty()) {
-            return '<span class="[{\'word\': hasTranslate()}, {\'untranslate-word\': !hasTranslate()}]" @click="showListTranslate(' .$wordModel->id. ', $event)">' .$plainWord. '</span>';
-        } else {
-            return '<span class="untranslate-word" @click="showListTranslate(' .$wordModel->id. ', $event)">' .$plainWord. '</span>';
-        }
+    protected function createHtmlToDB($wordModel, $plainWord)
+    {
+        return '<span class="word" @click="showListTranslate(' .$wordModel->id. ', $event)">' .$plainWord. '</span>';
     }
 
     protected function splitWords($text)
     {
         return collect(\Str::of($text)->split('#\s#'))->filter()->map(function($word){
             return \Str::lower(trim(trim($word), '.,-_+|/\\*()[]^$#&@{}"\'<>=?!'));
-        });
+        })->unique();
     }
 
     protected function generateImage($word)

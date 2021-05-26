@@ -2,20 +2,13 @@
 
 namespace App\Containers\Dictionary\Actions;
 
+use App\Containers\Dictionary\Models\Dictionary;
 use App\Ship\Parents\Actions\Action;
-use App\Ship\Parents\Requests\Request;
-use Apiato\Core\Foundation\Facades\Apiato;
 
 class CreateDictionaryAction extends Action
 {
-    public function run(Request $request)
+    public function run($user_id, $eng_word_id, $rus_translate_id)
     {
-        $data = $request->sanitizeInput([
-            // add your request data here
-        ]);
-
-        $dictionary = Apiato::call('Dictionary@CreateDictionaryTask', [$data]);
-
-        return $dictionary;
+        return Dictionary::create(['user_id' => $user_id, 'english_word_id' => $eng_word_id, 'rus_translate_id' => $rus_translate_id]);
     }
 }

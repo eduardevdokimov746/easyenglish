@@ -4,4 +4,5 @@
 $router->get('materials/my', [
     'as' => 'web_material_my_index',
     'uses'  => 'Controller@my',
+    'middleware' => 'auth'
 ]);

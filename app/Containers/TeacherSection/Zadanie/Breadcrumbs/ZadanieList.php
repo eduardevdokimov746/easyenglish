@@ -3,11 +3,11 @@
 namespace App\Containers\TeacherSection\Zadanie\Breadcrumbs;
 
 use App\Ship\Abstracts\AbstractBreadcrumbItem;
-use App\Containers\TeacherSection\Course\Breadcrumbs\CourseList;
+use App\Containers\TeacherSection\Course\Breadcrumbs\MaterialList;
 
 class ZadanieList extends AbstractBreadcrumbItem
 {
-    protected $next = CourseList::class;
+    protected $next = MaterialList::class;
 
     public function draw($html = '')
     {

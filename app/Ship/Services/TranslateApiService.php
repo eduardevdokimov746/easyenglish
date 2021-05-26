@@ -51,19 +51,17 @@ class TranslateApiService
 
         $data = curl_exec($c);
 
-
-        if ($data === false) {
+        if (empty($data)) {
             $this->setKey();
+
+            $c = curl_init($this->createRequestUrl());
+            curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'GET');
+            curl_setopt($c,CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($c, CURLOPT_HTTPHEADER, ['Authorization:' . ' Bearer ' . $this->key, 'Content-Length: 0']);
+
+            $data = curl_exec($c);
+            curl_close($c);
         }
-
-        $c = curl_init($this->createRequestUrl());
-        curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($c,CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($c, CURLOPT_HTTPHEADER, ['Authorization:' . ' Bearer ' . $this->key, 'Content-Length: 0']);
-
-        $data = curl_exec($c);
-
-        curl_close($c);
 
         return $this->mapData($data);
     }

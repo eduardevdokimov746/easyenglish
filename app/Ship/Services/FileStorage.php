@@ -93,6 +93,13 @@ class FileStorage
         return $this;
     }
 
+    public function toMaterial(): self
+    {
+        $this->currentFolder = 'materials/';
+        $this->currentUploadFolder = 'app/public/materials/';
+        return $this;
+    }
+
     public function getPathForDownload($fileName)
     {
         return $this->currentFolder . $fileName;

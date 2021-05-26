@@ -1,10 +1,8 @@
 <?php
 
 /** @var Route $router */
-$router->patch('teacher/materials/{id}', [
+$router->post('teacher/materials/{id}/update', [
     'as' => 'web_teacher_materials_update',
     'uses'  => 'Controller@update',
-    'middleware' => [
-      'auth:web',
-    ],
+    'middleware' => 'auth'
 ]);

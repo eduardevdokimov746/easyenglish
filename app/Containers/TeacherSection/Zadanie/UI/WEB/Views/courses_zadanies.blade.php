@@ -12,6 +12,7 @@
 
             @include('components.breadcrumbs', [$breadcrumb])
 
+            @if($courses->isNotEmpty())
             <div class="row">
                 <div style="background: white; width: 100%">
                     <table class="table table-hover" style="text-align: center">
@@ -40,6 +41,9 @@
                     </table>
                 </div>
             </div>
+            @else
+                <h3>Вы пока не добавили ни одного задания</h3>
+            @endif
         </div>
     </section>
 @endsection
